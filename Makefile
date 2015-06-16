@@ -1,11 +1,10 @@
-
 SUBDIRS := $(patsubst %/.,%,$(wildcard */.))
 CONFIGSUBDIRS = $(SUBDIRS:%=config-%)
 INSTALLSUBDIRS = $(SUBDIRS:%=install-%)
 CLEANSUBDIRS = $(SUBDIRS:%=clean-%)
 CLOBBERSUBDIRS = $(SUBDIRS:%=clobber-%)
 
-.PHONY: all clean package install test subdirs $(SUBDIRS)
+.PHONY: all clean package install test subdirs $(SUBDIRS) $(CONFIGSUBDIRS) $(INSTALLSUBDIRS) $(CLEANSUBDIRS) $(CLOBBERSUBDIRS)
 
 default: all
 
