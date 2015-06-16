@@ -1,1 +1,18 @@
-To be written...
+
+*** Global build ***
+To configure and build everything : make 
+To configure everything : make configure
+To build everything : make build
+To install everything : make install
+To clean everything : make clean
+To delete build folders (deeper clean) : make clobber
+"Make" will always configure so you might want to use "make build" most of the time. 
+
+*** Subproject build ***
+cd projectTemplate
+mkdir -p build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug .. 
+make -j4
+make install
+
