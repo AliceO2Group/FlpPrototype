@@ -1,9 +1,9 @@
 ///
-/// @file    TestHello.cpp
+/// @file    TestHello.cxx
 /// @author  Barthelemy von Haller
 ///
 
-#include "../libs/core/World.h"
+#include <hello/World.h>
 
 #define BOOST_TEST_MODULE hello test
 #define BOOST_TEST_MAIN
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(arithmetic_test)
 
 BOOST_AUTO_TEST_CASE(hello_test)
 {
-  AliceO2::QC::Core::World world;
+  AliceO2::Hello::World world;
   const int ret = world.returnsN(3);
   BOOST_CHECK_EQUAL(ret, 3);
 }

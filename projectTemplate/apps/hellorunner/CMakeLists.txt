@@ -4,7 +4,7 @@ set(HEADERS
 )
 
 set(SOURCES
-  main.cpp
+  main.cxx
 )
 
 # Executable name then used to add an executable to the project.

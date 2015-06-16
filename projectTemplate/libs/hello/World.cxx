@@ -1,13 +1,14 @@
 ///
-/// @file    World.cpp
+/// @file    World.cxx
 /// @author  Barthelemy von Haller
 ///
 
-#include "../datasampling/World.h"
+#include <hello/World.h>
+
 #include <iostream>
 
 namespace AliceO2 {
-namespace DataSampling {
+namespace Hello {
 
 void World::greet()
 {
@@ -22,5 +23,5 @@ int World::returnsN(int n)
   return n;
 }
 
-} // namespace DataSampling
+} // namespace Hello
 } // namespace AliceO2

@@ -1,5 +1,5 @@
 ///
-/// @file    dataDump.cpp
+/// @file    dataDump.cxx
 /// @author  Barthelemy von Haller
 ///
 
