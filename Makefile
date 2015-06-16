@@ -10,7 +10,7 @@ default: all
 
 all: configure build
 
-build: $(SUBDIRS)
+build: configure $(SUBDIRS)
 
 configure: $(CONFIGSUBDIRS)
 
