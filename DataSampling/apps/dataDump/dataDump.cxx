@@ -5,6 +5,7 @@
 
 // std
 #include <iostream>
+#include <algorithm>
 // boost
 #include <boost/program_options.hpp>
 // datasampling
@@ -20,7 +21,7 @@ int main(int argc, char* argv[])
   po::variables_map vm;
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "Produce help message.")("version,v", "Show program name/version banner and exit.")(
-    "rev", "Print the SVN revision number");
+      "rev", "Print the SVN revision number")("location,l", po::value<string>(), "The URI of the data location")("format,f", po::value<string>(), "");
   po::store(parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
   // help
@@ -39,11 +40,26 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
   }
 
-  // Actual "work"
   AliceO2::DataSampling::Sampler sampling;
-  sampling.setLocation("file:test.data");
-  sampling.setDataFormat(AliceO2::DataSampling::DataFormat::Raw);
-  cout << "data format : " << sampling.getDataFormat() << endl;
+
+  // location
+  if (vm.count("location")) {
+    sampling.setLocation(vm["location"].as<string>());
+  } else {
+    cerr << "Location must be specified." << endl;
+    cout << desc << endl;
+    return EXIT_FAILURE;
+  }
+
+  // format
+  vector<string> allowedFormat {"Raw", "STF", "TF", "CTF", "AOD", "ESD"}; // TODO how to avoid duplicating information with the enum ?
+  if(vm.count("format")) {
+    if(find(allowedFormat.begin(), allowedFormat.end(), vm["format"].as<string>()) == allowedFormat.end()) {
+      cerr << "Format must be one of those : Raw, STF, TF, CTF, AOD, ESD" << endl;
+      return EXIT_FAILURE;
+    }
+    sampling.setDataFormat(vm["format"].as<string>());
+  }
 
   return EXIT_SUCCESS;
 }

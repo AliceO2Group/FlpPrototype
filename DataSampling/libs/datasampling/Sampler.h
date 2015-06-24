@@ -64,6 +64,7 @@ class Sampler
     void setPolicy(Policy policy);
     Policy getPolicy() const;
     void setDataFormat(DataFormat format);
+    void setDataFormat(std::string format);
     DataFormat getDataFormat() const;
 //    void setFilter();
 

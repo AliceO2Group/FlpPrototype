@@ -58,14 +58,31 @@ void Sampler::setDataFormat(DataFormat format)
   mFormat = format;
 }
 
+void Sampler::setDataFormat(string format)
+{
+  if (format == "Raw") {
+    setDataFormat(DataFormat::Raw);
+  } else if (format == "STF") {
+    setDataFormat(DataFormat::STF);
+  } else if (format == "TF") {
+    setDataFormat(DataFormat::TF);
+  } else if (format == "CTF") {
+    setDataFormat(DataFormat::CTF);
+  } else if (format == "AOD") {
+    setDataFormat(DataFormat::AOD);
+  } else if (format == "ESD") {
+    setDataFormat(DataFormat::ESD);
+  }
+}
+
 DataFormat Sampler::getDataFormat() const
 {
-  return mFormat;
+ return mFormat;
 }
 
 Policy Sampler::getPolicy() const
 {
-  return mPolicy;
+ return mPolicy;
 }
 
 } /* namespace DataSampling */
