@@ -1,3 +1,8 @@
+/// \file testDataFormat.c
+/// \brief Example of C usage of data format used in DataBlock.h.
+///
+/// \author Sylvain Chapeland, CERN
+
 #include <DataBlock.h>
 #include <stdlib.h>
 #include <stdio.h>
