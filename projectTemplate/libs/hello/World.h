@@ -19,8 +19,8 @@ class World {
 public:
 
   /// @brief   Greets the caller
+  /// Simple hello world
   /// @author 	Barthelemy von Haller
-  /// @brief	Simple hello world
   void greet();
 
   /// @brief   Returns the value passed to it
