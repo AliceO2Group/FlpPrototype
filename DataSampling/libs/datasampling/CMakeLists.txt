@@ -2,18 +2,17 @@
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
 # We don't want to polute our source tree with it, thus putting it in binary tree.
-message("aSDF")
 configure_file("Version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/Version.h" @ONLY)
 
 set(HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
-  #DataSampling.h
+  DataSampling.h
   World.h
 )
 
 set(SOURCES
   Version.cxx
-  #DataSampling.cxx
+  DataSampling.cxx
   World.cxx
 )
 
