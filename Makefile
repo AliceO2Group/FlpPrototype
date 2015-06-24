@@ -1,4 +1,5 @@
-SUBDIRS := $(patsubst %/.,%,$(wildcard */.))
+#SUBDIRS := $(patsubst %/.,%,$(wildcard */.))
+SUBDIRS := DataFormat DataSampling InfoLogger projectTemplate QualityControl
 CONFIGSUBDIRS = $(SUBDIRS:%=config-%)
 INSTALLSUBDIRS = $(SUBDIRS:%=install-%)
 CLEANSUBDIRS = $(SUBDIRS:%=clean-%)
