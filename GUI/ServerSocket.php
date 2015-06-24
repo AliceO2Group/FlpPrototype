@@ -1,15 +1,17 @@
 <?php
 namespace CERN\Alice\DAQ\O2;
+require_once __DIR__.'/ZMQHandler.php';
 
 class ServerSocket {
-
 	private $clients;
 
 	private $serverSocket;
+	private $zmqh;
 
 	public function __construct() {
 		$this->clients = array();
 		$this->bindServerSocket();
+		$this->zmqh = new ZMQHandler();
 
 	}
 	private function bindServerSocket() {
@@ -23,7 +25,9 @@ class ServerSocket {
 		for (;;) {
 			$this->checkNewClients();
 			$this->readClientSockets();
-			usleep(1000);
+			$this->zmqh->sendMessage();
+			//$this->zmqh->getMessage();
+			usleep(1000000);
 		}
 		
 	}

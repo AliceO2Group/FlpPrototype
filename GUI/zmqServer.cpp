@@ -37,16 +37,18 @@ void ZMQServer::response() {
 
     /* !!!!!!!!!!!!!!!! DO SOMEHITNG !!!!!!!!!!!!!!!!!!! */
             
-    /* prepare reply message (max 100b) */
-    zmq::message_t reply (100);
-    /* puts into json structure */
-    snprintf ((char *) reply.data(), 100 ,"{\"source\":\"%s\"}", "subscriber");
+    string tosend = "message: response";
+    int size = tosend.size() + 1;
+    zmq::message_t reply (size);
+    snprintf ((char *) reply.data(), size, "%s", tosend.c_str());
     /* sends messange */
     socketRsp.send (reply);
 }
-void ZMQServer::publishValue() { 
-    zmq::message_t message(100);
-    snprintf ((char *) message.data(), 100 ,"{\"source\":\"%s\"}", "publish");
+void ZMQServer::publishValue() {
+    string tosend = "message: publisher";
+    int size = tosend.size() + 1;
+    zmq::message_t message(size);
+    snprintf ((char *) message.data(), size, "%s", tosend.c_str());
     socketPub.send(message);             
 }
 int main(int argc, char* argv[]) {
@@ -54,7 +56,7 @@ int main(int argc, char* argv[]) {
     while(1) {
         server.response();
         server.publishValue(); 
-        sleep(1);
+        usleep(100);
     }
 ;
 }
