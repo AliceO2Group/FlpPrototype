@@ -6,14 +6,12 @@ configure_file("Version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/Version.h" @ONLY)
 
 set(HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
-  DataSampling.h
-  World.h
+  Sampler.h
 )
 
 set(SOURCES
   Version.cxx
-  DataSampling.cxx
-  World.cxx
+  Sampler.cxx
 )
 
 # Define two variables in order not to repeat ourselves.

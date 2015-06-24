@@ -3,11 +3,15 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include <datasampling/Version.h>
-#include <boost/program_options.hpp>
+// std
 #include <iostream>
-#include "../../libs/datasampling/World.h"
+// boost
+#include <boost/program_options.hpp>
+// datasampling
+#include "datasampling/Sampler.h"
+#include "datasampling/Version.h"
 
+using namespace std;
 namespace po = boost::program_options;
 
 int main(int argc, char* argv[])
@@ -36,8 +40,10 @@ int main(int argc, char* argv[])
   }
 
   // Actual "work"
-  AliceO2::DataSampling::World hello;
-  hello.greet();
+  AliceO2::DataSampling::Sampler sampling;
+  sampling.setLocation("file:test.data");
+  sampling.setDataFormat(AliceO2::DataSampling::DataFormat::Raw);
+  cout << "data format : " << sampling.getDataFormat() << endl;
 
   return EXIT_SUCCESS;
 }
