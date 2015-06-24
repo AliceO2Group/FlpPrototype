@@ -3,8 +3,8 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include <hello/World.h>
-#include <hello/Version.h>
+#include <Hello/World.h>
+#include <Hello/Version.h>
 #include <boost/program_options.hpp>
 #include <iostream>
 

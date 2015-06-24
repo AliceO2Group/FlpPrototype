@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include <hello/World.h>
+#include <Hello/World.h>
 
 #include <iostream>
 

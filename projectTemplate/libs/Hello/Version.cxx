@@ -4,7 +4,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include <hello/Version.h>
+#include <Hello/Version.h>
 #include <sstream>
 
 namespace AliceO2 {

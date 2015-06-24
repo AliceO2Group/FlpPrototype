@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include <hello/World.h>
+#include <Hello/World.h>
 
 #define BOOST_TEST_MODULE hello test
 #define BOOST_TEST_MAIN
