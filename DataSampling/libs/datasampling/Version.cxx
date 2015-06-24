@@ -1,7 +1,7 @@
 ///
-/// @file    Version.cxx
-/// @brief   Version Information
-/// @author  Barthelemy von Haller
+/// \file    Version.cxx
+/// \brief   Version Information
+/// \author  Barthelemy von Haller
 ///
 
 #include <datasampling/Version.h>

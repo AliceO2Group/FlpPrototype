@@ -1,6 +1,6 @@
 ///
-/// @file   DataSampling.cxx
-/// @author Barthelemy von Haller
+/// \file   DataSampling.cxx
+/// \author Barthelemy von Haller
 ///
 
 #include "DataSampling.h"

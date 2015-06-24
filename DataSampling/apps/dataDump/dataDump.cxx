@@ -1,6 +1,6 @@
 ///
-/// @file    dataDump.cxx
-/// @author  Barthelemy von Haller
+/// \file    dataDump.cxx
+/// \author  Barthelemy von Haller
 ///
 
 #include <datasampling/Version.h>

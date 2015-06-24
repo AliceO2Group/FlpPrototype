@@ -1,4 +1,4 @@
-# @author  Barthélémy von Haller
+# \author  Barthélémy von Haller
 
 # General CPack configuration 
 # Info: http://www.itk.org/Wiki/CMake:Component_Install_With_CPack

@@ -1,6 +1,6 @@
 ///
-/// @file   DataSampling.h
-/// @author Barthelemy von Haller
+/// \file   DataSampling.h
+/// \author Barthelemy von Haller
 ///
 
 #ifndef DATASAMPLING_LIBS_DATASAMPLING_DATASAMPLING_H_
