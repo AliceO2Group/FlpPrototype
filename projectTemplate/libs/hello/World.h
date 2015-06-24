@@ -6,10 +6,10 @@
 #ifndef ALICEO2_HELLO_WORLD_H
 #define ALICEO2_HELLO_WORLD_H
 
+namespace AliceO2 {
 /// @brief    Here you put a short description of the namespace
 /// Extended documentation for this namespace
-/// @author  	Barthelemy von Haller
-namespace AliceO2 {
+/// @author   Barthelemy von Haller
 namespace Hello {
 
 /// @brief   Here you put a short description of the class
