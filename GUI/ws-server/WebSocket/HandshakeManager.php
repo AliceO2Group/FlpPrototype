@@ -1,16 +1,16 @@
 <?php
-namespace CERN\Alice\DAQ\WebSocket;
+namespace CERN\Alice\DAQ\O2;
 
 require_once __DIR__.'/../Exceptions/HandshakeException.php';
 require_once __DIR__.'/../Exceptions/OriginException.php';
 
-use CERN\Alice\DAQ\WebSocket\Exceptions\HandshakeException;
-use CERN\Alice\DAQ\WebSocket\Exceptions\OriginException;
+use CERN\Alice\DAQ\O2\Exceptions\HandshakeException;
+use CERN\Alice\DAQ\O2\Exceptions\OriginException;
 /**
  * Handles client handshake specified in RFC 6455 (Page 14)
  * @see http://tools.ietf.org/html/rfc6455#page-14
  */
-class Handshake {
+class HandshakeManager {
 	
 	const HTTP_PROTOCOL 	= "HTTP/1.1";
 	/**
@@ -37,31 +37,40 @@ class Handshake {
     const ERROR_RATE_LIMITED = 420;
     const ERROR_UPGRADE_REQUIRED = 426;
     const ERROR_SERVER_ERROR = 500;  
-
-	/**
-	 * Parsed header
-	 */
-	protected $parsedHeader = array();
 	
 	/**
 	 * Constructor of Hanshake class; parses HTTP header into an array
 	 * @param $header - HTTP header as a string
 	 */
-	public function __construct($header) {
+	public function __construct() {
+		
+	}
+	public function handshake($header) {
+		try {
+			$parsed = $this->parseHeader($header);
+			$this->checkHandshake($parsed);
+			return $this->response($parsed);
+		} catch (\Exception $e) {
+			return $this->httpError($e->getMessage(), $e->getCode());
+		}
+	}
+	private function parseHeader($header) {
+		$parsedHeader = array();
 		$rows = explode("\n", $header);
 		foreach ($rows as $row) {
 			if (strpos($row,':')) {
-				$temp = explode(":", $row);
+				$temp = explode(':', $row);
 				
 				/* Explode fucntion destroys Origin URL, this is the quick fix */
 				if (trim($temp[0])==self::HEADER_ORIGIN && count($temp) == 3) {
-					$this->parsedHeader[trim($temp[0])]=trim($temp[1]).":".trim($temp[2]);
+					$parsedHeader[trim($temp[0])]=trim($temp[1]).":".trim($temp[2]);
 				} else {
-					$this->parsedHeader[trim($temp[0])]=trim($temp[1]);
+					$parsedHeader[trim($temp[0])]=trim($temp[1]);
 				}
 				
 			}
 		}
+		return $parsedHeader;
 	}
 	/**
 	 * 
@@ -70,79 +79,74 @@ class Handshake {
 	 * @throws HandshakeException
 	 * @throws OriginException
 	 */
-	public function parseHandshake() {
-			
-		try {
-			/* Upgrade header filed is mandatory */
-			if (!isset($this->parsedHeader[self::HEADER_UPGRADE])) {
-				throw new HandshakeException(sprintf(
-					"Lack a %s header field", self::HEADER_UPGRADE), self::ERROR_BAD_REQUEST);
-			}
-
-			/* Sec-WebSocket-Version header filed is mandatory */
-			if (!isset($this->parsedHeader[self::HEADER_VERSION])) {
-				throw new HandshakeException(sprintf(
-					"Lack a %s header field", self::HEADER_VERSION), self::ERROR_BAD_REQUEST);
-			}
-			
-			/* Sec-WebSocket-Key header filed is mandatory */
-			if (!isset($this->parsedHeader[self::HEADER_KEY])) {
-				throw new HandshakeException(sprintf(
-					"Lack a %s header field", self::HEADER_KEY), self::ERROR_BAD_REQUEST);		
-			}
-						
-			/* Connection header filed is mandatory */
-			if (!isset($this->parsedHeader[self::HEADER_CONNECTION])) {
-				throw new HandshakeException(sprintf(
-					"Lack a %s header field", self::HEADER_CONNECTION), self::ERROR_BAD_REQUEST
-				);
-			}
-			
-			/* Host header filed is mandatory */
-			if (!isset($this->parsedHeader[self::HEADER_HOST])) {
-				throw new HandshakeException(sprintf(
-					"Lack a %s header field", self::HEADER_HOST), self::ERROR_BAD_REQUEST
-				);
-			}
-			
-			/* Upgrade header filed value must be "websocket" */
-			if (strpos(strtolower($this->parsedHeader[self::HEADER_UPGRADE]), 'websocket') === false) {
-				throw new HandshakeException(sprintf(
-					"Value of %s header field must be: 'websocket', not '%s'", 
-					self::HEADER_UPGRADE, $this->parsedHeader[self::HEADER_UPGRADE]), self::ERROR_BAD_REQUEST
-				);
-			}
-			
-			/* Connection header filed value must be "Upgrade" */
-			if (strpos($this->parsedHeader[self::HEADER_CONNECTION], 'Upgrade') === false) {
-				throw new HandshakeException(sprintf(
-					"Value of %s header field must be: 'Upgrade'", self::HEADER_CONNECTION), self::ERROR_BAD_REQUEST
-				);
-			}	
-			
-			/* Version header filed valuse must be "13" */
-			if ($this->parsedHeader[self::HEADER_VERSION] != 13) {
-				throw new HandshakeException(sprintf(
-					"Value of header field must be: 13", self::HEADER_VERSION), self::ERROR_UPGRADE_REQUIRED
-				);
-			}
-			
-			/* Key is 16 byte value, that is next base64-encoded. So it is 24 charactes long */
-			if (strlen($this->parsedHeader[self::HEADER_KEY]) != 24) {
-				throw new HandshakeException(sprintf(
-					"The %s is invailed", self::HEADER_KEY), self::ERROR_BAD_REQUEST
-				);
-			}
-			/* Origin Policy */
-			if (!$this->originPolicy()) {
-				throw new OriginException(sprintf( 
-					"The access from this Origin is forbidden"), self::ERROR_FORBIDDEN
-				);
-			}
-		} catch (\Exception $e) {
-			return $this->httpError($e->getMessage(), $e->getCode());
+	private function checkHandshake($parsed) {
+		/* Upgrade header filed is mandatory */
+		if (!isset($parsed[self::HEADER_UPGRADE])) {
+			throw new HandshakeException(sprintf(
+				"Lack a %s header field", self::HEADER_UPGRADE), self::ERROR_BAD_REQUEST);
 		}
-		return $this->handshakeResponse();
+
+		/* Sec-WebSocket-Version header filed is mandatory */
+		if (!isset($parsed[self::HEADER_VERSION])) {
+			throw new HandshakeException(sprintf(
+				"Lack a %s header field", self::HEADER_VERSION), self::ERROR_BAD_REQUEST);
+		}
+			
+		/* Sec-WebSocket-Key header filed is mandatory */
+		if (!isset($parsed[self::HEADER_KEY])) {
+			throw new HandshakeException(sprintf(
+				"Lack a %s header field", self::HEADER_KEY), self::ERROR_BAD_REQUEST);		
+		}
+						
+		/* Connection header filed is mandatory */
+		if (!isset($parsed[self::HEADER_CONNECTION])) {
+			throw new HandshakeException(sprintf(
+				"Lack a %s header field", self::HEADER_CONNECTION), self::ERROR_BAD_REQUEST
+			);
+		}
+			
+		/* Host header filed is mandatory */
+		if (!isset($parsed[self::HEADER_HOST])) {
+			throw new HandshakeException(sprintf(
+				"Lack a %s header field", self::HEADER_HOST), self::ERROR_BAD_REQUEST
+			);
+		}
+			
+		/* Upgrade header filed value must be "websocket" */
+		if (strpos(strtolower($parsed[self::HEADER_UPGRADE]), 'websocket') === false) {
+			throw new HandshakeException(sprintf(
+				"Value of %s header field must be: 'websocket', not '%s'", 
+				self::HEADER_UPGRADE, $parsed[self::HEADER_UPGRADE]), self::ERROR_BAD_REQUEST
+			);
+		}
+			
+		/* Connection header filed value must be "Upgrade" */
+		if (strpos($parsed[self::HEADER_CONNECTION], 'Upgrade') === false) {
+			throw new HandshakeException(sprintf(
+				"Value of %s header field must be: 'Upgrade'", self::HEADER_CONNECTION), self::ERROR_BAD_REQUEST
+			);
+		}	
+			
+		/* Version header filed valuse must be "13" */
+		if ($parsed[self::HEADER_VERSION] != 13) {
+			throw new HandshakeException(sprintf(
+				"Value of header field must be: 13", self::HEADER_VERSION), self::ERROR_UPGRADE_REQUIRED
+			);
+		}
+			
+		/* Key is 16 byte value, that is next base64-encoded. So it is 24 charactes long */
+		if (strlen($parsed[self::HEADER_KEY]) != 24) {
+			throw new HandshakeException(sprintf(
+				"The %s is invailed", self::HEADER_KEY), self::ERROR_BAD_REQUEST
+			);
+		}
+		
+		/* Origin Policy */
+		if (!$this->originPolicy()) {
+			throw new OriginException(sprintf( 
+				"The access from this Origin is forbidden"), self::ERROR_FORBIDDEN
+			);
+		}
 	}
 	/**
 	 * Check if the connection from the origin is permitted
@@ -150,9 +154,9 @@ class Handshake {
 	 *
 	 * TEMPORARY REMOVED BECAUSE OF SCOPE OF CONFIG VARIABLES
 	 */
-	protected function originPolicy() {
-		/* if (isset($this->parsedHeader[self::HEADER_ORIGIN])) {
-			$origin = $this->parsedHeader[self::HEADER_ORIGIN];
+	private function originPolicy() {
+		/* if (isset($parsed[self::HEADER_ORIGIN])) {
+			$origin = $parsed[self::HEADER_ORIGIN];
 			foreach (Config::$origin_forbidden as $org) {
 				if ($org == $origin) return false;
 			}
@@ -168,26 +172,30 @@ class Handshake {
 	 * 		Sec-WebSocket-Version: 13
 	 * 		Server: ALICE-DAQ-ACR
 	 */
-	protected function handshakeResponse() {
+	private function response($parsed) {
 		$accept = base64_encode(
-				sha1(
-					$this->parsedHeader[self::HEADER_KEY] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true
-					));
+				sha1($parsed[self::HEADER_KEY] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true
+			));
 		$response = array();
+		$sResponse = "";
 		array_push($response, self::HTTP_PROTOCOL.' 101 Switching Protocols');
 		array_push($response, self::HEADER_UPGRADE.': websocket');
 		array_push($response, self::HEADER_CONNECTION.': Upgrade');
 		array_push($response, self::HEADER_ACCEPT.': ' . $accept);
 		array_push($response, self::HEADER_VERSION.': 13');
 		array_push($response, "");
-		return $response;
+		foreach ($response as $r) {
+			echo $r;
+			$sResponse .= $r . "\r\n";
+		}
+		return $sResponse;
 	}
 	/**
 	 * Generate HTTP error header, adds non-standard fields: Error-Reason and Server name
 	 * @param $message error reason
 	 * @param $code HTTP error code
 	 */
-	protected function httpError($message = "No details", $code = 404) {
+	private function httpError($message = "No details", $code = 404) {
 		$response = array();
 		switch ($code) {
 			case self::ERROR_BAD_REQUEST: /* 400 */
@@ -212,7 +220,6 @@ class Handshake {
 		 * On June 2012, the deprecation of "X-" prefix has become official as RFC 6648.
 		 */
 		array_push($response, "Error-Reason: ".$message);
-		array_push($response, "Server: ".Config::$socket['server_name']);
 		array_push($response, "");
 		return $response;
 	}
