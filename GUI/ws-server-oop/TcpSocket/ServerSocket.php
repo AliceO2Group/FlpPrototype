@@ -24,12 +24,17 @@ class ServerSocket {
 		);
 	}
 	public function listen() {
+		$i = 0;
 		for (;;) {
 			$this->checkNewClients();
 			$this->readClientSockets();
-			//$this->zmqh->sendMessage();
-			$this->zmqh->checkMessage();
-			usleep(100000);
+			if ($i > 100) {
+				$push = $this->zmqh->checkMessage();
+				$this->pushToAll($push);
+				$i=0;
+			}
+			usleep(10000);
+			$i++;
 		}
 		
 	}
@@ -74,7 +79,8 @@ class ServerSocket {
     			if (gettype($data) == 'integer') {
     				unset($this->clients[$data]);
     			} else if (gettype($data) == 'string') {
-    				$this->pushToAll($data);
+    				$zmqRsp = $this->zmqh->sendMessage();
+    				$this->pushToAll($zmqRsp);
     			}
 		    }
     	}

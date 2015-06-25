@@ -28,14 +28,14 @@ class ZMQHandler {
 		$socket->send('active_global_runs');
 		
 		$message = $socket->recv();
-		echo "From ZMQ-RSP > ".$message.PHP_EOL;
+		return $message;
 	}
 	public function checkMessage() {
 		$string = $this->subscriber->recv(ZMQ::MODE_DONTWAIT);
 		if ($string === null || $string == '') {
 			return;
 		}
-		echo "From ZMQ-PUB > ".$string.PHP_EOL;
+		return $string;
 	}
 }
 ?>
