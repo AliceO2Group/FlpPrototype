@@ -13,7 +13,7 @@ set(APPLICATION dataDump)
 add_executable(${APPLICATION} ${HEADERS} ${SOURCES})
 
 # Links the target exe (dataDump) against the library (libhello)
-target_link_libraries(${APPLICATION} hello ${Boost_PROGRAM_OPTIONS_LIBRARY})
+target_link_libraries(${APPLICATION} DataSampling ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 # Says how and where to install software
 install(TARGETS ${APPLICATION} DESTINATION bin COMPONENT apps)

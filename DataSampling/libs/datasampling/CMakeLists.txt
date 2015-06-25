@@ -17,7 +17,7 @@ set(SOURCES
 )
 
 # Define two variables in order not to repeat ourselves.
-set(LIBRARY hello)
+set(LIBRARY DataSampling)
 set(INCLUDE include/${LIBRARY})
 
 # Define the library
