@@ -12,7 +12,6 @@
 #include <assert.h>
 
 #include <fstream>
-#include <../../DataFormat/include/DataBlock.h> // TODO proper path once DataFormat can be installed
 
 using namespace std;
 

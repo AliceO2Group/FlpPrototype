@@ -14,7 +14,9 @@ namespace DataSampling {
 class FileSampler: public Sampler
 {
   public:
+    /// Standard Constructor
     FileSampler();
+    /// Destructor
     virtual ~FileSampler();
 
     virtual DataBlock* getData(int timeout = 0);
