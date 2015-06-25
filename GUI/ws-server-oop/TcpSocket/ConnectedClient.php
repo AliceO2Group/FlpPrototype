@@ -42,7 +42,6 @@ class ConnectedClient extends Socket {
 	 */
 	private function sendResponse($opcode, $payload) {
 		if ($opcode == Frame::OPCODE_TXT) {
-			$this->sendFrame($payload);
 			return $payload;
 		} else if ($opcode == Frame::OPCODE_CLS) {
 			$this->sendFrame($payload, Frame::OPCODE_CLS);

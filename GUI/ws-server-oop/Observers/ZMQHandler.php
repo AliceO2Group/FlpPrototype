@@ -18,7 +18,6 @@ class ZMQHandler {
 		} catch (\Exception $e) {
 			echo("ZMQ > Couldn't connect to the server");
 		}
-		
 		$this->subscriber->setSockOpt(ZMQ::SOCKOPT_SUBSCRIBE, "");
 	}
 	public function sendMessage() {
@@ -31,7 +30,7 @@ class ZMQHandler {
 		$message = $socket->recv();
 		echo "From ZMQ-RSP > ".$message.PHP_EOL;
 	}
-	public function getMessage() {
+	public function checkMessage() {
 		$string = $this->subscriber->recv(ZMQ::MODE_DONTWAIT);
 		if ($string === null || $string == '') {
 			return;

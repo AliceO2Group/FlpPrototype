@@ -33,16 +33,19 @@ socketRsp(contextRsp, ZMQ_REP) {
 }
 void ZMQServer::response() {
     zmq::message_t request;
-    socketRsp.recv(&request);
+    if (socketRsp.recv(&request, ZMQ_DONTWAIT) == true) {
+        cout << "after" << endl;
 
-    /* !!!!!!!!!!!!!!!! DO SOMEHITNG !!!!!!!!!!!!!!!!!!! */
-            
-    string tosend = "message: response";
-    int size = tosend.size() + 1;
-    zmq::message_t reply (size);
-    snprintf ((char *) reply.data(), size, "%s", tosend.c_str());
-    /* sends messange */
-    socketRsp.send (reply);
+        /* !!!!!!!!!!!!!!!! DO SOMEHITNG !!!!!!!!!!!!!!!!!!! */
+                
+        string tosend = "message: response";
+        int size = tosend.size() + 1;
+        zmq::message_t reply (size);
+        snprintf ((char *) reply.data(), size, "%s", tosend.c_str());
+        /* sends messange */
+        socketRsp.send (reply);
+    }
+
 }
 void ZMQServer::publishValue() {
     string tosend = "message: publisher";
@@ -54,9 +57,9 @@ void ZMQServer::publishValue() {
 int main(int argc, char* argv[]) {
     ZMQServer server;
     while(1) {
-        server.response();
         server.publishValue(); 
-        usleep(100);
+        server.response();
+        usleep(10000);
     }
 ;
 }

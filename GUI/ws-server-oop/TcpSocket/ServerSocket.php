@@ -2,23 +2,19 @@
 namespace CERN\Alice\DAQ\O2;
 require_once __DIR__.'/Socket.php';
 require_once __DIR__.'/ConnectedClient.php';
-//require_once __DIR__.'/../Observers/ZMQHandler.php';
+require_once __DIR__.'/../Observers/ZMQHandler.php';
 
 class ServerSocket {
 	private $clients;
 
 	private $serverSocket;
 	private $zmqh;
-	private $hshm;
-	private $tcph;
 	private $observer;
 
 	public function __construct() {
 		$this->clients = array();
 		$this->bindServerSocket();
-		//$this->zmqh = new ZMQHandler();
-		//$this->hshm = new HandshakeManager();
-		//$this->tcph = new TCPHandler();
+		$this->zmqh = new ZMQHandler();
 	}
 	private function bindServerSocket() {
 		$this->serverSocket = stream_socket_server(
@@ -32,7 +28,7 @@ class ServerSocket {
 			$this->checkNewClients();
 			$this->readClientSockets();
 			//$this->zmqh->sendMessage();
-			//$this->zmqh->getMessage();
+			$this->zmqh->checkMessage();
 			usleep(100000);
 		}
 		
@@ -61,6 +57,11 @@ class ServerSocket {
 		}
 		return $sockets;
 	}
+	private function pushToAll($payload) {
+		foreach ($this->clients as &$client) {
+			$client->sendFrame($payload);
+		}
+	}
 	private function readClientSockets() {
 		if (empty($sockets = $this->getSocketsArray())) return;
 		$write  = $except = NULL;
@@ -72,6 +73,8 @@ class ServerSocket {
     			$data = $this->clients[$id]->readSocket();
     			if (gettype($data) == 'integer') {
     				unset($this->clients[$data]);
+    			} else if (gettype($data) == 'string') {
+    				$this->pushToAll($data);
     			}
 		    }
     	}
