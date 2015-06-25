@@ -185,7 +185,6 @@ class HandshakeManager {
 		array_push($response, self::HEADER_VERSION.': 13');
 		array_push($response, "");
 		foreach ($response as $r) {
-			echo $r;
 			$sResponse .= $r . "\r\n";
 		}
 		return $sResponse;

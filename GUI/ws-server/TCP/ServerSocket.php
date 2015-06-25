@@ -1,7 +1,8 @@
 <?php
 namespace CERN\Alice\DAQ\O2;
 require_once __DIR__.'/TCPHandler.php';
-require_once __DIR__.'/../ZeroMQ/ZMQHandler.php';
+require_once __DIR__.'/../Observers/ZMQHandler.php';
+require_once __DIR__.'/../Observers/WSManager.php';
 require_once __DIR__.'/../WebSocket/HandshakeManager.php';
 
 class ServerSocket {
@@ -11,6 +12,9 @@ class ServerSocket {
 	private $zmqh;
 	private $hshm;
 	private $tcph;
+	private $observer;
+
+	const FRAME_CLASS_NAME = 'CERN\Alice\DAQ\O2\Frame';
 
 	public function __construct() {
 		$this->clients = array();
@@ -18,6 +22,7 @@ class ServerSocket {
 		$this->zmqh = new ZMQHandler();
 		$this->hshm = new HandshakeManager();
 		$this->tcph = new TCPHandler();
+		$this->wsm = new WSManager();
 	}
 	private function bindServerSocket() {
 		$this->serverSocket = stream_socket_server(
@@ -52,7 +57,30 @@ class ServerSocket {
     		}
     	}
 	}
-
+	private function broadcastMessage() {
+		//foreach write
+	}
+	protected function sendResponse(&$socket, $frame) {
+		$opcode = $frame->getOpcode();
+		$payload = $frame->getPayload();
+		if ($opcode == Frame::OPCODE_TXT) {
+			//$response = $this->clientObserver->onTextMessage($payload);
+			$this->tcph->sendFrame($payload, Frame::OPCODE_TXT);
+			$this->tcph->write($socket, $response);
+		} else if ($opcode == Frame::OPCODE_CLS) {
+			$this->tcph->sendFrame($payload, Frame::OPCODE_CLS);
+			$this->tcph->write($socket, $response);
+			$this->close($this->socket);	
+		} else if ($opcode == Frame::OPCODE_PING) {
+			$this->tcph->sendFrame($payload, Frame::OPCODE_PONG);
+			$this->tcph->write($socket, $response);
+		}
+		return true;
+	}
+	private function close(&$socket) {
+		unset($this->clients[array_search($socket, $this->clients)]);
+		$this->tcph->close($socket);
+	}
 	private function readClientSockets() {;
 		//if no clients
 		if (empty($this->clients)) return;
@@ -63,17 +91,20 @@ class ServerSocket {
     	} elseif ($no_changed > 0) {
     		foreach ($clientsArray as $socket) {
     			//data returns WebSocket frame or handshake
-		        if (($data = $this->tcph->readSocket($socket)) === false) { 
-		        	unset($this->clients[array_search($socket, $this->clients)]);
-		            @fclose($socket);
-		            Log::write(sprintf("Socket id %d has been closed. [%d]", intval($socket), count($this->clients)));
+		        if (($data = $this->tcph->readSocket($socket)) === false) {
+		        	$this->close($socket);
 		            continue;
 		        }
-		        $response = $this->hshm->handshake($data);
-		        //assumes (for now) only handshakes
-		        Log::write("Sending response to id ".intval($socket));
-		        //send the message back to client
-		        stream_socket_sendto($socket, $response);
+		        //based on what readSocket returns; to be changed in PHP7
+		        if (gettype($data) == 'object') {
+		        	$response = $this->sendResponse($socket, $data);
+		        } else {
+		        	$response = $this->hshm->handshake($data);
+		        }
+		        if ($this->tcph->write($socket, $response) === false) {
+		        	$this->close($socket);
+		        	continue;
+		        }
 		    }
     	}
 	}

@@ -2,6 +2,7 @@
 namespace CERN\Alice\DAQ\O2;
 
 require_once __DIR__.'/../Exceptions/WebSocketFrameException.php';
+require_once __DIR__.'/../WebSocket/Frame.php';
 require_once __DIR__.'/../Exceptions/TCPSocketException.php';
 
 use CERN\Alice\DAQ\WebSocket\Exceptions\WebSocketFrameException;
@@ -13,9 +14,13 @@ class TCPHandler {
 	 */
 	private $socket;
 	private $hostname;
+	const HANDSHAKE_2_BYTES = 'GE'; //first two characters of 'GET HTTP/1.1'
 
-	public function write() {
-		
+	public function write(&$socket, $response) {
+		if (($bytes = stream_socket_sendto($socket, $response)) < 0) {
+			return false;
+		}
+		Log::write(sprintf("Sending %d bytes to id %d", $bytes, intval($socket)));
 	}
 
 	private function read($toRead = 1500) {
@@ -23,6 +28,10 @@ class TCPHandler {
 			Log::write(sprintf("%s, Error while reading %d bytes of data", $this->hostname, $toRead), "error", 20);
 		}
         return $return;
+    }
+    public function close(&$socket) {
+		@fclose($socket);
+		Log::write(sprintf("Socket id %d has been closed. [%d]", intval($socket), count($this->clients)));
     }
     public function readSocket(&$pSocket) {
     	$this->socket = $pSocket;
@@ -32,15 +41,16 @@ class TCPHandler {
 				return false;
 			}
 
-			if (strcmp($rawheader, "GE") === 0) { //is_string
+			if (strcmp($rawheader, self::HANDSHAKE_2_BYTES) === 0) { //is_string
 				return $this->readHandshake();
 			} else {
-				//$this->readFrame();
+				$frame = $this->readFrame($rawheader);
+				$frame->controlFrame();
+				return $frame;
 			}
     	} catch (\Exception $e) {
     		$this->socket = null;
     		$this->hostname = null;
-			// $this->close(); ERROR, CLOSE CONNECTION!
 			return false;
 		}
     	
@@ -49,8 +59,11 @@ class TCPHandler {
     	if (($read = $this->read()) == false) {
 			throw new HandshakeException(sprintf("%s, Cannot read handshake", $this->hostname));
 		}
-		return "GE".$read;
+		return self::HANDSHAKE_2_BYTES.$read;
     }
+	public function sendFrame($message, $opcode = Frame::OPCODE_TXT) {
+		return $fToSend = new Frame($opcode, $message);
+	}
     /**
 	 * Reads the frame from the client: first two bytes which are processed in Frame class (FIN, RSV, Opcode, MASK, Payload length);
 	 * based on these information it reads 0, 2 or 8 bytes (extended payload length); then if the MASK is set to 1, it reads the
@@ -60,11 +73,8 @@ class TCPHandler {
 	 * @throws WebSocketFrameException if the frame doesn't meet the requirements of RFC
 	 * @return parsed frame as a Frame object
 	 */
-	private function readFrame() {
+	private function readFrame($rawheader) {
 		//try {	
-			if (($rawheader = $this->read(2)) == false) {
-				return false;
-			}
 			$frame = new Frame();
 			$frame->processHeader($rawheader);
 			if ($frame->getLength() <= 125) {
