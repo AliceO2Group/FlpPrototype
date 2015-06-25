@@ -31,8 +31,6 @@ set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 #    set (VCS_REVISION ${GIT_SHA1})
 #endif()
 
-include_directories(
-)
 file(
   GLOB_RECURSE
   source_files
@@ -43,9 +41,18 @@ include_directories (
   include
 )
 
+set(PUBLIC_HEADERS 
+  include/DataBlock.h
+)
+
 add_executable (
   testDataFormat
   test/testDataFormat.c
+)
+
+# Specify how/where to install this libraries and headers
+install(FILES ${PUBLIC_HEADERS}
+  DESTINATION include COMPONENT dev 
 )
 
 
