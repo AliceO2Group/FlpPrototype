@@ -38,15 +38,6 @@ std::string Sampler::getLocation() const
   return mLocation;
 }
 
-void* Sampler::getData(int timeout)
-{
-  cout << "DataSampling::getData : " << endl;
-  return nullptr;
-}
-void Sampler::releaseData()
-{
-  cout << "DataSampling::releaseData : " << endl;
-}
 void Sampler::setPolicy(Policy policy)
 {
   cout << "DataSampling::setPolicy : " << policy << endl;

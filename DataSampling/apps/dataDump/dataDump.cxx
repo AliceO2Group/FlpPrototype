@@ -9,7 +9,7 @@
 // boost
 #include <boost/program_options.hpp>
 // datasampling
-#include "datasampling/Sampler.h"
+#include "datasampling/FileSampler.h"
 #include "datasampling/Version.h"
 
 using namespace std;
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
   }
 
-  AliceO2::DataSampling::Sampler sampling;
+  AliceO2::DataSampling::FileSampler sampling; // TODO we should not hardcode the fact that it is a file
 
   // location
   if (vm.count("location")) {

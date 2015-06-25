@@ -7,11 +7,13 @@ configure_file("Version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/Version.h" @ONLY)
 set(HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
   Sampler.h
+  FileSampler.h
 )
 
 set(SOURCES
   Version.cxx
   Sampler.cxx
+  FileSampler.cxx
 )
 
 # Define two variables in order not to repeat ourselves.

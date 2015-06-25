@@ -17,6 +17,8 @@
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
 
+#include <../../../DataFormat/include/DataBlock.h> // TODO
+
 namespace AliceO2 {
 namespace DataSampling {
 
@@ -56,9 +58,8 @@ class Sampler
     Sampler(std::string Uri);
     virtual ~Sampler();
 
-    void* getData(int timeout); // TODO add specific types ? what do we get back ?
-    void releaseData();
-    ///
+    virtual DataBlock* getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
+    virtual void releaseData() = 0;
     void setLocation(std::string Uri);
     std::string getLocation() const;
     void setPolicy(Policy policy);
