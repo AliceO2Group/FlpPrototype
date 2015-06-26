@@ -12,7 +12,7 @@ set(SOURCES
 set(APPLICATION dataDump)
 add_executable(${APPLICATION} ${HEADERS} ${SOURCES})
 
-# Links the target exe (dataDump) against the library (libhello)
+# Links the target exe (dataDump) against the library (libDataSampling)
 target_link_libraries(${APPLICATION} DataSampling ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 # Says how and where to install software

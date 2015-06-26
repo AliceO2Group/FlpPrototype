@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
   }
   // rev
   if (vm.count("rev")) {
-    std::cout << "SVN revision : " << AliceO2::DataSampling::Version::getRevision() << std::endl;
+    std::cout << "Git revision : " << AliceO2::DataSampling::Version::getRevision() << std::endl;
     return EXIT_SUCCESS;
   }
 
