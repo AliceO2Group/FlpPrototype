@@ -1,0 +1,23 @@
+https://zookeeper.apache.org/
+
+wget http://mirror.easyname.ch/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+tar -xzvf zookeeper-3.4.6.tar.gz 
+cp -rp zookeeper-3.4.6 /opt/
+cd /opt/zookeeper-3.4.6/src/c
+./configure 
+make -j 8
+
+
+mkdir /var/lib/zookeeper
+nedit /opt/zookeeper-3.4.6/zoo.cfg
+
+tickTime=2000
+dataDir=/var/lib/zookeeper
+clientPort=2181
+
+# start server
+./bin/zkServer.sh start
+
+# test client
+./bin/zkCli.sh 
+ls /
