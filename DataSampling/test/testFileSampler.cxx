@@ -1,5 +1,5 @@
 ///
-/// \file    TestHello.cxx
+/// \file    TestFileSampler.cxx
 /// \author  Barthelemy von Haller
 ///
 

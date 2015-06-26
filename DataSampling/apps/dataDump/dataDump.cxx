@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
   }
   // version
   if (vm.count("version")) {
-    std::cout << "HelloRunner version " << AliceO2::DataSampling::Version::getString() << std::endl;
+    std::cout << "DataSampling version " << AliceO2::DataSampling::Version::getString() << std::endl;
     return EXIT_SUCCESS;
   }
   // rev
