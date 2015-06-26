@@ -1,6 +1,6 @@
-wget http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz/download
-tar -xzvf boost-1.58.tar.gz 
-mv boost_1_58_0/ /opt/
+wget http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz
+tar -xzvf tar xvfz boost_1_58_0.tar.gz
+sudo mv boost_1_58_0/ /opt/
 cd /opt/boost_1_58_0/
-./bootstrap.sh 
+./bootstrap.sh
 ./b2 -j 8
