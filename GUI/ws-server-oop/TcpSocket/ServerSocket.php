@@ -24,17 +24,13 @@ class ServerSocket {
 		);
 	}
 	public function listen() {
-		$i = 0;
 		for (;;) {
 			$this->checkNewClients();
 			$this->readClientSockets();
-			if ($i > 100) {
-				$push = $this->zmqh->checkMessage();
+			if (($push = $this->zmqh->checkMessage()) !== false) {
 				$this->pushToAll($push);
-				$i=0;
 			}
 			usleep(10000);
-			$i++;
 		}
 		
 	}
@@ -76,10 +72,12 @@ class ServerSocket {
     		foreach ($sockets as $socket) {
     			$id = intval($socket);
     			$data = $this->clients[$id]->readSocket();
+    			//returns Resource ID that is in closed state
     			if (gettype($data) == 'integer') {
     				unset($this->clients[$data]);
+    				//received payload of text frame
     			} else if (gettype($data) == 'string') {
-    				$zmqRsp = $this->zmqh->sendMessage();
+    				$zmqRsp = $this->zmqh->sendMessage($data);
     				$this->pushToAll($zmqRsp);
     			}
 		    }

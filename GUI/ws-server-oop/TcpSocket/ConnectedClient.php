@@ -21,6 +21,7 @@ class ConnectedClient extends Socket {
 			}
 			if (strcmp($rawheader, self::HANDSHAKE_2_BYTES) === 0) { //is_string
 				$this->handshake();
+				return null;
 			} else {
 				$frame = $this->readFrame($rawheader);
 				$frame->controlFrame();
