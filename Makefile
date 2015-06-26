@@ -1,5 +1,5 @@
 #SUBDIRS := $(patsubst %/.,%,$(wildcard */.))
-SUBDIRS := DataFormat DataSampling InfoLogger projectTemplate QualityControl Monitoring
+SUBDIRS := InfoLogger Configuration Monitoring DataFormat DataSampling projectTemplate QualityControl 
 CONFIGSUBDIRS = $(SUBDIRS:%=config-%)
 INSTALLSUBDIRS = $(SUBDIRS:%=install-%)
 CLEANSUBDIRS = $(SUBDIRS:%=clean-%)
@@ -33,7 +33,7 @@ $(CONFIGSUBDIRS):
 	@echo Configure $(@:config-%=%)
 	@cd $(@:config-%=%) ; mkdir -p build ; cd build ; cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug ..
 
-$(INSTALLSUBDIRS): 
+$(INSTALLSUBDIRS): $(CONFIGSUBDIRS)
 	@echo Install $(@:install-%=%)
 	@cd $(@:install-%=%)/build ; make install
 

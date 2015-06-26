@@ -1,3 +1,6 @@
+*** Install everything in correct order ***
+make configure
+sudo make install
 
 *** Global build ***
 To configure and build everything : make 
