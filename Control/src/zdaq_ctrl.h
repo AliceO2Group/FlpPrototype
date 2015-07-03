@@ -17,27 +17,28 @@ extern "C" {
 #endif
 
     
-    
+
 // Zdaq control version 2 bytes: MAJOR+MINOR
 #define ZDAQ_CTRL_VERSION 0xA101
-/* History of versions:
-        0xA101     v1.1    07/2013
- */
+// History of versions:
+//        0xA101     v1.1    07/2013
 
-/* The structure to publish service information
- * (how to reach, etc)
- * Should be backward compatible when same MAJOR version.
- */
+// The structure to publish service information
+// (how to reach, etc)
+// Should be backward compatible when same MAJOR version.
+//
 typedef struct {
     uint16_t version;   // struct version number            
     char name[128];     // service name
     char host[128];     // host IP name    
-    int port;           // host TCP port
+    int  port;          // host TCP port
     char uuid[16];      // unique service id
 } t_zdaqCtrl_srvinfo;
 
 
 
+
+/* not used
 class zdaqCtrl_service {
 public:
     zdaqCtrl_service(const char *serviceName, const char* DNS);      // serviceName: name of the service to register. DNS: info to access to service directory (host/port).
@@ -52,7 +53,7 @@ private:
     int z_shutdown;
     int z_ok;
 };
-
+*/
 
 
 class zdaqCtrl_client {

@@ -107,3 +107,15 @@ target_link_libraries (
   zookeeper_mt
   zmq
 )
+
+add_executable (
+  testStateMachine
+  test/testStateMachine.cxx
+  src/StateMachine.cxx
+)
+
+target_link_libraries (
+  testStateMachine
+  zookeeper_mt
+  boost_system
+)

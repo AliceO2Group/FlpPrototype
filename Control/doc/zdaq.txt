@@ -1,0 +1,33 @@
+ControlObjects:
+
+- have a name
+- have a state
+- can execute commands
+- can publish data (key/value pairs)
+
+
+
+
+- zdaqCtrl_client
+
+allows to connect to a remote object and interract with it:
+get state, push command, get data
+
+
+
+- zdaqCtrl_object
+
+to define an object which can be controlled
+
+    const char* getState();     // retrieves the remote object state
+    int execCommand(const char *command);       // send a command to remote object
+    int getData(const char *key, char *value, int *valueSz);  // retrieve data published in object. valueSz initially set to size of 'value' buffer given, returned with actual data size and buffer set.
+ 
+ 
+ 
+- zdaqCtrl_group
+
+to define a group of objects to be controlled in the same way 
+push a command to all objects in the group
+
+

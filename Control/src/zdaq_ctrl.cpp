@@ -58,7 +58,7 @@ void watcher(zhandle_t *zzh, int type, int state, const char *path,
 
 
 
-
+/*
 zdaqCtrl_service::zdaqCtrl_service(const char* serviceName, const char* DNS) {
     if (serviceName==NULL) {throw ("serviceName is NULL");}
     if (strlen(serviceName)>sizeof(info.name)-1) {throw ("serviceName too long");}
@@ -119,16 +119,16 @@ zdaqCtrl_service::~zdaqCtrl_service() {
 
 
 void zdaqCtrl_service::z_watcher (zhandle_t *zzh, int type, int state, const char *path, void* context){
-    /* Be careful using zh here rather than zzh - as this may be mt code
-     * the client lib may call the watcher before zookeeper_init returns */
+    // Be careful using zh here rather than zzh - as this may be mt code
+    // the client lib may call the watcher before zookeeper_init returns 
 
-    /*
-     * fprintf(stderr, "Watcher %s state = %s", type2String(type), state2String(state));
-    if (path && strlen(path) > 0) {
-      fprintf(stderr, " for path %s", path);
-    }
-    fprintf(stderr, "\n");
-     */
+    //
+    // fprintf(stderr, "Watcher %s state = %s", type2String(type), state2String(state));
+    // if (path && strlen(path) > 0) {
+    //  fprintf(stderr, " for path %s", path);
+    // }
+    // fprintf(stderr, "\n");
+
      
         zdaqCtrl_service *h;
     h=(zdaqCtrl_service *)context;
@@ -160,7 +160,7 @@ void zdaqCtrl_service::z_watcher (zhandle_t *zzh, int type, int state, const cha
         }
     }
 }
-
+*/
 
 
 
