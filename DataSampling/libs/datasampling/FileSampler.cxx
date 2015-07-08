@@ -15,13 +15,10 @@ namespace DataSampling {
 
 FileSampler::FileSampler()
 {
-  // TODO Auto-generated constructor stub
-
 }
 
 FileSampler::~FileSampler()
 {
-  // TODO Auto-generated destructor stub
 }
 
 std::string FileSampler::getFilePath()
@@ -41,7 +38,7 @@ DataBlock* FileSampler::getData(int timeout)
   cout << "headerSize : " << std::hex << result->header.headerSize << endl;
   cout << "payload size : " << std::hex << result->header.dataSize << endl;
 
-  int dataSizeBytes = result->header.dataSize / 8;
+  size_t dataSizeBytes = result->header.dataSize / 8;
   cout << "dataSizeBytes : " << dataSizeBytes << endl;
   char buffer[dataSizeBytes];
   file.read(buffer, dataSizeBytes);
