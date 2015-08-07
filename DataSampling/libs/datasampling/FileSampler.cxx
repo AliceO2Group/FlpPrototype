@@ -36,7 +36,7 @@ DataBlock* FileSampler::getData(int timeout)
   file.read((char*) &result->header, sizeof(DataBlockHeaderBase));
   cout << "blockType : " << std::hex << result->header.blockType << endl;
   cout << "headerSize : " << std::hex << result->header.headerSize << endl;
-  cout << "payload size : " << std::hex << result->header.dataSize << endl;
+  cout << "payload size : " << std::dec << result->header.dataSize << endl;
 
   size_t dataSizeBytes = result->header.dataSize / 8;
   cout << "dataSizeBytes : " << dataSizeBytes << endl;

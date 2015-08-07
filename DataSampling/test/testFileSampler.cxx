@@ -12,6 +12,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <fstream>
+#include <datasampling/DataBlockProducer.h>
 
 using namespace std;
 
@@ -22,36 +23,36 @@ string s = "barthelemy";
 
 struct File
 {
-  File()
-  {
-    cout << "setup File" << endl;
-    fstream file(dataFile, ios::out | ios::binary);
-    if (file.is_open()) {
-      DataBlockHeaderBase block;
-      block.blockType = 0xba; // whatever
-      block.headerSize = 0x60; // just the header base -> 96 bits
-      block.dataSize = payloadSize * 8;
-      file.write((char *) &block, sizeof(DataBlockHeaderBase));
-      cout << "size of DataBlockHeaderBase : " << sizeof(DataBlockHeaderBase) << endl;
-      char buffer[payloadSize];
-      s.copy(buffer, payloadSize);
-      cout << "size of buffer : " << sizeof(buffer) << endl;
-      file.write(buffer, payloadSize);
-      file.close();
-    } else {
-      std::cerr << "Couldn't open '" << dataFile << "'" << std::endl;
+    File()
+    {
+      cout << "setup File" << endl;
+      fstream file(dataFile, ios::out | ios::binary);
+      if (file.is_open()) {
+        DataBlockHeaderBase block;
+        block.blockType = 0xba; // whatever
+        block.headerSize = 0x60; // just the header base -> 96 bits
+        block.dataSize = payloadSize * 8;
+        file.write((char *) &block, sizeof(DataBlockHeaderBase));
+        cout << "size of DataBlockHeaderBase : " << sizeof(DataBlockHeaderBase) << endl;
+        char buffer[payloadSize];
+        s.copy(buffer, payloadSize);
+        cout << "size of buffer : " << sizeof(buffer) << endl;
+        file.write(buffer, payloadSize);
+        file.close();
+      } else {
+        std::cerr << "Couldn't open '" << dataFile << "'" << std::endl;
+      }
     }
-  }
 
-  ~File()
-  {
-    cout << "teardown File" << endl;
-    if (remove(dataFile.c_str()) != 0) {
-      cerr << "Error deleting file" << endl;
-    } else {
-      cerr << "File successfully deleted" << endl;
+    ~File()
+    {
+      cout << "teardown File" << endl;
+      if (remove(dataFile.c_str()) != 0) {
+        cerr << "Error deleting file" << endl;
+      } else {
+        cerr << "File successfully deleted" << endl;
+      }
     }
-  }
 };
 
 BOOST_FIXTURE_TEST_SUITE(FileSampler, File)
@@ -78,6 +79,35 @@ BOOST_AUTO_TEST_CASE(basic)
     cout << data->data[i];
   }
   cout << endl;
+}
+
+BOOST_AUTO_TEST_CASE(big_file_test)
+{
+  cout << "*** big test ***" << endl;
+  string dataFileBig = "bigtest.data";
+  int payloadSizeBig = 1024;
+  AliceO2::DataSampling::DataBlockProducer producer(payloadSizeBig /*payload size in bytes*/);
+  // Save 10 block to file
+  producer.saveToFile(dataFileBig, false);
+  for (int i = 0; i < 10; i++) {
+    producer.regenerate();
+    producer.saveToFile(dataFileBig, true);
+  }
+
+  AliceO2::DataSampling::FileSampler fileSampler;
+  fileSampler.setLocation("file:" + dataFileBig);
+
+  DataBlock *data = fileSampler.getData();
+  if (!data) {
+    BOOST_ERROR("pointer is null");
+    return;
+  }
+  cout << "blockType : " << std::hex << data->header.blockType << endl;
+  cout << "headerSize : " << std::hex << data->header.headerSize << endl;
+  cout << "payload size : " << std::dec << data->header.dataSize << endl;
+  int dataSizeBytes = data->header.dataSize / 8;
+  BOOST_CHECK_EQUAL(dataSizeBytes, payloadSizeBig);
+
 }
 
 BOOST_AUTO_TEST_CASE(file_test)
