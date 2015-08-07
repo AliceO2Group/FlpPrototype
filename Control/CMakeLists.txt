@@ -1,4 +1,4 @@
-# INFOLOGGER CMAKELISTS.TXT
+# CONTROL CMAKELISTS.TXT
 #
 # @author  sylvain.chapeland@cern.ch
 
@@ -116,6 +116,18 @@ add_executable (
 
 target_link_libraries (
   testStateMachine
+  zookeeper_mt
+  boost_system
+)
+
+add_executable (
+  testSendCommand
+  test/testSendCommand.cxx
+  src/StateMachine.cxx
+)
+
+target_link_libraries (
+  testSendCommand
   zookeeper_mt
   boost_system
 )
