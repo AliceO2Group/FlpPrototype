@@ -34,7 +34,7 @@ class DataBlockProducer
     virtual ~DataBlockProducer();
 
     /// \brief Get a copy of the latest data block generated.
-    DataBlock get() const;
+    DataBlock* get() const;
     /// \brief Save the current data block to the file.
     void saveToFile(std::string pathToFile, bool append = true) const;
     /// \brief Destroy the current data block and create a new one.

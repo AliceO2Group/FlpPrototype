@@ -9,6 +9,7 @@ set(HEADERS
   Sampler.h
   FileSampler.h
   DataBlockProducer.h
+  MockSampler.h
 )
 
 set(SOURCES
@@ -16,6 +17,7 @@ set(SOURCES
   Sampler.cxx
   FileSampler.cxx
   DataBlockProducer.cxx
+  MockSampler.cxx
 )
 
 # Define two variables in order not to repeat ourselves.

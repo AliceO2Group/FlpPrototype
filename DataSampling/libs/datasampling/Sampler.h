@@ -49,6 +49,7 @@ std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::os
 enum class Policy {Must, Percent, Most};
 enum class DataFormat {Raw, STF, TF, CTF, AOD, ESD};
 
+// todo rename to SamplerInterface
 class Sampler
 {
   public:

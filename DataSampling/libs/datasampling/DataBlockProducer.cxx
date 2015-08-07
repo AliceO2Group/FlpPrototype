@@ -21,9 +21,10 @@ DataBlockProducer::~DataBlockProducer()
   delete mCurrent;
 }
 
-DataBlock DataBlockProducer::get() const
+/// Ownership remains with DataBlockProducer.
+DataBlock* DataBlockProducer::get() const
 {
-  return *mCurrent;
+  return mCurrent;
 }
 
 /// Note : the file is opened and closed each time.
