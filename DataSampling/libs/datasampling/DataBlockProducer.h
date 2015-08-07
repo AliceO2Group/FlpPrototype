@@ -29,7 +29,7 @@ class DataBlockProducer
 {
   public:
     /// \brief Create a data block producer and an initial data block.
-    DataBlockProducer(uint32_t payloadSize = 1024);
+    DataBlockProducer(bool random = true, uint32_t payloadSize = 1024);
     /// \brief Destructor
     virtual ~DataBlockProducer();
 
@@ -42,7 +42,8 @@ class DataBlockProducer
 
   private:
     DataBlock *mCurrent;
-    uint32_t mPayloadSize;
+    uint32_t mCurrentPayloadSize;
+    bool mRandom;
 };
 
 }

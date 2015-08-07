@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(big_file_test)
   cout << "*** big test ***" << endl;
   string dataFileBig = "bigtest.data";
   int payloadSizeBig = 1024;
-  AliceO2::DataSampling::DataBlockProducer producer(payloadSizeBig /*payload size in bytes*/);
+  AliceO2::DataSampling::DataBlockProducer producer(false, payloadSizeBig /*payload size in bytes*/);
   // Save 10 block to file
   producer.saveToFile(dataFileBig, false);
   for (int i = 0; i < 10; i++) {

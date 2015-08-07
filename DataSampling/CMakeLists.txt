@@ -70,3 +70,25 @@ add_subdirectory(test)
 
 include(CPackConfig)
 
+
+# For other packages to find this one
+# _____________________________________________________________________________
+
+set(INCLUDE_INSTALL_DIR include/ CACHE STRING "INCLUDE_INSTALL_DIR")
+set(LIB_INSTALL_DIR lib/ CACHE STRING "LIB_INSTALL_DIR")
+set(SHARE_INSTALL_DIR share/ CACHE STRING "SHARE_INSTALL_DIR")
+include(CMakePackageConfigHelpers)
+configure_package_config_file(CMake/DataSamplingConfig.cmake.in
+                              ${CMAKE_CURRENT_BINARY_DIR}/CMake/DataSamplingConfig.cmake
+                              INSTALL_DESTINATION ${SHARE_INSTALL_DIR}/DataSampling-${VERSION_MAJOR}/cmake
+                              PATH_VARS INCLUDE_INSTALL_DIR
+                                        LIB_INSTALL_DIR
+                                        SHARE_INSTALL_DIR)
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/CMake/DataSamplingConfigVersion.cmake
+                                 VERSION ${VERSION}
+                                 COMPATIBILITY SameMajorVersion )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMake/DataSamplingConfig.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/CMake/DataSamplingConfigVersion.cmake
+        DESTINATION ${SHARE_INSTALL_DIR}/DataSampling-${VERSION_MAJOR}/cmake )
+
+

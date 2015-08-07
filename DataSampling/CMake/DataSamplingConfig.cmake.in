@@ -1,0 +1,27 @@
+# - Config file for the DataSampling package
+# It defines the following variables
+#  DataSampling_INCLUDE_DIR      - include directory
+#  DataSampling_LIBRARY_DIR      - libraries directory
+#  DataSampling_EXECUTABLE_DIR   - executables directory
+#  DataSampling_SHARE_DIR        - share directory
+#  DataSampling_LIBRARIES        - list of shared libraries (without prefix and suffix)
+
+# Here you can set other variables, for example XXX_LIBRARIES (libraries
+# needed to use DataSampling), XXX_DEFINITIONS (compiler switches required to use
+# DataSampling).
+# Usually the user will then do stuff like: 
+#    if(XXX_FOUND) ... endif
+#    target_link_libraries(${XXX_LIBRARIES})
+#    include_directories(${XXX_INCLUDE_DIR})
+#    add_definitions(${XXX_DEFINITIONS})
+
+set(DataSampling_VERSION "@VERSION@")
+message(STATUS "DataSampling version: ${DataSampling_VERSION}")
+
+set(DataSampling_LIBRARIES "DataSampling")
+
+@PACKAGE_INIT@
+set_and_check(DataSampling_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(DataSampling_LIBRARY_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+set_and_check(DataSampling_SHARE_DIR "@PACKAGE_SHARE_INSTALL_DIR@")
+# More can be added of course...

@@ -10,7 +10,7 @@ namespace DataSampling {
 
 MockSampler::MockSampler()
 {
-  producer = new DataBlockProducer(10);
+  producer = new DataBlockProducer(true);
 }
 
 MockSampler::~MockSampler()

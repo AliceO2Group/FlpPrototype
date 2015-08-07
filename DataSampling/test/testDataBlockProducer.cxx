@@ -25,7 +25,7 @@ struct File
   File()
   {
     cout << "setup File" << endl;
-    AliceO2::DataSampling::DataBlockProducer producer(payloadSize /*payload size in bytes*/);
+    AliceO2::DataSampling::DataBlockProducer producer(false, payloadSize /*payload size in bytes*/);
     // Save 1 block to file
     producer.saveToFile(dataFile, false);
   }
