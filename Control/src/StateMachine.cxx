@@ -10,10 +10,12 @@ class DirectoryPrivate {
   ~DirectoryPrivate();
 
   static void  z_watcher (zhandle_t *zzh, int type, int state, const char *path, void *watcherCtx);
- 
+
+  static void z_watcher_subNode (zhandle_t *zzh, int type, int state, const char *path, void* watcherContext);
+
   friend class Directory;
   friend class ControlObject;
-  friend class ControlObjectPrivate;
+  friend class ControlPrivate;
   
   protected:
   zhandle_t *zh;
@@ -103,65 +105,56 @@ Directory::~Directory(){
   delete dPtr;
 }
 
-std::string getObjectPathNode(std::string objectName) {
-  return "/" + objectName;
+std::string getObjectPathNode(const std::string objectName) {
+  return "/oo/" + objectName;
 }
 
-std::string getObjectPathState(std::string objectName) {
-  return "/" + objectName + "/state";
+std::string getObjectPathState(const std::string objectName) {
+  return "/oo/" + objectName + "/state";
 }
 
-std::string getObjectPathCommand(std::string objectName) {
-  return "/" + objectName + "/command";
+std::string getObjectPathCommand(const std::string objectName) {
+  return "/oo/" + objectName + "/command";
 }
 
 
-int Directory::AddObject(std::string objectName) {
+int Directory::CreateNode(const std::string nodeName, const std::string value, int options) {
+  int err;
+  int zoo_options=0;
+  if (options & Directory::NodeOption::ephemeral) {
+    zoo_options |= ZOO_EPHEMERAL;
+  }
+  if (options & Directory::NodeOption::sequence) {
+    zoo_options |= ZOO_EPHEMERAL | ZOO_SEQUENCE;
+  }
+  //printf("create %s = %s\n",nodeName.c_str(),value.c_str());
+  char buf[128]="";
   dPtr->mMutex.lock();
-  zoo_create( dPtr->zh,getObjectPathNode(objectName).c_str(),0,0,&ZOO_OPEN_ACL_UNSAFE, 0,0,0);
-  zoo_create( dPtr->zh,getObjectPathState(objectName).c_str(),0,0,&ZOO_OPEN_ACL_UNSAFE,0,0,0);
-  zoo_create( dPtr->zh,getObjectPathCommand(objectName).c_str(),0,0,&ZOO_OPEN_ACL_UNSAFE,ZOO_EPHEMERAL,0,0);
-  dPtr->mMutex.unlock();
-  return 0; 
+  err=zoo_create( dPtr->zh,nodeName.c_str(),value.c_str(),value.length(),&ZOO_OPEN_ACL_UNSAFE,zoo_options,buf,128);
+  dPtr->mMutex.unlock();  
+  if (err!=ZOK) {
+    printf("zookeeper_create(%s): %s\n",nodeName.c_str(),zerror(err));
+  } else {
+    //printf("%s created (val=%s, %d bytes)\n",buf,value.c_str(),value.length());
+  }
+  return 0;
 }
 
-
-class ControlObjectPrivate {
-  public:
-  ControlObjectPrivate(const std::string objectName, Directory *dir);
-  ~ControlObjectPrivate();
-
-  friend class ControlObject;
-  protected:
-  Directory *mDirectory;
-  std::string mObjectName;
-  std::string mPathCommand;
-  std::string mPathState;
-
-  std::string mCurrentState;
-};
-
-ControlObjectPrivate::ControlObjectPrivate(const std::string objectName, Directory *dir){
-  mDirectory=dir;
-  mObjectName=objectName;
-  
-  mPathCommand=getObjectPathState(objectName);
-  mPathState=getObjectPathState(objectName); 
+/*
+int Directory::DeleteChildren(const std::string node) {
+  String_vector s;
+  int err;
+  err=zoo_get_children(dPtr->zh, node.c_str(), 0, &s);
+  for (int i=0;i<s.count;i++) {
+      std::string childNode;
+      childNode=node + "/" + s.data[i];      
+      err=zoo_delete(dPtr->zh,childNode.c_str(),-1);
+      printf("deleting %s = %d\n",childNode.c_str(),err);
+  }
+  return 0;
 }
+*/
 
-ControlObjectPrivate::~ControlObjectPrivate(){
-}
-
-ControlObject::ControlObject(const std::string objectName, Directory *dir){
-  dPtr=new ControlObjectPrivate(objectName,dir);
-  if (dPtr==NULL) {throw __LINE__;}
-
-  dPtr->mDirectory->AddObject(objectName);
-}
-
-ControlObject::~ControlObject(){
-  delete dPtr;
-}
 
 int Directory::SetValue(const std::string node ,const std::string value) {
   int l=value.length();
@@ -176,9 +169,143 @@ int Directory::SetValue(const std::string node ,const std::string value) {
   dPtr->mMutex.unlock();
 }
 
+
+/*
+int Directory::PushValue(const std::string node, const std::string command) {
+  dPtr->mMutex.lock(); 
+  zoo_create( dPtr->zh, node.c_str(), command.c_str(), command.length()+1, &ZOO_OPEN_ACL_UNSAFE, ZOO_EPHEMERAL | ZOO_SEQUENCE,0,0 );    
+  //zoo_acreate( dPtr->zh, node.c_str(), command.c_str(), command.length()+1, &ZOO_OPEN_ACL_UNSAFE, ZOO_EPHEMERAL | ZOO_SEQUENCE,0,0 );    
+  dPtr->mMutex.unlock();
+  return 0; 
+}
+*/
+void DirectoryPrivate::z_watcher_subNode (zhandle_t *zzh, int type, int state, const char *path, void* context){
+    String_vector s;
+    
+    if (type==ZOO_CHILD_EVENT) {
+      if (ZOK==zoo_wget_children(zzh, path, DirectoryPrivate::z_watcher_subNode, context, &s)) {
+          // todo: why are we called with s.count=0 ???
+          //printf("%s : %d commands received\n",path,s.count);
+          // todo: reorder queue
+          for (int i=0;i<s.count;i++) {
+              std::string node(path);
+              std::string childNode;
+              childNode=node + "/" + s.data[i];      
+              //printf("handling command %s\n",childNode.c_str());
+              int err;
+              char val[128]="";
+              int sz=sizeof(val)-1;
+              err=zoo_get(zzh, childNode.c_str(), 0, val, &sz, NULL);
+              val[sz]=0;
+              if (err==ZOK) {
+                //printf("%s command=%s (%d bytes)\n",childNode.c_str(),val,sz);
+                std::string command(val,sz);
+                //executeCommand(command);
+                if (context!=NULL) {
+                  NodeCallback *exe=(NodeCallback *)context;
+                  exe->f_callback(command,exe->context);
+                }
+              }
+              err=zoo_delete(zzh,childNode.c_str(),-1);
+              if (err=ZOK) {
+                //printf("%s deleted\n",childNode.c_str());
+              }
+          }      
+      }
+    }
+}
+
+
+int Directory::SubscribeNewChild(const std::string node, int purge, NodeCallback *callback) {
+  String_vector s;
+  int err;
+  err=zoo_wget_children(dPtr->zh, node.c_str(), DirectoryPrivate::z_watcher_subNode, callback, &s); 
+  if (err!=ZOK) {
+    return __LINE__;
+  }
+  // should delete or process existing nodes?
+  for (int i=0;i<s.count;i++) {
+      std::string childNode;
+      childNode=node + "/" + s.data[i];      
+      // todo ...
+      if (purge) {
+        err=zoo_delete(dPtr->zh,childNode.c_str(),-1);
+        //printf("deleting %s = %d\n",childNode.c_str(),err);
+      }
+  }
+  return 0;
+}
+
+
+class ControlPrivate {
+  public:
+  ControlPrivate(const std::string objectName, Directory *dir);
+  ~ControlPrivate();
+
+  friend class ControlObject;
+  friend class ControlClient;
+  protected:
+  Directory *mDirectory;
+  std::string mObjectName;
+
+  std::string mPathNode;
+  std::string mPathCommand;
+  std::string mPathState;
+
+  std::string mCurrentState;
+  
+  static void commandCallback(const std::string command, void *context);
+  NodeCallback cbCommand;
+};
+
+ControlPrivate::ControlPrivate(const std::string objectName, Directory *dir){
+  mDirectory=dir;
+  mObjectName=objectName;
+  
+  mPathNode=getObjectPathNode(objectName);
+  mPathCommand=getObjectPathCommand(objectName);
+  mPathState=getObjectPathState(objectName);  
+}
+
+ControlPrivate::~ControlPrivate(){
+}
+
+void ControlPrivate::commandCallback(const std::string command, void *context){
+  if (context!=NULL) {
+    ControlObject *o=(ControlObject *)context;
+    o->executeCommand(command);
+  }
+}
+
+ControlObject::ControlObject(const std::string objectName, Directory *dir){
+  dPtr=new ControlPrivate(objectName,dir);
+  if (dPtr==NULL) {throw __LINE__;}
+
+  int err;
+  err=dPtr->mDirectory->CreateNode(dPtr->mPathNode,"");
+  err=dPtr->mDirectory->CreateNode(dPtr->mPathCommand,"");
+  err=dPtr->mDirectory->CreateNode(dPtr->mPathState,"",1);  
+  if (err) {throw err;}
+  
+  dPtr->cbCommand.f_callback=&ControlPrivate::commandCallback;
+  dPtr->cbCommand.context=this;
+  
+  // subscribe to commands and purge existing ones
+  dPtr->mDirectory->SubscribeNewChild(dPtr->mPathCommand, 1, &dPtr->cbCommand);
+}
+
+ControlObject::~ControlObject(){
+  delete dPtr;
+}
+
+void ControlObject::executeCommand(const std::string command) {
+  printf("%s : executing %s\n",dPtr->mObjectName.c_str(),command.c_str());
+}
+
 int ControlObject::setState(const std::string newState) {
   if (dPtr->mDirectory->SetValue(dPtr->mPathState,newState)==0) {
     dPtr->mCurrentState=newState;
+    printf("new state:%s\n",newState.c_str());
   }
   return 0;
 }
@@ -188,3 +315,25 @@ int ControlObject::getState(std::string &currentState) {
   currentState=dPtr->mCurrentState;
   return 0;
 }
+
+
+
+ControlClient::ControlClient(const std::string objectName, Directory *dir) {
+  dPtr=new ControlPrivate(objectName,dir);
+  if (dPtr==NULL) {throw __LINE__;}
+}
+
+ControlClient::~ControlClient(){
+  delete dPtr;
+}
+  
+int ControlClient::sendCommand(const std::string command) {
+  std::string zcmd=dPtr->mPathCommand + "/cmd-";
+  std::cout << zcmd << " -> " << command << std::endl;
+  return dPtr->mDirectory->CreateNode(zcmd,command,Directory::NodeOption::sequence);
+}
+
+int ControlClient::getState(const std::string &currentState) {
+  return 0;
+}
+
