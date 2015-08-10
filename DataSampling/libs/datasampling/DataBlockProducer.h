@@ -9,6 +9,7 @@
 #include <DataBlock.h>
 
 #include <iostream>
+#include <random>
 
 namespace AliceO2 {
 namespace DataSampling {
@@ -16,6 +17,8 @@ namespace DataSampling {
 /// \brief This class produces DataBlocks containing random data.
 /// It can return the block in memory or save it to file. In the latter case, it can
 /// append or truncate the file. The content of the payload is just the alphabet.
+/// If the flag random is set to true in the constructor, the payload size follows a normal distribution
+/// around 1024 bytes with a standard deviation of 256.
 /// Usage :
 /// \code
 ///  DataBlockProducer producer(size); // creates a first block
@@ -29,7 +32,7 @@ class DataBlockProducer
 {
   public:
     /// \brief Create a data block producer and an initial data block.
-    DataBlockProducer(bool random = true, uint32_t payloadSize = 1024);
+    DataBlockProducer(bool random = true, uint32_t payloadSize = 1024 /*bytes*/);
     /// \brief Destructor
     virtual ~DataBlockProducer();
 
@@ -43,7 +46,8 @@ class DataBlockProducer
   private:
     DataBlock *mCurrent;
     uint32_t mCurrentPayloadSize;
-    bool mRandom;
+    bool mIsRandom;
+    std::default_random_engine mGenerator;
 };
 
 }

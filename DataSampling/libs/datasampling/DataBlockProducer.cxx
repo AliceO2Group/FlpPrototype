@@ -6,17 +6,14 @@
 #include <DataBlock.h>
 #include "DataBlockProducer.h"
 #include <fstream>
-#include <time.h>       /* time */
-#include <stdlib.h>     /* srand, rand */
 
 namespace AliceO2 {
 namespace DataSampling {
 
 DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurrent(0),
                                                                           mCurrentPayloadSize(payloadSize),
-                                                                          mRandom(random)
+                                                                          mIsRandom(random)
 {
-  srand(time(NULL));
   regenerate();
 }
 
@@ -44,25 +41,34 @@ void DataBlockProducer::saveToFile(std::string pathToFile, bool append) const
 
 void DataBlockProducer::regenerate()
 {
+  // delete current data
   if (mCurrent) {
     if (mCurrent->data) {
-      delete mCurrent->data;
+      delete[] mCurrent->data;
     }
     delete mCurrent;
   }
-  if (mRandom) {
-    mCurrentPayloadSize = rand() % 100 + 1; // between 1 and 100
+
+  // generate payload size if needed
+  if (mIsRandom) {
+    std::normal_distribution<float> distribution(1024, 256);
+    double temp  = distribution(mGenerator);
+    temp = (temp < 1) ? 1 : temp; // we don't want to cast a negative number to uint
+    mCurrentPayloadSize = (uint32_t) temp;
+    std::cout << "random payload size : " << mCurrentPayloadSize << std::endl;
   }
+
+  // create data block
   mCurrent = new DataBlock();
   mCurrent->header.blockType = 0xba; // whatever
   mCurrent->header.headerSize = 0x60; // just the header base -> 96 bits
   mCurrent->header.dataSize = mCurrentPayloadSize * 8;
   char *buffer = new char[mCurrentPayloadSize];
   for (int i = 0; i < mCurrentPayloadSize; i++) {
-    if (mRandom) {
-      buffer[i] = (rand() % 26) + 'a';
+    if (mIsRandom) {
+      buffer[i] = (char) ((rand() % 26) + 'a');
     } else {
-      buffer[i] = (i % 26) + 'a';
+      buffer[i] = (char) ((i % 26) + 'a');
     }
   }
   mCurrent->data = buffer;

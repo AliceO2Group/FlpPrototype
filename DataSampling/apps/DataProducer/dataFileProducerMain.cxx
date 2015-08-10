@@ -1,5 +1,5 @@
 ///
-/// \file    dataBlockProducerMain.cxx
+/// \file    dataFileProducerMain.cxx
 /// \author  Barthelemy von Haller
 ///
 
