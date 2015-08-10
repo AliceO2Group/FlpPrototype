@@ -15,7 +15,7 @@ if(BUILD_DOCS AND DOXYGEN_FOUND)
   # Configure the doxygen config file with current settings:
   configure_file(documentation-config.doxygen.in
                  ${CMAKE_CURRENT_BINARY_DIR}/documentation-config.doxygen @ONLY)
-  add_custom_target(doxygen ALL
+  add_custom_target(doxygen
     ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/documentation-config.doxygen
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation using doxygen" VERBATIM)

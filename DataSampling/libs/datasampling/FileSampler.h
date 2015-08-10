@@ -6,12 +6,12 @@
 #ifndef DATASAMPLING_LIBS_DATASAMPLING_FILESAMPLER_H_
 #define DATASAMPLING_LIBS_DATASAMPLING_FILESAMPLER_H_
 
-#include "Sampler.h"
+#include "SamplerInterface.h"
 
 namespace AliceO2 {
 namespace DataSampling {
 
-class FileSampler: public Sampler
+class FileSampler: public SamplerInterface
 {
   public:
     /// Standard Constructor

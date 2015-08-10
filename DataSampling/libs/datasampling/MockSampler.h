@@ -7,7 +7,7 @@
 #define DATA_SAMPLING_MOCKSAMPLER_H
 
 #include <DataBlock.h>
-#include "Sampler.h"
+#include "SamplerInterface.h"
 #include "DataBlockProducer.h"
 
 namespace AliceO2 {
@@ -15,7 +15,7 @@ namespace DataSampling {
 
 /// \brief Sampler that returns blocks of data with a payload 10 bytes long.
 /// \author Barthelemy von Haller
-class MockSampler : public Sampler
+class MockSampler : public SamplerInterface
 {
   public:
     /// Standard Constructor

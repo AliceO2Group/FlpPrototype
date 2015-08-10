@@ -1,53 +1,53 @@
 ///
-/// \file   Sampler.cxx
+/// \file   SamplerInterface.cxx
 /// \author Barthelemy von Haller
 ///
 
-#include "Sampler.h"
+#include "SamplerInterface.h"
 
 using namespace std;
 
 namespace AliceO2 {
 namespace DataSampling {
 
-Sampler::Sampler()
+SamplerInterface::SamplerInterface()
     : mLocation(""), mPolicy(Policy::Most), mFormat(DataFormat::Raw)
 {
 }
 
-Sampler::Sampler(std::string Uri)
+SamplerInterface::SamplerInterface(std::string Uri)
     : mPolicy(Policy::Most), mFormat(DataFormat::Raw)
 {
   setLocation(Uri);
 }
 
-Sampler::~Sampler()
+SamplerInterface::~SamplerInterface()
 {
 }
 
-void Sampler::setLocation(std::string Uri)
+void SamplerInterface::setLocation(std::string Uri)
 {
   cout << "DataSampling::setLocation : " << Uri << endl;
   mLocation = Uri;
 }
 
-std::string Sampler::getLocation() const
+std::string SamplerInterface::getLocation() const
 {
   return mLocation;
 }
 
-void Sampler::setPolicy(Policy policy)
+void SamplerInterface::setPolicy(Policy policy)
 {
   cout << "DataSampling::setPolicy : " << policy << endl;
   mPolicy = policy;
 }
-void Sampler::setDataFormat(DataFormat format)
+void SamplerInterface::setDataFormat(DataFormat format)
 {
   cout << "DataSampling::setDataFormat : " << format << endl;
   mFormat = format;
 }
 
-void Sampler::setDataFormat(string format)
+void SamplerInterface::setDataFormat(string format)
 {
   if (format == "Raw") {
     setDataFormat(DataFormat::Raw);
@@ -64,12 +64,12 @@ void Sampler::setDataFormat(string format)
   }
 }
 
-DataFormat Sampler::getDataFormat() const
+DataFormat SamplerInterface::getDataFormat() const
 {
  return mFormat;
 }
 
-Policy Sampler::getPolicy() const
+Policy SamplerInterface::getPolicy() const
 {
  return mPolicy;
 }

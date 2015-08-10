@@ -6,7 +6,7 @@ configure_file("Version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/Version.h" @ONLY)
 
 set(HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/Version.h"
-  Sampler.h
+  SamplerInterface.h
   FileSampler.h
   DataBlockProducer.h
   MockSampler.h
@@ -14,7 +14,7 @@ set(HEADERS
 
 set(SOURCES
   Version.cxx
-  Sampler.cxx
+  SamplerInterface.cxx
   FileSampler.cxx
   DataBlockProducer.cxx
   MockSampler.cxx

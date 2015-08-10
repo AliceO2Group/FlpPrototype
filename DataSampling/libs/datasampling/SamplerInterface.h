@@ -1,5 +1,5 @@
 ///
-/// \file   Sampler.h
+/// \file   SamplerInterface.h
 /// \author Barthelemy von Haller
 ///
 
@@ -49,16 +49,15 @@ std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::os
 enum class Policy {Must, Percent, Most};
 enum class DataFormat {Raw, STF, TF, CTF, AOD, ESD};
 
-// todo rename to SamplerInterface
-class Sampler
+class SamplerInterface
 {
   public:
     /// Default constructor
-    Sampler();
+    SamplerInterface();
     /// Standard constructor
-    Sampler(std::string Uri);
+    SamplerInterface(std::string Uri);
     /// Destructor
-    virtual ~Sampler();
+    virtual ~SamplerInterface();
 
     virtual DataBlock* getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
     virtual void releaseData() = 0;
