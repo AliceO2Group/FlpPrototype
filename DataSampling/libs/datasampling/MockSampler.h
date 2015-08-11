@@ -13,7 +13,11 @@
 namespace AliceO2 {
 namespace DataSampling {
 
-/// \brief Sampler that returns blocks of data with a payload 10 bytes long.
+/// \brief Sampler that returns blocks of data with a random payload.
+///
+/// this data sampler returns blocks of data with a random payload.
+/// The size of the payload follows a standard distribution using the default parameters of DataBlockProducer.
+///
 /// \author Barthelemy von Haller
 class MockSampler : public SamplerInterface
 {

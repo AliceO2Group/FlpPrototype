@@ -11,6 +11,11 @@
 namespace AliceO2 {
 namespace DataSampling {
 
+/// \brief  Sampler that gets data from a file.
+///
+/// This data sampler reads data blocks from a file.
+///
+/// \author Barthelemy von Haller
 class FileSampler: public SamplerInterface
 {
   public:

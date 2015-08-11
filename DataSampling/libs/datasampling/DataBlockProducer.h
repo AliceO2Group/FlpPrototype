@@ -15,6 +15,7 @@ namespace AliceO2 {
 namespace DataSampling {
 
 /// \brief This class produces DataBlocks containing random data.
+///
 /// It can return the block in memory or save it to file. In the latter case, it can
 /// append or truncate the file. The content of the payload is just the alphabet.
 /// If the flag random is set to true in the constructor, the payload size follows a normal distribution
@@ -27,6 +28,7 @@ namespace DataSampling {
 ///  producer.saveToFile(path); // save the current block to a file
 /// \endcode
 /// \todo move to DataFormat package
+///
 /// \author Barthelemy von Haller
 class DataBlockProducer
 {

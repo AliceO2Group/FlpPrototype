@@ -22,24 +22,24 @@
 namespace AliceO2 {
 namespace DataSampling {
 
-/**
- * @brief Outputs the value of an enum class in c++11.
- * Usage :
- * \code{.cpp}
- * enum class A {
- *   a = 1,
- *   b = 69,
- *   c= 666
- * };
- * int main () {
- *   A a = A::c;
- *   cout << a << endl;
- * }
- * \endcode
- * @param stream
- * @param e
- * @return
- */
+/// \brief Outputs the value of an enum class in c++11.
+///
+/// Usage :
+/// \code
+/// enum class A {
+///   a = 1,
+///   b = 69,
+///   c= 666
+/// };
+/// int main () {
+///   A a = A::c;
+///   cout << a << endl;
+/// }
+/// \endcode
+///
+/// \param stream
+/// \param e
+/// \return
 template<typename T>
 std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
 {
@@ -49,6 +49,11 @@ std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::os
 enum class Policy {Must, Percent, Most};
 enum class DataFormat {Raw, STF, TF, CTF, AOD, ESD};
 
+/// \brief  Interface for all data sampler classes.
+///
+/// Data sampler are used to get a data blocks from various sources and following a number of filters and policies.
+///
+/// \author Barthelemy von Haller
 class SamplerInterface
 {
   public:
