@@ -1,5 +1,6 @@
 <?php
 namespace CERN\Alice\DAQ\O2;
+
 require_once __DIR__.'/../WebSocket/Handshake.php';
 require_once __DIR__.'/../Exceptions/ClientException.php';
 require_once __DIR__.'/../WebSocket/Frame.php';

@@ -2,7 +2,7 @@
 namespace CERN\Alice\DAQ\O2;
 
 /**
- * Prints logs and then saves them to the file
+ * Prints or/and saves the log to the file (depends if the files is writable)
  */
 class Log {
 	/**
