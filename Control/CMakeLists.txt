@@ -131,3 +131,16 @@ target_link_libraries (
   zookeeper_mt
   boost_system
 )
+
+add_executable (
+  testClient
+  test/testClient
+  src/StateMachine.cxx
+)
+
+target_link_libraries (
+  testClient
+  zookeeper_mt
+  boost_system
+)
+
