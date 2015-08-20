@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <boost/thread/mutex.hpp>
 
+
+
+// implementation of private
 class DirectoryPrivate {
   public:
   DirectoryPrivate(const DirectoryConfig cfg);
@@ -12,7 +15,8 @@ class DirectoryPrivate {
   static void  z_watcher (zhandle_t *zzh, int type, int state, const char *path, void *watcherCtx);
 
   static void z_watcher_subNode (zhandle_t *zzh, int type, int state, const char *path, void* watcherContext);
-
+  static void z_watcher_node (zhandle_t *zzh, int type, int state, const char *path, void* watcherContext);
+  
   friend class Directory;
   friend class ControlObject;
   friend class ControlPrivate;
@@ -170,15 +174,7 @@ int Directory::SetValue(const std::string node ,const std::string value) {
 }
 
 
-/*
-int Directory::PushValue(const std::string node, const std::string command) {
-  dPtr->mMutex.lock(); 
-  zoo_create( dPtr->zh, node.c_str(), command.c_str(), command.length()+1, &ZOO_OPEN_ACL_UNSAFE, ZOO_EPHEMERAL | ZOO_SEQUENCE,0,0 );    
-  //zoo_acreate( dPtr->zh, node.c_str(), command.c_str(), command.length()+1, &ZOO_OPEN_ACL_UNSAFE, ZOO_EPHEMERAL | ZOO_SEQUENCE,0,0 );    
-  dPtr->mMutex.unlock();
-  return 0; 
-}
-*/
+
 void DirectoryPrivate::z_watcher_subNode (zhandle_t *zzh, int type, int state, const char *path, void* context){
     String_vector s;
     
@@ -203,7 +199,7 @@ void DirectoryPrivate::z_watcher_subNode (zhandle_t *zzh, int type, int state, c
                 //executeCommand(command);
                 if (context!=NULL) {
                   NodeCallback *exe=(NodeCallback *)context;
-                  exe->f_callback(command,exe->context);
+                  exe->f_callback(command,exe->context, NodeCallback::NodeEventType::NodeCreated);
                 }
               }
               err=zoo_delete(zzh,childNode.c_str(),-1);
@@ -237,6 +233,61 @@ int Directory::SubscribeNewChild(const std::string node, int purge, NodeCallback
 }
 
 
+// for initial callback setup, call with type=0 for "no type" event c.f. /opt/zookeeper-3.4.6/src/c/src/zk_adaptor.h
+
+void DirectoryPrivate::z_watcher_node (zhandle_t *zzh, int type, int state, const char *path, void* context) { 
+    //printf("callback %p:%p %s type %d\n",path,context,path,type);
+    NodeCallback *exe=(NodeCallback *)context;
+    std::string nodeValue;
+    
+    if (type==ZOO_CHANGED_EVENT) {
+         char buffer[1024];
+         int bufferSize=sizeof(buffer)/sizeof(char);
+         struct Stat stat;
+         // get new value (and subscribe to changed/deleted at the same time)
+         if (ZOK==zoo_wget(zzh, path, DirectoryPrivate::z_watcher_node, context, buffer, &bufferSize, &stat)) {         
+
+           if (bufferSize>0) {
+             nodeValue=std::string(buffer,bufferSize);
+           }
+           if (exe!=NULL) {
+             exe->f_callback(nodeValue, exe->context, NodeCallback::NodeEventType::NodeUpdated);
+           }           
+           return;
+         }
+    } else if (type==ZOO_CREATED_EVENT) {
+         if (exe!=NULL) {
+           exe->f_callback(nodeValue, exe->context, NodeCallback::NodeEventType::NodeCreated);
+         }   
+    } else if (type==ZOO_DELETED_EVENT) {
+         if (exe!=NULL) {
+           exe->f_callback(nodeValue, exe->context, NodeCallback::NodeEventType::NodeDestroyed);
+         }
+    }
+    
+    // subscribe again
+    // this will trigger a callback on create/delete/change events
+    struct Stat s;
+    int err;
+    err=zoo_wexists(zzh, path, DirectoryPrivate::z_watcher_node, context, &s);
+    //printf("zoo_wexists %p=%d\n",path,err);
+    if ((err==ZOK)&&(type==0)) {
+      // if initial subscribe, subscribe again to get a 1st value (otherwise will trigger only on next change)
+      z_watcher_node(zzh,ZOO_CHANGED_EVENT,0,path,context);
+    }
+}
+
+
+int Directory::SubscribeNode(const std::string node, NodeCallback *callback) {
+  const char *p=node.c_str();
+  //printf("subscribe %s\n",p);
+  DirectoryPrivate::z_watcher_node(dPtr->zh,0,0,p,callback);
+  return 0;
+//   return getNodeValue(dPtr->zh, node.c_str(), callback);
+}
+
+
+
 class ControlPrivate {
   public:
   ControlPrivate(const std::string objectName, Directory *dir);
@@ -253,10 +304,15 @@ class ControlPrivate {
   std::string mPathState;
 
   std::string mCurrentState;
+  //todo
+  int mPathExists;
   
-  static void commandCallback(const std::string command, void *context);
+  static void commandCallback(const std::string nodeValue, void *context, NodeCallback::NodeEventType event); // to handle command received by object
   NodeCallback cbCommand;
+  static void stateCallback(const std::string nodeValue, void *context, NodeCallback::NodeEventType event); // to handle node state change
+  NodeCallback cbState;
 };
+
 
 ControlPrivate::ControlPrivate(const std::string objectName, Directory *dir){
   mDirectory=dir;
@@ -264,15 +320,56 @@ ControlPrivate::ControlPrivate(const std::string objectName, Directory *dir){
   
   mPathNode=getObjectPathNode(objectName);
   mPathCommand=getObjectPathCommand(objectName);
-  mPathState=getObjectPathState(objectName);  
+  mPathState=getObjectPathState(objectName);
+  
+  mCurrentState="";
+  mPathExists=0;
+  
+  cbCommand.f_callback=NULL;
+  cbCommand.context=NULL;
+
+  cbState.f_callback=NULL;
+  cbState.context=NULL;
 }
 
 ControlPrivate::~ControlPrivate(){
+  // TODO: cancel subscribe
 }
 
-void ControlPrivate::commandCallback(const std::string command, void *context){
+
+void ControlPrivate::stateCallback(const std::string nodeValue, void *context, NodeCallback::NodeEventType event) {
+  const char *evT="unknown";
+  switch(event) {
+  case NodeCallback::NodeEventType::NodeCreated: evT="NodeCreated"; break;
+  case NodeCallback::NodeEventType::NodeDestroyed: evT="NodeDestroyed"; break;
+  case NodeCallback::NodeEventType::NodeUpdated: evT="NodeUpdated"; break;
+  }
+  if (context==NULL) return;
+  ControlClient *o=(ControlClient *)(context);
+  printf("event=%s node=%s value=%s\n",evT,o->dPtr->mObjectName.c_str(),nodeValue.c_str());
+
+  const std::string state=nodeValue;
+  // further decoding can be done here
+   
+  o->dPtr->mCurrentState=state;
+
+  if (event==NodeCallback::NodeEventType::NodeUpdated) {
+    o->objectStateChangedCallback(state);
+  } else if (event==NodeCallback::NodeEventType::NodeCreated) {
+    o->objectCreatedCallback();
+  } else if (event==NodeCallback::NodeEventType::NodeDestroyed) {
+    o->objectDestroyedCallback();    
+  }
+
+}
+
+
+
+void ControlPrivate::commandCallback(const std::string nodeValue, void *context, NodeCallback::NodeEventType event){
   if (context!=NULL) {
     ControlObject *o=(ControlObject *)context;
+    const std::string command=nodeValue;
+    // further decoding can be done here, e.g. in case of parameters
     o->executeCommand(command);
   }
 }
@@ -291,7 +388,7 @@ ControlObject::ControlObject(const std::string objectName, Directory *dir){
   dPtr->cbCommand.context=this;
   
   // subscribe to commands and purge existing ones
-  dPtr->mDirectory->SubscribeNewChild(dPtr->mPathCommand, 1, &dPtr->cbCommand);
+  dPtr->mDirectory->SubscribeNewChild(dPtr->mPathCommand, 1, &dPtr->cbCommand);  
 }
 
 ControlObject::~ControlObject(){
@@ -305,7 +402,7 @@ void ControlObject::executeCommand(const std::string command) {
 int ControlObject::setState(const std::string newState) {
   if (dPtr->mDirectory->SetValue(dPtr->mPathState,newState)==0) {
     dPtr->mCurrentState=newState;
-    printf("new state:%s\n",newState.c_str());
+    printf("%s : set new state:= %s\n",dPtr->mObjectName.c_str(),newState.c_str());
   }
   return 0;
 }
@@ -317,10 +414,14 @@ int ControlObject::getState(std::string &currentState) {
 }
 
 
-
 ControlClient::ControlClient(const std::string objectName, Directory *dir) {
   dPtr=new ControlPrivate(objectName,dir);
   if (dPtr==NULL) {throw __LINE__;}
+  
+  //subscribe to state
+  dPtr->cbState.f_callback=&ControlPrivate::stateCallback;
+  dPtr->cbState.context=this; 
+  dPtr->mDirectory->SubscribeNode(dPtr->mPathState, &dPtr->cbState);
 }
 
 ControlClient::~ControlClient(){
@@ -333,7 +434,23 @@ int ControlClient::sendCommand(const std::string command) {
   return dPtr->mDirectory->CreateNode(zcmd,command,Directory::NodeOption::sequence);
 }
 
-int ControlClient::getState(const std::string &currentState) {
+int ControlClient::getState(std::string &currentState) {
+  currentState=dPtr->mCurrentState;
   return 0;
 }
 
+
+void ControlClient::objectStateChangedCallback(const std::string newState) {
+  printf("%s => updated, new state=%s\n",dPtr->mObjectName.c_str(),newState.c_str());
+  return;
+}
+
+void ControlClient::objectCreatedCallback() {
+  printf("%s => created\n",dPtr->mObjectName.c_str());
+  return;
+}
+
+void ControlClient::objectDestroyedCallback() {
+  printf("%s => destroyed\n",dPtr->mObjectName.c_str());
+  return;
+}
