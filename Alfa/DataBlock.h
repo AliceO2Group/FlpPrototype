@@ -41,7 +41,7 @@ typedef struct {
 
 typedef struct
 {
-    DataBlockHeaderBase header;   ///< Base common data header
+    DataBlockHeaderBase *header;   ///< Base common data header
     char *data;
 } DataBlock;
 

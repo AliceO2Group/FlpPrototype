@@ -1,5 +1,5 @@
 /// \file DataBlockTransport.cxx
-/// \brief Allows to contiguous memory allocation for DataBlock structure
+/// \brief Allows for contiguous memory allocation for DataBlock structure
 /// \author Adam Wegrzynek, CERN
 
 #include <iostream>
@@ -18,13 +18,16 @@ public:
 void DataBlockTransport::setPayload(char *payload, int size) {
 	//allocates memory for DataBlock
 	int *buffer = (int*)malloc(sizeof(DataBlockHeaderBase) + sizeof(char) * size);
-	*buffer = 1; //block type
-	*(buffer + 1) = sizeof(DataBlockHeaderBase); //header size
-	*(buffer + 2) = size; //data size
+	*buffer 		= 1; 							//block type
+	*(buffer + 1) 	= sizeof(DataBlockHeaderBase); 	//header size
+	*(buffer + 2) 	= size; 						//data size
 
 	frame = new DataBlock();
+	//assigns header pointer
 	frame->header = (DataBlockHeaderBase*) buffer;
+	//assigns data pointer
 	frame->data = (char*)(buffer + 3);
+	//copies the payload
 	memcpy(frame->data, payload, size);
 
 	cout << "block type: " << frame->header->blockType << "; header size: "
