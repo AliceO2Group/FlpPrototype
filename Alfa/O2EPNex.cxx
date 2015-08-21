@@ -1,9 +1,8 @@
-/**
- * O2EPNex.cxx
- *
- * @since 2013-01-09
- * @author D. Klein, A. Rybalchenko, M.Al-Turany
- */
+/// \file O2EPNex.cxx
+/// \brief EPN device using FairMQ and data format specified in DataBlock.h (instead of Content structure)
+///
+/// \author D. Klein, A. Rybalchenko, M.Al-Turany
+/// \author modifed by Adam Wegrzynek (21.08.2015)
 
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -15,6 +14,11 @@ O2EPNex::O2EPNex()
 {
 }
 
+/// This function was competly rewritten by Adam, it uses structures from DataBlock.h instead of standard Content structure from O2EPNex.h
+/// It runs as infinite loop in a new thread
+///  - copies the message from FairMQ buffer to char*
+///  - parses message header usuing sscanf
+///  - creates pointer to payload which straight after header
 void O2EPNex::Run()
 {
 	LOG(INFO) << "Using DataBlock.h";

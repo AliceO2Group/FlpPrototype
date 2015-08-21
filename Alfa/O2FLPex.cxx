@@ -1,9 +1,8 @@
-/**
- * O2FLPex.cxx
- *
- * @since 2013-04-23
- * @author D. Klein, A. Rybalchenko, M.Al-Turany
- */
+/// \file O2EPNex.cxx
+/// \brief FLP device using FairMQ and data format specified in DataBlock.h (instead of Content structure)
+///
+/// \author D. Klein, A. Rybalchenko, M.Al-Turany
+/// \author modifed by Adam Wegrzynek (21.08.2015)
 
 #include <vector>
 #include <time.h>       /* time */
@@ -29,7 +28,14 @@ void O2FLPex::Init()
 {
   FairMQDevice::Init();
 }
-
+/// This function was competly rewritten by Adam, it uses structures from DataBlock.h instead of standard Content structure from O2FLPex.h
+/// The function runs in seperate thread. At first:
+///  - prepares test message that sizes equals to fEventSize (parameter passed when runing program)
+///  - creates DataBlockHeaderBase and DataBlock
+/// Then in infinite loop: 
+///  - creates empty FairMQ message
+///  - formats and copies to FairMQ buffer prepared DataBlock (uses snprintf instead of memcpy)
+///  - sends message over the "dat-out channel"
 void O2FLPex::Run()
 {
   LOG(DEBUG) << "Using DataBlock.h";
@@ -47,6 +53,7 @@ void O2FLPex::Run()
   DataBlock *block = new DataBlock();
   block->header = header;
   block->data = payload;
+
   while (GetCurrentState() == RUNNING) {
     //creating a message, size of header and data
     FairMQMessage* msg = fTransportFactory->CreateMessage(header.headerSize + fEventSize);
