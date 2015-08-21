@@ -1,0 +1,17 @@
+/**
+ * In these folder there are FLP and EPN devices transfering data using DataBlock.h. 
+ * This is not a full program just two devices, to compile it you need FairMQ and AliceO2.
+ * @author Adam Wegrzynek
+ */
+
+1. If you need compiled version
+	Go to aidrefsrv101:/home/alfa/AliceO2/build_o2/bin
+
+2. If you've changed source and you want to compile
+	Put the source files to aidrefsrv101:/home/alfa/AliceO2/devices/flp2epn
+	Go to aidrefsrv101:/home/alfa/AliceO2/build_o2/
+	Run make
+	Binaries will be located in aidrefsrv101:/home/alfa/AliceO2/build_o2/bin
+
+3. Test set-up
+	Binaries are also copied to aidrefsrv10 and aidrefsrv12, therefore you can perfore a test over 40Gb/s Ethernet
