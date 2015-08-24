@@ -13,8 +13,6 @@
 #ifndef DATAFORMAT_DATABLOCK
 #define DATAFORMAT_DATABLOCK
 
-#include <vector>
-
 /// Definition of data block types and their associated header.
 typedef enum {
   H_BASE = 0xBB,               ///< base header type

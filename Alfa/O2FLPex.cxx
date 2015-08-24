@@ -1,4 +1,4 @@
-/// \file O2EPNex.cxx
+/// \file O2FLPex.cxx
 /// \brief FLP device using FairMQ and data format specified in DataBlock.h (instead of Content structure)
 ///
 /// \author D. Klein, A. Rybalchenko, M.Al-Turany
@@ -22,6 +22,7 @@ O2FLPex::O2FLPex() :
 
 O2FLPex::~O2FLPex()
 {
+
 }
 
 void O2FLPex::Init()
@@ -29,36 +30,39 @@ void O2FLPex::Init()
   FairMQDevice::Init();
 }
 /// This function was competly rewritten by Adam, it uses structures from DataBlock.h instead of standard Content structure from O2FLPex.h
-/// The function runs in seperate thread. At first:
+/// At first (@see SetProperty(int, int)):
 ///  - prepares test message that sizes equals to fEventSize (parameter passed when runing program)
-///  - creates DataBlockHeaderBase and DataBlock
 /// Then in infinite loop: 
-///  - creates empty FairMQ message
-///  - formats and copies to FairMQ buffer prepared DataBlock (uses snprintf instead of memcpy)
-///  - sends message over the "dat-out channel"
+///  - allocates contiguous memory for DataBlock
+///  - creates header based on test message
+///  - copies payload to allocated memory
+///  - provides pointer to FairMQ
 void O2FLPex::Run()
 {
-  LOG(DEBUG) << "Using DataBlock.h";
-  //allocating memory for test string
-  char *payload = (char*)malloc(sizeof(char) * fEventSize);
-  //filling the paylod with '*'
-  std::fill(payload, payload + fEventSize, '*');
-  LOG(INFO) << "Header size: " << sizeof(DataBlockHeaderBase) << "; Payload size: " << fEventSize;
-  //creating header
-  DataBlockHeaderBase header;
-  header.blockType = 1;
-  //this is maximum size of header after converting to char (smarter way needed, maybe covering to byte representation?)
-  header.headerSize = 30;
-  header.dataSize = fEventSize;
-  DataBlock *block = new DataBlock();
-  block->header = header;
-  block->data = payload;
-
   while (GetCurrentState() == RUNNING) {
-    //creating a message, size of header and data
-    FairMQMessage* msg = fTransportFactory->CreateMessage(header.headerSize + fEventSize);
-    //converting all data to char and copy to provided pointer
-    snprintf ((char *) msg->GetData(), header.headerSize + fEventSize, "%010d%010d%010d%s", block->header.blockType, block->header.headerSize, block->header.dataSize, block->data);
+    //calculates needed memory size
+    int memorySize = sizeof(DataBlockHeaderBase) + sizeof(char) * fEventSize;
+    //contiguous memory allocation for DataBlock
+    uint32_t *buffer = (uint32_t*)malloc(memorySize);
+  
+    DataBlock *frame = new DataBlock();
+    //assigns header pointer
+    frame->header = (DataBlockHeaderBase*) buffer;
+    frame->header->blockType = 1;
+    frame->header->headerSize = sizeof(DataBlockHeaderBase);
+    frame->header->dataSize = fEventSize;
+    //assigns data pointer
+    frame->data = (char*)(buffer + 3);
+    //copies the payload (= copying the data from physmem to Linux memory)
+    memcpy(frame->data, payload, sizeof(char) * fEventSize);
+
+  /* LOG(INFO) << "block type: " << frame->header->blockType << "; header size: "
+     << frame->header->headerSize << "; data size: " << frame->header->dataSize << "; data: "
+     << frame->data << endl; */
+
+    //create a new message, passes pointer to the buffer and its size
+    FairMQMessage* msg = fTransportFactory->CreateMessage((void*) buffer, memorySize, NULL, NULL);
+    //snprintf ((char *) msg->GetData(), header.headerSize + fEventSize, "%010d%010d%010d%s", block->header.blockType, block->header.headerSize, block->header.dataSize, block->data);
     fChannels["data-out"].at(0).Send(msg);
     delete msg;
   }
@@ -85,6 +89,9 @@ void O2FLPex::SetProperty(const int key, const int value)
   switch (key) {
   case EventSize:
     fEventSize = value;
+    LOG(INFO) << "Initialized static payload: " << fEventSize << " bytes";;
+    payload = (char*)malloc(sizeof(char) * fEventSize);
+    fill(payload, payload + fEventSize, '*');
     break;
   default:
     FairMQDevice::SetProperty(key, value);

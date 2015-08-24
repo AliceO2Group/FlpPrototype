@@ -41,7 +41,7 @@ class O2FLPex : public FairMQDevice
 
   protected:
     int fEventSize;
-
+    char *payload;
     virtual void Init();
     virtual void Run();
 };

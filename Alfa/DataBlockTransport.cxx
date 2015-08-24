@@ -27,7 +27,7 @@ void DataBlockTransport::setPayload(char *payload, int size) {
 	frame->header = (DataBlockHeaderBase*) buffer;
 	//assigns data pointer
 	frame->data = (char*)(buffer + 3);
-	//copies the payload
+	//copies the payload it's only for egzample puproses (= copying the data from physmem to Linux memory)
 	memcpy(frame->data, payload, size);
 
 	cout << "block type: " << frame->header->blockType << "; header size: "
