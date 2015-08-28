@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include "../libs/datasampling/FileSampler.h"
+#include "../include/DataSampling/FileSampler.h"
 
 #define BOOST_TEST_MODULE Test of DataSampling
 #define BOOST_TEST_MAIN
@@ -12,7 +12,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <fstream>
-#include <datasampling/DataBlockProducer.h>
+#include "../include/DataSampling/DataBlockProducer.h"
 
 using namespace std;
 

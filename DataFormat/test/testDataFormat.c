@@ -3,7 +3,7 @@
 ///
 /// \author Sylvain Chapeland, CERN
 
-#include <DataBlock.h>
+#include "DataFormat/DataBlock.h"
 #include <stdlib.h>
 #include <stdio.h>
 

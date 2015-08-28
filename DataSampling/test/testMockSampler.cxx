@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include "../libs/datasampling/MockSampler.h"
+#include "../include/DataSampling/MockSampler.h"
 
 #define BOOST_TEST_MODULE Test of DataSampling
 #define BOOST_TEST_MAIN

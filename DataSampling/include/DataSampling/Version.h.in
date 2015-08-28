@@ -1,0 +1,97 @@
+///
+/// \file    Version.h
+/// \brief   Report the version for this package.
+/// \author  bvonhall
+///
+
+#ifndef ALICEO2_DATASAMPLING_VERSION_H
+#define ALICEO2_DATASAMPLING_VERSION_H
+
+#include <string>
+#include <sstream>
+
+namespace AliceO2 {
+namespace DataSampling {
+/// The current major version.
+#define DATASAMPLING_VERSION_MAJOR @VERSION_MAJOR@
+
+/// The current minor version.
+#define DATASAMPLING_VERSION_MINOR @VERSION_MINOR@
+
+/// The current patch level.
+#define DATASAMPLING_VERSION_PATCH @VERSION_PATCH@
+
+/// The current svn revision.
+#define DATASAMPLING_VCS_REVISION "@VCS_REVISION@"
+
+/// True if the current version is newer than the given one.
+#define DATASAMPLING_VERSION_GT(MAJOR, MINOR, PATCH) \
+  ((DATASAMPLING_VERSION_MAJOR > MAJOR) ||           \
+   (DATASAMPLING_VERSION_MAJOR ==                    \
+    MAJOR&&(DATASAMPLING_VERSION_MINOR > MINOR || (DATASAMPLING_VERSION_MINOR == MINOR&& DATASAMPLING_VERSION_PATCH > PATCH))))
+
+/// True if the current version is equal or newer to the given.
+#define DATASAMPLING_VERSION_GE(MAJOR, MINOR, PATCH) \
+  ((DATASAMPLING_VERSION_MAJOR > MAJOR) ||           \
+   (DATASAMPLING_VERSION_MAJOR ==                    \
+    MAJOR&&(DATASAMPLING_VERSION_MINOR > MINOR || (DATASAMPLING_VERSION_MINOR == MINOR&& DATASAMPLING_VERSION_PATCH >= PATCH))))
+
+/// True if the current version is older than the given one.
+#define DATASAMPLING_VERSION_LT(MAJOR, MINOR, PATCH) \
+  ((DATASAMPLING_VERSION_MAJOR < MAJOR) ||           \
+   (DATASAMPLING_VERSION_MAJOR ==                    \
+    MAJOR&&(DATASAMPLING_VERSION_MINOR < MINOR || (DATASAMPLING_VERSION_MINOR == MINOR&& DATASAMPLING_VERSION_PATCH < PATCH))))
+
+/// True if the current version is older or equal to the given.
+#define DATASAMPLING_VERSION_LE(MAJOR, MINOR, PATCH) \
+  ((DATASAMPLING_VERSION_MAJOR < MAJOR) ||           \
+   (DATASAMPLING_VERSION_MAJOR ==                    \
+    MAJOR&&(DATASAMPLING_VERSION_MINOR < MINOR || (DATASAMPLING_VERSION_MINOR == MINOR&& DATASAMPLING_VERSION_PATCH <= PATCH))))
+
+/// Information about the current DataSampling version.
+class Version {
+public:
+  /// @return the current major version of DataSampling.
+  static int getMajor()
+  {
+    return DATASAMPLING_VERSION_MAJOR;
+  }
+
+  /// @return the current minor version of DataSampling.
+  static int getMinor()
+  {
+    return DATASAMPLING_VERSION_MINOR;
+  }
+
+  /// @return the current patch level of DataSampling.
+  static int getPatch()
+  {
+    return DATASAMPLING_VERSION_PATCH;
+  }
+
+  /// @return the current DataSampling version (MM.mm.pp).
+  static std::string getString()
+  {
+    std::ostringstream version;
+    version << DATASAMPLING_VERSION_MAJOR << '.' << DATASAMPLING_VERSION_MINOR << '.' << DATASAMPLING_VERSION_PATCH;
+    return version.str();
+  }
+
+  /// @return the SVN revision.
+  static std::string getRevision()
+  {
+    return DATASAMPLING_VCS_REVISION;
+  }
+
+  /// @return the current DataSampling version plus the SVN revision (MM.mm.pp.rev).
+  static std::string getRevString()
+  {
+    std::ostringstream version;
+    version << getString() << '.' << DATASAMPLING_VCS_REVISION;
+    return version.str();
+  }
+};
+}
+}
+
+#endif // ALICEO2_DATASAMPLING_VERSION_H

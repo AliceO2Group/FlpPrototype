@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include "../libs/datasampling/DataBlockProducer.h"
+#include "../include/DataSampling/DataBlockProducer.h"
 
 #define BOOST_TEST_MODULE Test of DataSampling
 #define BOOST_TEST_MAIN
