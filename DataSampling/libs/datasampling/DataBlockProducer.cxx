@@ -55,7 +55,6 @@ void DataBlockProducer::regenerate()
     double temp  = distribution(mGenerator);
     temp = (temp < 1) ? 1 : temp; // we don't want to cast a negative number to uint
     mCurrentPayloadSize = (uint32_t) temp;
-    std::cout << "random payload size : " << mCurrentPayloadSize << std::endl;
   }
 
   // create data block
