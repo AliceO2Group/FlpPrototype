@@ -24,6 +24,13 @@ NOTES
   If you change it, make sure to set your LD_LIBRARY_PATH and PATH accordingly.
 
 TODO
+- test on linux
+- Finish converting the projects that do not adhere completely to the new scheme
+    * Configuration
+    * InfoLOgger
+    * Control
+    * DataFormat
+- test compilation from top dir
 - Check that binaries can run on Mac once installed.
 - The dynamic lib of Configuration doesn't work when linking. I think that it is because you can't template only
   on the return type.
