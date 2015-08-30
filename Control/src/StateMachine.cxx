@@ -1,4 +1,4 @@
-#include <zookeeper.h>
+#include <zookeeper/zookeeper.h>
 #include <StateMachine.h>
 #include <strings.h>
 #include <unistd.h>

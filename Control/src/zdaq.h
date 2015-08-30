@@ -71,7 +71,7 @@ private:
   int th_do_stop;    // flag to stop thread loop
   protected:
   int th_stop_immediate;  // flag set to 1 when thread should complete immediately on STOP command, or if it should flush pending work first.
-  unsigned int thread_id;
+  pthread_t thread_id;
   
   public:
   void thread_loop();   // control main loop when running

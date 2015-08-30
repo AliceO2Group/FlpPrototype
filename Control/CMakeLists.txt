@@ -3,8 +3,9 @@
 # @author  sylvain.chapeland@cern.ch
 
 
-cmake_minimum_required(VERSION 2.6)
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
+cmake_minimum_required(VERSION 2.8.8)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # main (top) cmake dir
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) # project specific cmake dir
 
 
 # Set the name of your project here
@@ -17,19 +18,19 @@ set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
 ## Git (and its revision)
-#find_package(Git)
+find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.
 ## GetGitRevisionDescription module to retreive branch and revision information from Git
 ## Starting with Git 1.9 the module will be part of official cMake distribution, until then it has to be
 ## part of the application
 ## The Git module will trigger a reconfiguration for each pull that will bring a new revision on the local repository
-#set (VCS_REVISION "-1")
-#if(GIT_FOUND)
-#    include(GetGitRevisionDescription)
-#    get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-#    message(STATUS "GIT branch ${GIT_REFSPEC}")
-#    message(STATUS "GIT revision ${GIT_SHA1}")
-#    set (VCS_REVISION ${GIT_SHA1})
-#endif()
+set (VCS_REVISION "-1")
+if(GIT_FOUND)
+  include(GetGitRevisionDescription)
+  get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+  message(STATUS "GIT branch ${GIT_REFSPEC}")
+  message(STATUS "GIT revision ${GIT_SHA1}")
+  set (VCS_REVISION ${GIT_SHA1})
+endif()
 
 # C++11 needed
 include(CheckCXXCompilerFlag)
@@ -41,8 +42,14 @@ else()
 endif()
 
 
-include_directories(
-)
+# Mac needed variables (adapt according to your needs)
+set(CMAKE_MACOSX_RPATH ON)
+#set(CMAKE_SKIP_BUILD_RPATH FALSE)
+#set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+#set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
 file(
   GLOB_RECURSE
   source_files
@@ -56,8 +63,7 @@ include_directories (
 )
 
 # documentation
-
-include(FindDoxygen)
+add_subdirectory(doc)
 
 # Add an option for the user to enable or not the documentation generation. 
 # Either set it on the command line or use ccmake. It is an advanced option.
@@ -79,15 +85,14 @@ if(BUILD_DOCS AND DOXYGEN_FOUND)
 
 endif(BUILD_DOCS AND DOXYGEN_FOUND)
 
-set(ZOOKEEPERPATH "/opt/zookeeper-3.4.6")
+# Zookeeper
+find_package(Zookeeper)
+include_directories(${Zookeeper_INCLUDE_DIRS})
 
-INCLUDE_DIRECTORIES(${ZOOKEEPERPATH}/src/c/include ${ZOOKEEPERPATH}/src/c/generated)
-LINK_DIRECTORIES(${ZOOKEEPERPATH}/src/c/.libs/)
-
-set(BOOSTPATH "/opt/boost_1_58_0/")
-
-INCLUDE_DIRECTORIES(${BOOSTPATH})
-LINK_DIRECTORIES(${BOOSTPATH}/stage/lib)
+# Boost
+set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
+find_package(Boost COMPONENTS thread system REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable (
   zdaq_test
@@ -116,8 +121,8 @@ add_executable (
 
 target_link_libraries (
   testStateMachine
-  zookeeper_mt
-  boost_system
+  ${Zookeeper_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 add_executable (

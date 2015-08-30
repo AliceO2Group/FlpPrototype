@@ -15,6 +15,8 @@ set(VERSION_MINOR "0")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
+include(O2)
+
 ## Git (and its revision)
 find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.
 ## GetGitRevisionDescription module to retreive branch and revision information from Git
@@ -53,7 +55,7 @@ add_executable (
 # symlinks created. SOVERSION could also be specified for api version. 
 set_target_properties(testDataFormat PROPERTIES
   VERSION ${VERSION}  # ${VERSION} was defined in the main CMakeLists.
-  FRAMEWORK TRUE
+  FRAMEWORK FALSE
   PUBLIC_HEADER "${PUBLIC_HEADERS}" # specify the public headers
 )
 

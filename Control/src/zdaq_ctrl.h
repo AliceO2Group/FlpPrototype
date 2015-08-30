@@ -9,7 +9,7 @@
 #define	ZDAQ_CTRL_H
 
 #include <stdint.h>
-#include <zookeeper.h>
+#include <zookeeper/zookeeper.h>
 #include <vector>
 
 #ifdef	__cplusplus

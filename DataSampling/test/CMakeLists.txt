@@ -1,25 +1,15 @@
 # @author  Barthélémy von Haller
 
-# Compile C++ tests (here only one, but it will grab whatever cpp is in the test directory)
+# Compile C++ tests (here only one, but it will grab whatever cxx is in the test directory)
 file(GLOB_RECURSE TEST_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cxx)
 
-# Iterate over all tests found. For each, declare an executable and add it
-# to the tests list.
+# Iterate over all tests found. For each, declare an executable and add it to the tests list.
 set(ALL_TESTS)
 foreach(FILE ${TEST_FILES})
-    string(REGEX REPLACE "[./]" "_" NAME ${FILE})
-    #source_group(\\ FILES ${FILE})
+    string(REGEX REPLACE "[./]" "_" NAME ${FILE}) # create exe name
     add_executable(${NAME} ${FILE})
     target_link_libraries(${NAME} DataSampling ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-    get_target_property(EXECUTABLE ${NAME} LOCATION)
-    STRING(REGEX REPLACE "\\$\\(.*\\)" "\${CTEST_CONFIGURATION_TYPE}"
-      EXECUTABLE "${EXECUTABLE}")
-    add_test(${NAME} ${EXECUTABLE})                              # <-- this is how to add tests to CMake
-    #set_target_properties(${NAME} PROPERTIES FOLDER "Tests")
-    list(APPEND ALL_TESTS ${NAME})
+    add_test(NAME ${NAME} COMMAND ${NAME})                              # this is how to add tests to CMake
 endforeach(FILE ${TEST_FILES})
-
-# Add extra test
-add_test(opt_exists /usr/bin/test -d /opt)
 
 include(CTest)

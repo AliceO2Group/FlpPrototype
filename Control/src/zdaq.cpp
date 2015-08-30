@@ -192,7 +192,7 @@ int daqModule::executeCommand(const char *command) {
       }
       break;      
    case mt_command::RESET:
-      if ((currentStatus==mt_status::ERROR)) {
+      if (currentStatus==mt_status::ERROR) {
         if (exec_RESET()==0) {
           newStatus=mt_status::NOT_READY;
           success=1;
@@ -200,6 +200,9 @@ int daqModule::executeCommand(const char *command) {
           error=1;
         }
       }
+      break;
+    case mt_command::UNDEFINED:
+      // TODO
       break;
   }
   if (error) {
@@ -237,7 +240,7 @@ int daqModule::do_loop(int maxItems){
 
 
 void daqModule::thread_loop() {
-  thread_id=(unsigned int)pthread_self();
+  thread_id=pthread_self();
   //cout << "thread " << thread_id << " starting" << endl;
   th_status=1;
   while (!th_do_stop) {  
@@ -1091,7 +1094,7 @@ daqModule_producer_dummy
  daqModule_producer_dummy::daqModule_producer_dummy(zdaqCtrl_config c): daqModule_producer(c){
       daqEvent* ev;
       ev=new daqEvent(100000000);
-      printf("Created static event of size %d + header %d = %d bytes\n",ev->h.size,sizeof(ev->h),ev->h.size+sizeof(ev->h));
+      printf("Created static event of size %d + header %lu = %lu bytes\n",ev->h.size,sizeof(ev->h),ev->h.size+sizeof(ev->h));
       this->myEvent=ev;      
   }
  daqModule_producer_dummy::~daqModule_producer_dummy() {

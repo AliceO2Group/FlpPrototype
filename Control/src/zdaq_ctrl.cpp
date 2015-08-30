@@ -1,11 +1,6 @@
 #include "zdaq_ctrl.h"
-#include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 #include <boost/uuid/uuid.hpp>
-#include <vector>
-#include <assert.h>
-#include <stdio.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>

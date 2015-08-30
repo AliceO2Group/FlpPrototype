@@ -25,7 +25,7 @@ add_library(${LIBRARY} SHARED ${HEADERS} ${SOURCES})
 # symlinks created. SOVERSION could also be specified for api version. 
 set_target_properties(${LIBRARY} PROPERTIES
   VERSION ${VERSION}  # ${VERSION} was defined in the main CMakeLists.
-    FRAMEWORK TRUE PUBLIC_HEADER "${HEADERS}"
+    FRAMEWORK FALSE PUBLIC_HEADER "${HEADERS}"
 )
 
 # Specify how/where to install this library

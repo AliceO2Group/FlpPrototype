@@ -15,6 +15,8 @@ set(VERSION_MINOR "0")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
+include(O2)
+
 ## Git (and its revision)
 find_package(Git)
 # GetGitRevisionDescription module to retreive branch and revision information from Git

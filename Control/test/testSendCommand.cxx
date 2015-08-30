@@ -1,5 +1,6 @@
 #include <StateMachine.h>
 #include <unistd.h>
+#include <cstdlib>
 
 //using namespace StateMachine;
 

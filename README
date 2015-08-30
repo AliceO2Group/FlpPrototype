@@ -18,3 +18,19 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug .. 
 make -j4
 make install
+
+NOTES
+- By default it installs in /usr/local. You can change this in cmake/O2.cmake.
+  If you change it, make sure to set your LD_LIBRARY_PATH and PATH accordingly.
+
+TODO
+- Check that binaries can run on Mac once installed.
+- The dynamic lib of Configuration doesn't work when linking. I think that it is because you can't template only
+  on the return type.
+- Move common stuff to O2.cmake (do the same for the project template)
+- Change the project template for the new one
+- Test Monitoring build
+- Reformat Control, Configuration, etc...
+- Control does not install anything ?
+- In general: naming convention (e.g. no abbreviation), coding convention (1 class per file, ...), cmake best practices
+  (find_packages, decentralization), formatting
