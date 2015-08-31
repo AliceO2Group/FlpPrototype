@@ -2,7 +2,7 @@
 /**
 @page User_Guide User Guide
 
-	@section TABLE_OF_CONTENTS TABLE OF CONTENTS
+	@section USER_GUIDE_TABLE_OF_CONTENTS TABLE OF CONTENTS
 	-# @ref GENERAL_INFORMATION
 		-# @ref Overview
 		-# @ref Acronyms_and_Abbreviations
@@ -27,14 +27,14 @@
 	@endhtmlonly		
 	@section GENERAL_INFORMATION GENERAL INFORMATION
 	
-		@subsection Overview Overview
+		@subsection USER_GUIDE_Overview Overview
 		
 			- Explain in general terms the tool and the purpose for which it is intended. The description shall include:
 				- Architecture of the tool in non-technical terms, (e.g., library, client/server, web-based, etc.)
 				- Major functions performed by the tool
 				- Status (Operational, Under Development, Undergoing a major modification, etc...)
 			
-		@subsection Acronyms_and_Abbreviations Acronyms and Abbreviations
+		@subsection USER_GUIDE_Acronyms_and_Abbreviations Acronyms and Abbreviations
 		
 			- Provide a list of the acronyms and abbreviations used in this document and the meaning of each.
 
@@ -66,7 +66,7 @@
 	@endhtmlonly
 	@section INSTALLATION_AND_UPGRADE INSTALLATION AND UPGRADE
 	
-		@subsection Requirements Requirements
+		@subsection USER_GUIDE_Requirements Requirements
 		
 			- List prerequisites (if any) here
 			

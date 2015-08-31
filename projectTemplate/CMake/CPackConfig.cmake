@@ -1,19 +1,19 @@
-# \author  Barthélémy von Haller
+# @author  Barthélémy von Haller
 
 # General CPack configuration 
 # Info: http://www.itk.org/Wiki/CMake:Component_Install_With_CPack
 # _____________________________________________________________________________
 
-set(CPACK_PACKAGE_NAME "Hello${VERSION_MAJOR}")
+set(CPACK_PACKAGE_NAME "ProjA")
 
 if(APPLE)
-  set(CPACK_PACKAGE_VENDOR "ALICE") # PackageMaker doesn't like http://
+  set(CPACK_PACKAGE_VENDOR "Organisation") # PackageMaker doesn't like http://
 else()
-  set(CPACK_PACKAGE_VENDOR "http://aliceinfo.cern.ch") # deb lintian insists on URL
+  set(CPACK_PACKAGE_VENDOR "http://example.com") # deb lintian insists on URL
 endif()
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Example project")
-set(CPACK_PACKAGE_CONTACT "Barthelemy von Haller <barthelemy.von.haller@cern.ch>")
+set(CPACK_PACKAGE_CONTACT "Person name <name@example.com>")
 set(CPACK_PACKAGE_VERSION ${VERSION})
 set(CPACK_PACKAGE_VERSION_MAJOR ${VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
@@ -40,32 +40,25 @@ if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
 endif(${CMAKE_SYSTEM_NAME} MATCHES Linux)
 
 # Components
+# See www.cmake.org/Wiki/CMake:Component_Install_With_CPack#Controlling_Differents_Ways_of_packaging_components
 # _____________________________________________________________________________
 set(CPACK_COMPONENT_INSTALL ON)
-set(CPACK_COMPONENTS_ALL libs dev apps docs)
+set(CPACK_COMPONENTS_ALL libs devel doc)
 
 set(CPACK_COMPONENT_LIBS_DISPLAY_NAME "Libraries")
-set(CPACK_COMPONENT_LIBS_DESCRIPTION "Runtime Libraries")
+set(CPACK_COMPONENT_LIBS_DESCRIPTION "Runtime libraries.")
 set(CPACK_COMPONENT_LIBS_GROUP "Runtime")
 # express component dependencies this way, it will translate into package dependencies where applicable
-set(CPACK_COMPONENT_LIBS_DEPENDS docs) # dependency on another group
-
-set(CPACK_COMPONENT_APPS_DISPLAY_NAME "Applications")
-set(CPACK_COMPONENT_APPS_DESCRIPTION "Example Programs")
-set(CPACK_COMPONENT_APPS_GROUP "Runtime")
-set(CPACK_COMPONENT_APPS_DEPENDS libs docs) # dependency within the same group (lib) and another (docs), but second time from the same group
-
-set(CPACK_COMPONENT_DEV_DISPLAY_NAME "Development files")
-set(CPACK_COMPONENT_DEV_DESCRIPTION "Development header files and libraries")
-set(CPACK_COMPONENT_DEV_GROUP "Development")
-set(CPACK_COMPONENT_DEV_DEPENDS libs) # dependency on another group
+set(CPACK_COMPONENT_LIBS_DEPENDS doc)
 
 set(CPACK_COMPONENT_DOCS_DISPLAY_NAME "Documents")
 set(CPACK_COMPONENT_DOCS_DESCRIPTION "User Documentation")
-#set(CPACK_COMPONENT_DOCS_GROUP "Documentation")
+set(CPACK_COMPONENT_DOCS_GROUP "Documentation")
 
-# see www.cmake.org/Wiki/CMake:Component_Install_With_CPack#Controlling_Differents_Ways_of_packaging_components
-#set(CPACK_COMPONENTS_GROUPING "ALL_COMPONENTS_IN_ONE") # IGNORE, ONE_PER_GROUP (default), ALL_COMPONENTS_IN_ONE
+set(CPACK_COMPONENT_DEV_DISPLAY_NAME "Development files")
+set(CPACK_COMPONENT_DEV_DESCRIPTION "Development header files and libraries, as well as cmake config files.")
+set(CPACK_COMPONENT_DEV_GROUP "Development")
+set(CPACK_COMPONENT_DEV_DEPENDS libs)
 
 # Debian specific configuration (minimum)
 # _____________________________________________________________________________
@@ -80,7 +73,6 @@ set(CPACK_RPM_PACKAGE_LICENSE "Proprietary")
 set(CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
 set(CPACK_RPM_PACKAGE_VERSION ${VERSION})
 set(CPACK_RPM_COMPONENT_INSTALL ON)   # necessary even if CPACK_COMPONENT_INSTALL set to ON. A bug in my opinion.
-
 
 # OS X PackageMaker
 # _____________________________________________________________________________
