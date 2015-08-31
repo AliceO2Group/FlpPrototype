@@ -41,3 +41,4 @@ TODO
 - Control does not install anything ?
 - In general: naming convention (e.g. no abbreviation), coding convention (1 class per file, ...), cmake best practices
   (find_packages, decentralization), formatting
+- test doc
