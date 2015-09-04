@@ -8,8 +8,8 @@
 int main(int argc, char *argv[]) {
 
   const char *objName="test";
-  const char *cmd="MOVE";
-  int nIter=10;
+  const char *cmd="prepare";
+  int nIter=0;
   
   if (argc>1) {
     objName=argv[1];
