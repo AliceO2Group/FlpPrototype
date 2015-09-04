@@ -111,11 +111,11 @@ target_link_libraries (
 add_executable (
   testStateMachine
   test/testStateMachine.cxx
-  src/StateMachine.cxx
 )
 
 target_link_libraries (
   testStateMachine
+  StateMachine
   zookeeper_mt
   boost_system
 )
@@ -123,11 +123,11 @@ target_link_libraries (
 add_executable (
   testSendCommand
   test/testSendCommand.cxx
-  src/StateMachine.cxx
 )
 
 target_link_libraries (
   testSendCommand
+  StateMachine
   zookeeper_mt
   boost_system
 )
@@ -135,12 +135,29 @@ target_link_libraries (
 add_executable (
   testClient
   test/testClient
-  src/StateMachine.cxx
 )
 
 target_link_libraries (
   testClient
+  StateMachine
   zookeeper_mt
   boost_system
 )
 
+
+add_library (
+  StateMachine
+  src/StateMachine.cxx
+)
+
+add_executable (
+  testCtrlObject
+  src/BaseControl.cxx
+)
+
+target_link_libraries (
+  testCtrlObject
+  StateMachine
+  zookeeper_mt
+  boost_system
+)
