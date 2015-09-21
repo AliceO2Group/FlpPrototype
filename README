@@ -26,7 +26,6 @@ NOTES
 TODO
 - test on linux
 - Finish converting the projects that do not adhere completely to the new scheme
-    * Control
     * DataFormat
 - test compilation from top dir
 - Check that binaries can run on Mac once installed.
