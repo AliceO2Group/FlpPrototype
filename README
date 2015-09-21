@@ -26,7 +26,6 @@ NOTES
 TODO
 - test on linux
 - Finish converting the projects that do not adhere completely to the new scheme
-    * Configuration
     * InfoLOgger
     * Control
     * DataFormat
@@ -42,3 +41,5 @@ TODO
 - In general: naming convention (e.g. no abbreviation), coding convention (1 class per file, ...), cmake best practices
   (find_packages, decentralization), formatting
 - test doc
+- Can we avoid having the same Version.h.in everywhere ? can we generalize it ?
+- Extract everything that is common in O2.cmake.
