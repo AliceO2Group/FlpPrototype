@@ -1,4 +1,4 @@
-#include "zdaq_ctrl.h"
+#include "Control/zdaq_ctrl.h"
 #include <unistd.h>
 #include <boost/uuid/uuid.hpp>
 #include <boost/lexical_cast.hpp>

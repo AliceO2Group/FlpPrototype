@@ -9,8 +9,8 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "zdaq.h"
-#include "zdaq_ctrl.h"
+#include "Control/zdaq.h"
+#include "Control/zdaq_ctrl.h"
 
 using namespace std;
 

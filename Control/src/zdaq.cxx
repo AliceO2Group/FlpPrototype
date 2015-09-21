@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "zdaq.h"
+#include "Control/zdaq.h"
 
 using namespace std;
 
