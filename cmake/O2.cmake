@@ -9,7 +9,13 @@ IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 IF(CMAKE_VERSION VERSION_LESS 3.1)
-    add_definitions(-std=c++11) # for CMake < 3.1
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG(-std=c++11 COMPILER_SUPPORTS_CXX11)
+    if(COMPILER_SUPPORTS_CXX11)
+        add_definitions(-std=c++11) # for CMake < 3.1
+    else()
+        message(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+    endif()
 ELSE()
     set(CMAKE_CXX_STANDARD 11)  # proper way in CMake >= 3.1
 ENDIF()
