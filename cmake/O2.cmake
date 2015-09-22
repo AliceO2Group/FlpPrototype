@@ -8,5 +8,8 @@ IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     )
 ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-set(CMAKE_CXX_STANDARD 11)  # proper way in CMake >= 3
-add_definitions(-std=c++11) # for CMake < 3
+IF(CMAKE_VERSION VERSION_LESS 3.1)
+    add_definitions(-std=c++11) # for CMake < 3.1
+ELSE()
+    set(CMAKE_CXX_STANDARD 11)  # proper way in CMake >= 3.1
+ENDIF()
