@@ -55,7 +55,7 @@ set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before se
 find_package(Boost COMPONENTS unit_test_framework thread system REQUIRED)
 
 # Zookeeper
-find_package(Zookeeper)
+find_package(Zookeeper REQUIRED)
 include_directories(${Zookeeper_INCLUDE_DIRS})
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.

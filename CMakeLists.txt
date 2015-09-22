@@ -15,11 +15,17 @@ enable_testing() # needed on top-level CMakeLists.txt
 add_custom_target(doc) # DEPENDS docProjA docProjB) Note: with CMake 3.X the DEPENDS would work
 ADD_DEPENDENCIES(doc docInfoLogger docDataFormat docDataDataSampling)
 
+message(projectTemplate)
 add_subdirectory(projectTemplate)
+message(InfoLogger)
 add_subdirectory(InfoLogger)
+message(Configuration)
 add_subdirectory(Configuration)
+message(DataFormat)
 add_subdirectory(DataFormat)
+message(DataSampling)
 add_subdirectory(DataSampling)
+message(Control)
 add_subdirectory(Control)
 add_subdirectory(Monitoring)
 add_subdirectory(QualityControl)
