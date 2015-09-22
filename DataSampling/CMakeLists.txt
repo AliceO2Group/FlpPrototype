@@ -15,6 +15,7 @@ set(VERSION_MINOR "0")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
+# Macros and variables for all O2 subprojects
 include(O2)
 
 ## Git (and its revision)
@@ -45,10 +46,9 @@ endif()
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
 find_package(Boost 1.41 COMPONENTS unit_test_framework program_options REQUIRED)
 
-# Find DataFormat if we are compiling only this project
-if(NOT TARGET DataFormat)
-  find_package(DataFormat CONFIG REQUIRED)
-endif()
+# Find DataFormat
+link_o2_subproject(DataFormat)
+
 
 # This sets the include directory for the reference project. This is
 # the -I flag in gcc. All the includes should be in this variable To

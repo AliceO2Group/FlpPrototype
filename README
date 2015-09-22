@@ -22,6 +22,9 @@ make install
 NOTES
 - By default it installs in /usr/local. You can change this in cmake/O2.cmake.
   If you change it, make sure to set your LD_LIBRARY_PATH and PATH accordingly.
+- To uninstall do :  xargs rm < install_manifest.txt
+
+I had to change Configuration quite a lot to make it work properly with templates for any type.
 
 TODO
 - test on linux
