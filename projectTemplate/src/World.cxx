@@ -7,12 +7,18 @@
 
 #include <iostream>
 
+#include <InfoLogger/InfoLogger.hxx>
+
 namespace AliceO2 {
 namespace ProjectTemplate {
 namespace ProjA {
 
 void World::greet()
 {
+  AliceO2::InfoLogger::InfoLogger theLog;
+
+  theLog.log("infoLogger message test");
+
   std::cout << "ProjA world!!" << std::endl;
 }
 

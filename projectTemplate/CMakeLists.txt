@@ -54,6 +54,14 @@ endif()
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
+# Dependency on another subproject (InfoLogger)
+# TODO extract as macro in O2.cmake
+if(NOT TARGET InfoLogger) # target unknown because we build only this subproject, ProjA must have been built AND installed
+    find_package(InfoLogger CONFIG REQUIRED)
+else() # we know the target thus we are doing a build from the top directory
+    include_directories(../InfoLogger/include)
+endif()
+
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,
 # just add them in this list (after a space), or add an include_directories statement in a
