@@ -26,17 +26,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -fPIC")
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -fPIC")
 
 # Uninstall target (is it really a good idea ?)
-set(UNINSTALL_TARGET_NAME "uninstall")
-if (TARGET uninstall)
-    set(UNINSTALL_TARGET_NAME "uninstall${PROJECT_NAME}")
-endif ()
-configure_file(
-        "../cmake/cmake_uninstall.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-        IMMEDIATE @ONLY)
-add_custom_target(${UNINSTALL_TARGET_NAME}
-        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+include(UninstallTarget)
 
+# Function to link between sub-projects
 function(link_o2_subproject subproject_name)
     if (NOT TARGET ${subproject_name}) # target unknown because we build only this subproject, ProjA must have been built AND installed
         find_package(${subproject_name} CONFIG REQUIRED)

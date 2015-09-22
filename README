@@ -44,4 +44,4 @@ TODO
 - test doc
 - Can we avoid having the same Version.h.in everywhere ? can we generalize it ?
 - Extract everything that is common in O2.cmake.
--
+- Finish the uninstall target

@@ -13,8 +13,15 @@ enable_testing() # needed on top-level CMakeLists.txt
 # in the subdirs *when* we compile only a subproject.
 # We define as well a function AddDocTarget in cmake/DoxygenTarget.cmake
 add_custom_target(doc) # DEPENDS docProjA docProjB) Note: with CMake 3.X the DEPENDS would work
-ADD_DEPENDENCIES(doc docInfoLogger docDataFormat docDataDataSampling)
+ADD_DEPENDENCIES(doc docInfoLogger docProjA docConfiguration docDataFormat docDataSampling docControl
+        docMonitoring docQualityControl)
 
+# Target uninstall definition
+include(UninstallTarget)
+# Same comments as for doc.
+#add_custom_target(uninstall) # DEPENDS docProjA docProjB) Note: with CMake 3.X the DEPENDS would work
+#ADD_DEPENDENCIES(uninstall uninstallInfoLogger uninstallProjA uninstallConfiguration uninstallDataFormat
+#        uninstallDataSampling uninstallControl uninstallMonitoring uninstallQualityControl)
 
 message(InfoLogger)
 add_subdirectory(InfoLogger)
