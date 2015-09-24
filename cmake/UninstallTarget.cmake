@@ -5,7 +5,6 @@ set(UNINSTALL_TARGET_NAME "uninstall")
 if (TARGET uninstall)
     set(UNINSTALL_TARGET_NAME "uninstall${PROJECT_NAME}")
 endif ()
-message("create uninstall ${UNINSTALL_TARGET_NAME} - ${CMAKE_CURRENT_BINARY_DIR} - ${CMAKE_CURRENT_LIST_DIR}")
 configure_file(
         "${CMAKE_CURRENT_LIST_DIR}/cmake_uninstall.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"

@@ -39,4 +39,5 @@ TODO
 - test doc
 - Can we avoid having the same Version.h.in everywhere ? can we generalize it ?
 - Extract everything that is common in O2.cmake.
-- Finish the uninstall target
+- Tests in Control must not depend on a running zookeeper or it must launch it in the setup of the test suite.
+- Only two tests in Control are able to run, others have been desactivated.
