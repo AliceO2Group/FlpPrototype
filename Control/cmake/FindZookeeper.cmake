@@ -1,15 +1,18 @@
 # - Try to find Zookeeper
 # Once done this will define
-#  Zookeeper_FOUND - System has Zookeeper
+#  Zookeeper_FOUND        - System has Zookeeper
 #  Zookeeper_INCLUDE_DIRS - The Zookeeper include directories
-#  Zookeeper_LIBRARIES - The libraries needed to use Zookeeper
-#  Zookeeper_DEFINITIONS - Compiler switches required for using LibZookeeper
+#  Zookeeper_LIBRARIES    - The libraries needed to use Zookeeper
+#  Zookeeper_DEFINITIONS  - Compiler switches required for using LibZookeeper
 
 find_package(PkgConfig)
 
-find_path(Zookeeper_INCLUDE_DIR zookeeper.h
-        PATH_SUFFIXES zookeeper)
+#set(Zookeeper_PREFIX "/usr/local" CACHE PATH "A path where to look for zookeeper in addition to default paths.")
+
+find_path(Zookeeper_INCLUDE_DIR zookeeper/zookeeper.h)
+#	PATHS ${Zookeeper_PREFIX}/include)
 find_library(Zookeeper_LIBRARY NAMES zookeeper_mt)
+# PATHS ${Zookeeper_PREFIX}/lib)
 
 set(Zookeeper_LIBRARIES ${Zookeeper_LIBRARY} )
 set(Zookeeper_INCLUDE_DIRS ${Zookeeper_INCLUDE_DIR} )
