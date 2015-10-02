@@ -36,8 +36,8 @@ target_link_libraries(
         ${Boost_SYSTEM_LIBRARY}
         ${Boost_THREAD_LIBRARY}
         pthread
-        zookeeper_mt
-        zmq)
+        ${Zookeeper_LIBRARIES}
+        ${ZMQ_LIB})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
@@ -58,8 +58,8 @@ target_link_libraries(
         ${Boost_SYSTEM_LIBRARY}
         ${Boost_THREAD_LIBRARY}
         pthread
-        zookeeper_mt
-        zmq)
+        ${Zookeeper_LIBRARIES}
+        ${ZMQ_LIB})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version.
