@@ -46,6 +46,10 @@ find_package(Boost COMPONENTS unit_test_framework thread system REQUIRED)
 find_package(Zookeeper REQUIRED)
 include_directories(${Zookeeper_INCLUDE_DIRS})
 
+# zeroMQ
+# TODO use rather a find_package
+FIND_LIBRARY(ZMQ_LIB zmq)
+
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,
 # just add them in this list (after a space), or add an include_directories statement in a
