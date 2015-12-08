@@ -9,10 +9,8 @@ find_package(PkgConfig)
 
 #set(Zookeeper_PREFIX "/usr/local" CACHE PATH "A path where to look for zookeeper in addition to default paths.")
 
-find_path(Zookeeper_INCLUDE_DIR zookeeper/zookeeper.h)
-#	PATHS ${Zookeeper_PREFIX}/include)
-find_library(Zookeeper_LIBRARY NAMES zookeeper_mt)
-# PATHS ${Zookeeper_PREFIX}/lib)
+find_path(Zookeeper_INCLUDE_DIR zookeeper/zookeeper.h	PATHS /opt/zookeeper-3.4.6-install/include)
+find_library(Zookeeper_LIBRARY NAMES zookeeper_mt PATHS  /opt/zookeeper-3.4.6-install/lib)
 
 set(Zookeeper_LIBRARIES ${Zookeeper_LIBRARY} )
 set(Zookeeper_INCLUDE_DIRS ${Zookeeper_INCLUDE_DIR} )
