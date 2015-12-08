@@ -42,13 +42,18 @@ endif()
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
 find_package(Boost COMPONENTS unit_test_framework thread system REQUIRED)
 
-# Zookeeper
-find_package(Zookeeper REQUIRED)
-include_directories(${Zookeeper_INCLUDE_DIRS})
-
 # zeroMQ
 # TODO use rather a find_package
 FIND_LIBRARY(ZMQ_LIB zmq)
+
+# Zookeeper
+find_package(Zookeeper)
+if(Zookeeper_FOUND)
+    include_directories(${Zookeeper_INCLUDE_DIRS})
+else(Zookeeper_FOUND)
+    message(WARNING "Zookeeper not found, we won't compile the Control module (skip, no error). Try to add \"-DZookeeper_LIBRARY=<path>/lib -DZookeeper_INCLUDE_DIR=<path>/include\" to your cmake command.")
+    return()
+endif(Zookeeper_FOUND)
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,
@@ -67,10 +72,11 @@ set(CMAKE_MACOSX_RPATH ON)
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+add_subdirectory(doc)
+
 enable_testing()
 add_subdirectory(include)
 add_subdirectory(src)
-add_subdirectory(doc)
 add_subdirectory(test)
 
 #
