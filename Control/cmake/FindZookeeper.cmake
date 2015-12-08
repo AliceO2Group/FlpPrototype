@@ -20,7 +20,9 @@ set(Zookeeper_INCLUDE_DIRS ${Zookeeper_INCLUDE_DIR} )
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set Zookeeper_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(Zookeeper  DEFAULT_MSG
-        Zookeeper_LIBRARY Zookeeper_INCLUDE_DIR)
+find_package_handle_standard_args(Zookeeper DEFAULT_MSG Zookeeper_LIBRARY Zookeeper_INCLUDE_DIR)
+
+# Because case is a problem some times
+set(Zookeeper_FOUND ${ZOOKEEPER_FOUND})
 
 mark_as_advanced(Zookeeper_INCLUDE_DIR Zookeeper_LIBRARY )
