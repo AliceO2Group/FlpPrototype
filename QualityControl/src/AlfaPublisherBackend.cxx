@@ -5,6 +5,10 @@
 
 #include "QualityControl/AlfaPublisherBackend.h"
 #include "FairMQTransportFactoryZMQ.h"
+#include "TMessage.h"
+#include "TH1F.h"
+#include "FairMQProgOptions.h"
+#include "FairMQParser.h"
 
 using namespace std;
 
@@ -15,7 +19,16 @@ namespace Core {
 AlfaPublisherBackend::AlfaPublisherBackend()
   : mText("asdf")
 {
-  // TODO Auto-generated constructor stub
+
+  FairMQProgOptions config;
+
+  // load communication layout and properties
+  std::string filename = "alfa.json";
+  std::string id = "sender";
+  config.UserParser<FairMQParser::JSON>(filename, id);
+  fChannels = config.GetFairMQMap();
+
+  // Get the transport layer
 #ifdef NANOMSG
   FairMQTransportFactory* transportFactory = new FairMQTransportFactoryNN();
 #else
@@ -23,33 +36,27 @@ AlfaPublisherBackend::AlfaPublisherBackend()
 #endif
   SetTransport(transportFactory);
 
-  //SetProperty(O2EPNex::Id, options.id);
-
-  FairMQChannel outputChannel("pub" /*"Output socket type: pub/push"*/, "bind" /* "Output method: bind/connect"*/, "tcp://localhost:5555" /*output address*/);
-  outputChannel.UpdateSndBufSize(2); // "Output buffer size in number of messages (ZeroMQ)
-//  outputChannel.UpdateRcvBufSize(2);
-  outputChannel.UpdateRateLogging(1);
-  fChannels["data-out"].push_back(outputChannel);
-
 }
 
 AlfaPublisherBackend::~AlfaPublisherBackend()
 {
 }
 
+// helper function to clean up the object holding the data after it is transported.
 void AlfaPublisherBackend::CustomCleanup(void *data, void *object)
 {
-  delete (std::string *) object;
+  delete static_cast<TMessage*>(object); // Does it delete the TH1F ?
 }
 
 void AlfaPublisherBackend::publish(MonitorObject *mo)
 {
-  std::string *text = new std::string(mText);
-  FairMQMessage *msg = fTransportFactory->CreateMessage(const_cast<char *>(text->c_str()), text->length(),
-                                                        CustomCleanup,
-                                                        text);
-  cout << "test : " << fChannels["data-out"].at(0).GetType() << endl;
-  fChannels["data-out"].at(0).Send(msg);
+  // from Mohammad
+  TH1F * th1 = new TH1F("test", "test", 100, 0, 99);
+  TMessage *message = new TMessage(kMESS_OBJECT);
+  message->WriteObject(th1);
+  FairMQMessage *msg = fTransportFactory->CreateMessage(message->Buffer(), message->BufferSize(), CustomCleanup,
+                                                        message);
+  fChannels.at("data-out").at(0).Send(msg);
 }
 
 void AlfaPublisherBackend::Init()

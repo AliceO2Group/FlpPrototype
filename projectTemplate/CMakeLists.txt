@@ -40,15 +40,19 @@ endif()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework program_options log thread system REQUIRED)
 
-# Dependency on another subproject (InfoLogger)
-#if(NOT TARGET InfoLogger) # target unknown because we build only this subproject, ProjA must have been built AND installed
-#    find_package(InfoLogger CONFIG REQUIRED)
-#else() # we know the target thus we are doing a build from the top directory
-#    include_directories(../InfoLogger/include)
-#endif()
-link_o2_subproject(InfoLogger)
+# Alfa
+find_package(FairRoot REQUIRED)
+# this should go away when fairrot provides a proper Find script or proper config scripts
+# See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
+link_directories(${FAIRROOT_LIBRARY_DIR})
+set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ fairmq_logger)
+
+# ROOT
+# Set ROOTSYS properly in order for this to work.
+find_package(ROOT REQUIRED)
+message(STATUS "ROOT ${ROOT_VERSION} found")
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,
@@ -58,6 +62,8 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include   # add the binary tree to the search path so that we will find Version.h
     ${Boost_INCLUDE_DIRS}
+    ${ROOT_INCLUDE_DIRS}
+    ${FAIRROOT_INCLUDE_DIR}
 )
 
 # Mac needed variables (adapt according to your needs)
@@ -71,7 +77,7 @@ enable_testing()
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(doc)
-add_subdirectory(test)
+#add_subdirectory(test)
 
 #
 # SYSTEM PACKAGING (RPM, TGZ, ...)
