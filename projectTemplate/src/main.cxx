@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
   po::variables_map vm;
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "Produce help message.")("version,v", "Show program name/version banner and exit.")(
-    "rev", "Print the SVN revision number");
+    "rev", "Print the revision number");
   po::store(parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
   // help
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
   }
   // rev
   if (vm.count("rev")) {
-    std::cout << "SVN revision : " << AliceO2::ProjectTemplate::ProjA::Version::getRevision() << std::endl;
+    std::cout << "Revision : " << AliceO2::ProjectTemplate::ProjA::Version::getRevision() << std::endl;
     return EXIT_SUCCESS;
   }
 
