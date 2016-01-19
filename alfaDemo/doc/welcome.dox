@@ -1,0 +1,35 @@
+/*
+        Organisation
+        (c) 2015-2020. All rights reserved.
+
+        Responsible authors:    [NAME]
+*/
+
+// doxygen documentation ______________________________________________________
+
+/*!
+
+@mainpage Documentation
+
+This document contains a technical introduction to alfaDemo.
+
+alfaDemo is just a demo how to use FairMQ devices to send and receive an histogram.
+
+To compile :
+\code
+mkdir build
+cd build
+cmake ..
+make -j
+\endcode
+
+To run (in two different terminals):
+\code
+./build/bin/sender
+./build/bin/sender
+\endcode
+
+One can see the resulting histo by opening the generated image test.png.
+
+
+*/
