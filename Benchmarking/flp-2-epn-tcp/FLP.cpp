@@ -16,11 +16,20 @@
 
 using boost::asio::ip::tcp;
 
+/// memory to allocate for the buffer
 int memorySize;
+
+/// event size
 int eventSize;
+
+/// number of events that fits in memory
 int blocksNumber;
+
+/// pointer to begining of the buffer
 char *data;
 
+
+/// allocates event in the buffer - filling with random data
 void allocate (int eS, int mS) {
     eventSize = eS;
     memorySize = mS;
