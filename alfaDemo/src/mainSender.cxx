@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     sender.WaitForEndOfState("INIT_TASK");
 
     sender.ChangeState("RUN");
-//    sender.InteractiveStateLoop(); // WITHOUT THIS IT CRASHES ?!?
+    sender.InteractiveStateLoop();
   }
   catch (std::exception &e) {
     cout << e.what();
