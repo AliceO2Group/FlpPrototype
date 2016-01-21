@@ -1,0 +1,98 @@
+/// \file    Version.h
+/// \brief   Report the version for this package.
+///
+/// \author  Barthelemy von Haller, CERN
+
+#ifndef ALICEO2_CONTROLFAIRMQ_CORE_VERSION_H
+#define ALICEO2_CONTROLFAIRMQ_CORE_VERSION_H
+
+#include <string>
+#include <sstream>
+
+namespace AliceO2 {
+namespace ControlFairMQ {
+namespace Core {
+/// The current major version.
+#define CONTROLFAIRMQ_VERSION_MAJOR @VERSION_MAJOR@
+
+/// The current minor version.
+#define CONTROLFAIRMQ_VERSION_MINOR @VERSION_MINOR@
+
+/// The current patch level.
+#define CONTROLFAIRMQ_VERSION_PATCH @VERSION_PATCH@
+
+/// The current VCS revision.
+#define CONTROLFAIRMQ_VCS_REVISION "@VCS_REVISION@"
+
+/// True if the current version is newer than the given one.
+#define CONTROLFAIRMQ_VERSION_GT(MAJOR, MINOR, PATCH) \
+  ((CONTROLFAIRMQ_VERSION_MAJOR > MAJOR) ||           \
+   (CONTROLFAIRMQ_VERSION_MAJOR ==                    \
+    MAJOR&&(CONTROLFAIRMQ_VERSION_MINOR > MINOR || (CONTROLFAIRMQ_VERSION_MINOR == MINOR&& CONTROLFAIRMQ_VERSION_PATCH > PATCH))))
+
+/// True if the current version is equal or newer to the given.
+#define CONTROLFAIRMQ_VERSION_GE(MAJOR, MINOR, PATCH) \
+  ((CONTROLFAIRMQ_VERSION_MAJOR > MAJOR) ||           \
+   (CONTROLFAIRMQ_VERSION_MAJOR ==                    \
+    MAJOR&&(CONTROLFAIRMQ_VERSION_MINOR > MINOR || (CONTROLFAIRMQ_VERSION_MINOR == MINOR&& CONTROLFAIRMQ_VERSION_PATCH >= PATCH))))
+
+/// True if the current version is older than the given one.
+#define CONTROLFAIRMQ_VERSION_LT(MAJOR, MINOR, PATCH) \
+  ((CONTROLFAIRMQ_VERSION_MAJOR < MAJOR) ||           \
+   (CONTROLFAIRMQ_VERSION_MAJOR ==                    \
+    MAJOR&&(CONTROLFAIRMQ_VERSION_MINOR < MINOR || (CONTROLFAIRMQ_VERSION_MINOR == MINOR&& CONTROLFAIRMQ_VERSION_PATCH < PATCH))))
+
+/// True if the current version is older or equal to the given.
+#define CONTROLFAIRMQ_VERSION_LE(MAJOR, MINOR, PATCH) \
+  ((CONTROLFAIRMQ_VERSION_MAJOR < MAJOR) ||           \
+   (CONTROLFAIRMQ_VERSION_MAJOR ==                    \
+    MAJOR&&(CONTROLFAIRMQ_VERSION_MINOR < MINOR || (CONTROLFAIRMQ_VERSION_MINOR == MINOR&& CONTROLFAIRMQ_VERSION_PATCH <= PATCH))))
+
+/// Information about the current version.
+class Version {
+public:
+  /// @return the current major version of ProjB.
+  static int getMajor()
+  {
+    return CONTROLFAIRMQ_VERSION_MAJOR;
+  }
+
+  /// @return the current minor version of ProjB.
+  static int getMinor()
+  {
+    return CONTROLFAIRMQ_VERSION_MINOR;
+  }
+
+  /// @return the current patch level of ProjB.
+  static int getPatch()
+  {
+    return CONTROLFAIRMQ_VERSION_PATCH;
+  }
+
+  /// @return the current ProjB version (MM.mm.pp).
+  static std::string getString()
+  {
+    std::ostringstream version;
+    version << CONTROLFAIRMQ_VERSION_MAJOR << '.' << CONTROLFAIRMQ_VERSION_MINOR << '.' << CONTROLFAIRMQ_VERSION_PATCH;
+    return version.str();
+  }
+
+  /// @return the VCS revision.
+  static std::string getRevision()
+  {
+    return CONTROLFAIRMQ_VCS_REVISION;
+  }
+
+  /// @return the current ProjB version plus the VCS revision (MM.mm.pp.rev).
+  static std::string getRevString()
+  {
+    std::ostringstream version;
+    version << getString() << '.' << CONTROLFAIRMQ_VCS_REVISION;
+    return version.str();
+  }
+};
+}
+}
+}
+
+#endif // ALICEO2_CONTROLFAIRMQ_CORE_VERSION_H
