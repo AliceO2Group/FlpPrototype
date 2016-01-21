@@ -11,15 +11,6 @@
                 {
                     "type": "push",
                     "method": "bind",
-                    "address": "tcp://*:5555",
-                    "sndBufSize": "1000",
-                    "rcvBufSize": "1000",
-                    "rateLogging": "0"
-                },
-                "socket":
-                {
-                    "type": "push",
-                    "method": "bind",
                     "address": "tcp://*:5556",
                     "sndBufSize": "100000",
                     "rcvBufSize": "100000",
@@ -34,15 +25,6 @@
             "channel":
             {
                 "name": "data-in",
-                "socket":
-                {
-                    "type": "pull",
-                    "method": "connect",
-                    "address": "tcp://localhost:5555",
-                    "sndBufSize": "1000",
-                    "rcvBufSize": "1000",
-                    "rateLogging": "0"
-                },
                 "socket":
                 {
                     "type": "pull",
