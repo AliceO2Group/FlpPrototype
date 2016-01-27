@@ -1,5 +1,5 @@
 ///
-/// @file    World.cxx
+/// @file    DataBlock.cxx
 /// @author  Barthelemy von Haller
 ///
 
