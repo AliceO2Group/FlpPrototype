@@ -16,7 +16,6 @@ function(PrepareDocTarget)
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Generating API documentation using doxygen for ${PROJECT_NAME}" VERBATIM)
 
-  #  make_directory(${CMAKE_CURRENT_BINARY_DIR}/html) # needed for install
   set(INSTALL_DOC_DIR ${CMAKE_BINARY_DIR}/doc/${PROJECT_NAME}/html)
   file(MAKE_DIRECTORY ${INSTALL_DOC_DIR}) # needed for install
 

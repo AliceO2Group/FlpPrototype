@@ -41,6 +41,9 @@ function(link_o2_subproject subproject_name)
     #if (NOT TARGET ${subproject_name}) # target unknown
     if(NOT PROJECT_${subproject_name}) # var unknown because we build only this subproject, ProjA must have been built AND installed
         find_package(${subproject_name} CONFIG REQUIRED)
+        if(${subproject_name}_FOUND) 
+            message(STATUS "${subproject_name} found : ${${subproject_name}_FOUND}, ${${subproject_name}_INCLUDE_DIRS}")
+        endif()
     else () # we know the target thus we are doing a build from the top directory
         include_directories(../${subproject_name}/include)
     endif ()

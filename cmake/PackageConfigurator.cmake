@@ -22,17 +22,26 @@ configure_file(cmake/${PROJECT_NAME}Config.cmake
   COPYONLY
 )
 
-set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
+# Destination
+set(config_install_dir lib/cmake/${PROJECT_NAME})
 
+# Config installation
+#   * <prefix>/lib/cmake/<project>/<project>Targets.cmake
 install(
   EXPORT ${PROJECT_NAME}Targets
-  DESTINATION ${ConfigPackageLocation}
+  DESTINATION ${config_install_dir}
 )
 
+message("a : ${PROJECT_NAME}Targets")
+
+# Config installation
+#   * <prefix>/lib/cmake/<project>/<project>Config.cmake
+#   * <prefix>/lib/cmake/<project>/<project>ConfigVersion.cmake
 install(
   FILES
     cmake/${PROJECT_NAME}Config.cmake
     "${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake"
-  DESTINATION ${ConfigPackageLocation}
+  DESTINATION ${config_install_dir}
   COMPONENT devel
 )
+message(b)
