@@ -44,11 +44,15 @@ set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before se
 find_package(Boost COMPONENTS unit_test_framework program_options log thread system REQUIRED)
 
 # Alfa
-find_package(FairRoot REQUIRED)
-# this should go away when fairrot provides a proper Find script or proper config scripts
-# See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
-link_directories(${FAIRROOT_LIBRARY_DIR})
-set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ fairmq_logger)
+find_package(FairRoot)
+if(FAIRROOT_FOUND)
+    # this should go away when fairrot provides a proper Find script or proper config scripts
+    # See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
+    link_directories(${FAIRROOT_LIBRARY_DIR})
+    set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ fairmq_logger)
+else(FAIRROOT_FOUND)
+    message(WARNING "FairRoot not found, module ControlFairMQ will not be compiled.")
+endif(FAIRROOT_FOUND)
 
 # Dependency on another subproject (InfoLogger)
 link_o2_subproject(InfoLogger)
@@ -71,11 +75,13 @@ set(CMAKE_MACOSX_RPATH ON)
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+if(FAIRROOT_FOUND)
 enable_testing()
-add_subdirectory(include)
-add_subdirectory(src)
-add_subdirectory(doc)
-add_subdirectory(test)
+    add_subdirectory(include)
+    add_subdirectory(src)
+    add_subdirectory(doc)
+    add_subdirectory(test)
+endif()
 
 #
 # SYSTEM PACKAGING (RPM, TGZ, ...)

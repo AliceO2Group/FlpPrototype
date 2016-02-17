@@ -32,8 +32,6 @@ install(
   DESTINATION ${config_install_dir}
 )
 
-message("a : ${PROJECT_NAME}Targets")
-
 # Config installation
 #   * <prefix>/lib/cmake/<project>/<project>Config.cmake
 #   * <prefix>/lib/cmake/<project>/<project>ConfigVersion.cmake
@@ -44,4 +42,3 @@ install(
   DESTINATION ${config_install_dir}
   COMPONENT devel
 )
-message(b)
