@@ -76,21 +76,20 @@ set(CMAKE_MACOSX_RPATH ON)
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if(FAIRROOT_FOUND)
-enable_testing()
+    enable_testing()
     add_subdirectory(include)
     add_subdirectory(src)
     add_subdirectory(doc)
     add_subdirectory(test)
+
+    #
+    # SYSTEM PACKAGING (RPM, TGZ, ...)
+    # _____________________________________________________________________________
+    include(CPackConfig)
+    
+    #
+    # CMAKE PACKAGING (for other CMake projects to use this one easily)
+    # _____________________________________________________________________________
+    include(PackageConfigurator)
+
 endif()
-
-#
-# SYSTEM PACKAGING (RPM, TGZ, ...)
-# _____________________________________________________________________________
-
-include(CPackConfig)
-
-#
-# CMAKE PACKAGING (for other CMake projects to use this one easily)
-# _____________________________________________________________________________
-
-include(PackageConfigurator)
