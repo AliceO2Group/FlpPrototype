@@ -68,6 +68,7 @@ string O2FLPex::GetProperty(const int key, const string& default_/*= ""*/)
 /// Prepares test message that sizes equals to fEventSize (parameter passed when runing program) - it simulates data provided by RORC
 void O2FLPex::SetProperty(const int key, const int value)
 {
+  fEventSize = value;
   blocksNumber = (int) memorySize / fEventSize;
   payload = (char*)malloc(sizeof(char) * memorySize);
   char *current = payload;
