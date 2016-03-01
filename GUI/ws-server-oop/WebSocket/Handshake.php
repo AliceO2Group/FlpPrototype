@@ -1,18 +1,19 @@
 <?php
+declare(strict_types=1);
 namespace CERN\Alice\DAQ\O2;
 
-require_once __DIR__.'/../Exceptions/HandshakeException.php';
-require_once __DIR__.'/../Exceptions/OriginException.php';
+require_once __DIR__.'/../Exceptions/WebSocketException.php';
+require_once __DIR__.'/../Exceptions/TcpException.php';
 
-use CERN\Alice\DAQ\O2\Exceptions\HandshakeException;
-use CERN\Alice\DAQ\O2\Exceptions\OriginException;
+use CERN\Alice\DAQ\O2\Exceptions\WebSocketException;
+use CERN\Alice\DAQ\O2\Exceptions\TcpException;
 /**
  * Handles client handshake specified in RFC 6455 (Page 14)
  * @see http://tools.ietf.org/html/rfc6455#page-14
  */
 class Handshake {
-	
-	const HTTP_PROTOCOL 	= "HTTP/1.1";
+
+const HTTP_PROTOCOL 	= "HTTP/1.1";
 	/**
 	 * HTTP header fileds
 	 */
@@ -37,7 +38,8 @@ class Handshake {
     const ERROR_RATE_LIMITED = 420;
     const ERROR_UPGRADE_REQUIRED = 426;
     const ERROR_SERVER_ERROR = 500;  
-
+	
+const WS_GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 	/**
 	 * Parsed header
 	 */
@@ -62,52 +64,51 @@ class Handshake {
 				
 			}
 		}
+		$this->parseHandshake();
 	}
 	/**
 	 * 
 	 * Websocket handshake restrictions according to RFC 6455 (Page 14)
 	 * @see http://tools.ietf.org/html/rfc6455#page-14
-	 * @throws HandshakeException
+	 * @throws WebSocketException
 	 * @throws OriginException
 	 */
-	public function parseHandshake() {
-			
-		try {
+	protected function parseHandshake() {
 			/* Upgrade header filed is mandatory */
 			if (!isset($this->parsedHeader[self::HEADER_UPGRADE])) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Lack a %s header field", self::HEADER_UPGRADE), self::ERROR_BAD_REQUEST);
 			}
 
 			/* Sec-WebSocket-Version header filed is mandatory */
 			if (!isset($this->parsedHeader[self::HEADER_VERSION])) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Lack a %s header field", self::HEADER_VERSION), self::ERROR_BAD_REQUEST);
 			}
 			
 			/* Sec-WebSocket-Key header filed is mandatory */
 			if (!isset($this->parsedHeader[self::HEADER_KEY])) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Lack a %s header field", self::HEADER_KEY), self::ERROR_BAD_REQUEST);		
 			}
 						
 			/* Connection header filed is mandatory */
 			if (!isset($this->parsedHeader[self::HEADER_CONNECTION])) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Lack a %s header field", self::HEADER_CONNECTION), self::ERROR_BAD_REQUEST
 				);
 			}
 			
 			/* Host header filed is mandatory */
 			if (!isset($this->parsedHeader[self::HEADER_HOST])) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Lack a %s header field", self::HEADER_HOST), self::ERROR_BAD_REQUEST
 				);
 			}
 			
 			/* Upgrade header filed value must be "websocket" */
 			if (strpos(strtolower($this->parsedHeader[self::HEADER_UPGRADE]), 'websocket') === false) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Value of %s header field must be: 'websocket', not '%s'", 
 					self::HEADER_UPGRADE, $this->parsedHeader[self::HEADER_UPGRADE]), self::ERROR_BAD_REQUEST
 				);
@@ -115,34 +116,30 @@ class Handshake {
 			
 			/* Connection header filed value must be "Upgrade" */
 			if (strpos($this->parsedHeader[self::HEADER_CONNECTION], 'Upgrade') === false) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Value of %s header field must be: 'Upgrade'", self::HEADER_CONNECTION), self::ERROR_BAD_REQUEST
 				);
 			}	
 			
 			/* Version header filed valuse must be "13" */
 			if ($this->parsedHeader[self::HEADER_VERSION] != 13) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"Value of header field must be: 13", self::HEADER_VERSION), self::ERROR_UPGRADE_REQUIRED
 				);
 			}
 			
 			/* Key is 16 byte value, that is next base64-encoded. So it is 24 charactes long */
 			if (strlen($this->parsedHeader[self::HEADER_KEY]) != 24) {
-				throw new HandshakeException(sprintf(
+				throw new WebSocketException(sprintf(
 					"The %s is invailed", self::HEADER_KEY), self::ERROR_BAD_REQUEST
 				);
 			}
 			/* Origin Policy */
 			if (!$this->originPolicy()) {
-				throw new OriginException(sprintf( 
+				throw new WebSocketException(sprintf( 
 					"The access from this Origin is forbidden"), self::ERROR_FORBIDDEN
 				);
 			}
-		} catch (\Exception $e) {
-			return $this->httpError($e->getMessage(), $e->getCode());
-		}
-		return $this->handshakeResponse();
 	}
 	/**
 	 * Check if the connection from the origin is permitted
@@ -168,18 +165,18 @@ class Handshake {
 	 * 		Sec-WebSocket-Version: 13
 	 * 		Server: ALICE-DAQ-ACR
 	 */
-	protected function handshakeResponse() {
+	public function handshakeResponse(): string {
 		$accept = base64_encode(
 				sha1(
-					$this->parsedHeader[self::HEADER_KEY] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true
+					$this->parsedHeader[self::HEADER_KEY] . self::WS_GUID, true
 					));
-		$response = array();
-		array_push($response, self::HTTP_PROTOCOL.' 101 Switching Protocols');
-		array_push($response, self::HEADER_UPGRADE.': websocket');
-		array_push($response, self::HEADER_CONNECTION.': Upgrade');
-		array_push($response, self::HEADER_ACCEPT.': ' . $accept);
-		array_push($response, self::HEADER_VERSION.': 13');
-		array_push($response, "");
+		$response = '';
+		$response .= self::HTTP_PROTOCOL.' 101 Switching Protocols' . "\r\n";
+		$response .= self::HEADER_UPGRADE.': websocket' . "\r\n";
+		$response .= self::HEADER_CONNECTION.': Upgrade' . "\r\n";
+		$response .= self::HEADER_ACCEPT.': ' . $accept . "\r\n";
+		$response .= self::HEADER_VERSION.': 13' . "\r\n";
+		$response .= "\r\n";
 		return $response;
 	}
 	/**
@@ -212,7 +209,7 @@ class Handshake {
 		 * On June 2012, the deprecation of "X-" prefix has become official as RFC 6648.
 		 */
 		array_push($response, "Error-Reason: ".$message);
-		array_push($response, "Server: ".Config::$socket['server_name']);
+		//array_push($response, "Server: ".Config::$socket['server_name']);
 		array_push($response, "");
 		return $response;
 	}

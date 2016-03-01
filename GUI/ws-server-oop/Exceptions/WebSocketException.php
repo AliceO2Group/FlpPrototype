@@ -1,13 +1,12 @@
 <?php
 namespace CERN\Alice\DAQ\O2\Exceptions;
 
-use CERN\Alice\DAQ\O2\Log;
+require_once __DIR__.'/CustomException.php';
 
-class ZMQHandlerException extends \Exception {
+class WebSocketException extends CustomException {
     public function __construct($message = null, $code = null, $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        Log::write($message, 'erro');
     }
 }
 ?>

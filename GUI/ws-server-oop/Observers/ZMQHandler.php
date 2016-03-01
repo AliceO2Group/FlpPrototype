@@ -3,10 +3,11 @@
 /// \brief Definition and implementation of the CERN\Alice\DAQ\O2\ZMQHandler class.
 ///
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
+declare(strict_types=1);
 namespace CERN\Alice\DAQ\O2;
-require_once __DIR__.'/../Exceptions/ZMQHandlerException.php';
+require_once __DIR__.'/../Exceptions/ZMQException.php';
 
-use CERN\Alice\DAQ\O2\Exceptions\ZMQHandlerException;
+use CERN\Alice\DAQ\O2\Exceptions\ZMQException;
 use ZMQ, ZMQSocket, ZMQContext;
 
 /// Handles connection with ZeroMQ sockets
@@ -19,8 +20,8 @@ class ZMQHandler {
 	private $request;
 
 	const ZMQ_REQ_TIMEOUT = 1000;
-	const SUB = "tcp://127.0.0.1:5444/";
-	const REQ = "tcp://127.0.0.1:6444/";
+	const SUB = "tcp://127.0.0.1:5444";
+	const REQ = "tcp://127.0.0.1:6444";
 
 	public function __construct() {
 		$this->subscriber = new ZMQSocket(new ZMQContext(), ZMQ::SOCKET_SUB);
@@ -34,22 +35,23 @@ class ZMQHandler {
 			Log::write(sprintf("Unable to connect to ZeroMQ socket: %s", $e->getMessage()));
 		}
 	}
-	public function sendMessage($message) {
+	public function sendMessage(string $message): string {
+		return "ZMQ conectivity suppressed in ZMQHandler::sendMessage";
 		try {
 			$this->request->send($message);
 			if (($message = $this->request->recv()) === false) {
-				throw new ZMQHandlerException('ZMQ_REQ Timeout after ' . self::ZMQ_REQ_TIMEOUT . 'ms');
+				throw new ZMQException('ZMQ_REQ Timeout after ' . self::ZMQ_REQ_TIMEOUT . 'ms');
 			}
 		} catch (\Exception $e) {
 			Log::write(sprintf("Unable to communicate with ZMQ_REQ: %s", $e->getMessage()));
-			return false;
+			return "";
 		}
 		return $message;
 	}
-	public function checkMessage() {
+	public function checkMessage(): string {
 		$string = $this->subscriber->recv(ZMQ::MODE_DONTWAIT);
-		if (($string === null) || (strlen($string) <= 0) || ($string === false)) {
-			return false;
+		if (($string === null) || ($string === false) || (strlen($string) <= 0)) {
+			return "";
 		}
 		return $string;
 	}

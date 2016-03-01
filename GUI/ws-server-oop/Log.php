@@ -16,7 +16,7 @@ class Log {
 	/**
 	 * Preparse the log message: adds the date, time and rank. Echos the message and saves it to the file specified in $file variable
 	 */
-	public static function write($message, $rank = 'info', $code = null) {
+	public static function write(string $message, string $rank = 'info', int $code = null) {
 		$filename = sprintf("%s%s.log", self::$prefix, date("Y-m-d"));
 		$parsed = sprintf("%s %s: %s".PHP_EOL, date("Y-m-d H:i:s"), $rank, $message);
 		echo $parsed;

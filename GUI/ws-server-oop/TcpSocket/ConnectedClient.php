@@ -2,37 +2,35 @@
 namespace CERN\Alice\DAQ\O2;
 
 require_once __DIR__.'/../WebSocket/Handshake.php';
-require_once __DIR__.'/../Exceptions/ClientException.php';
+require_once __DIR__.'/../Exceptions/TcpException.php';
 require_once __DIR__.'/../WebSocket/Frame.php';
 
-use CERN\Alice\DAQ\O2\Exceptions\ClientException;
+use CERN\Alice\DAQ\O2\Exceptions\TcpException;
 
 
 class ConnectedClient extends Socket {
 
 	const HANDSHAKE_2_BYTES = 'GE';
+	const END_OF_HEADER = "\r\n\r\n";	
 
 	public function __construct(&$socket) {
 		parent::__construct($socket);
 	}
 	public function readSocket() {
     	try {
-	    	if (($rawheader = $this->read(2)) == false) {
-				throw new ClientException(sprintf("%s, Cannot read first 2 bytes", $this->hostname));
-			}
-			if (strcmp($rawheader, self::HANDSHAKE_2_BYTES) === 0) { //is_string
-				$this->handshake();
-				return null;
-			} else {
-				$frame = $this->readFrame($rawheader);
-				$frame->controlFrame();
-				return $this->sendResponse($frame->getOpcode(), $frame->getPayload());
-
-			}
+		$rawheader = $this->read(2);
+		if (strcmp($rawheader, self::HANDSHAKE_2_BYTES) === 0) { //is_string
+			$this->handshake();
+			return null;
+		} else {
+			$frame = $this->readFrame($rawheader);
+			$frame->controlFrame();
+			return $this->sendResponse($frame->getOpcode(), $frame->getPayload());
+		}
     	} catch (\Exception $e) {
-    		$this->close();
-			return false;
-		}	
+		$this->close();
+		return false;
+	}	
     }
     /**
 	 * Sends a response to client's request:
@@ -56,35 +54,28 @@ class ConnectedClient extends Socket {
 	}
 	public function sendFrame($message, $opcode = Frame::OPCODE_TXT) {
 		$fToSend = new Frame($opcode, $message);
-
-		if ($this->write($fToSend->encodeFrame()) === false) {
-			throw new ClientException(sprintf("Could not write frame [%d]: %s", $opcode, substr($message, 0, 30)));
-		}
+		$this->write($fToSend->encodeFrame());
 		unset($fToSend);	
 	}
-    private function handshake() {
-    	if (($read = $this->read()) == false) {
-			throw new ClientException(sprintf("%s, Cannot read handshake", $this->hostname));
-		}
-		$read = self::HANDSHAKE_2_BYTES.$read;
-    	$h = new Handshake($read);
-		$response = $h->parseHandshake();
-		unset($h);
-		$this->sendHttp($response);
-		if (strpos($response[0], '101') == false) {
-			throw new ClientException(sprintf("%s Invaild handshake", $this->hostname));	
-		}
-    }
+	protected function readHandshake(): string
+	{
+		$output = '';
+                for (;;) {
+                        $output .= $this->read();
+                        if (substr($output, -4) == self::END_OF_HEADER) break;
+                }
+		return $output;
 
-    protected function sendHttp($response) {
-		foreach ($response as $r) {
-			if ($this->write($r . "\r\n") === false) {
-				throw new ClientException(sprintf("%s, Cannot send HTTP response", $this->hostname));
-			}
-		}
-		return true;
 	}
-
+    private function handshake() {
+	$read = self::HANDSHAKE_2_BYTES.$this->readHandshake();
+    	$h = new Handshake($read);
+	$this->write($h->handshakeResponse());
+		//unset($h);
+		/*if (strpos($response[0], '101') == false) {
+			throw new WebSocketException(sprintf("%s Invaild handshake", $this->hostname));	
+		}*/
+    }
 	/**
 	 * Reads the frame from the client: first two bytes which are processed in Frame class (FIN, RSV, Opcode, MASK, Payload length);
 	 * based on these information it reads 0, 2 or 8 bytes (extended payload length); then if the MASK is set to 1, it reads the
@@ -94,8 +85,7 @@ class ConnectedClient extends Socket {
 	 * @throws WebSocketFrameException if the frame doesn't meet the requirements of RFC
 	 * @return parsed frame as a Frame object
 	 */
-	private function readFrame($rawheader) {
-		//try {	
+	public function readFrame($rawheader) {
 			$frame = new Frame();
 			$frame->processHeader($rawheader);
 			if ($frame->getLength() <= 125) {
@@ -142,11 +132,7 @@ class ConnectedClient extends Socket {
 				$frame->setPayload($payload[1]);
 			}
 			return $frame;
-		/*}
-		catch (\Exception $e) {
-			$this->close();
-			return false;
-		}*/
+	
 	}
 }
 ?>

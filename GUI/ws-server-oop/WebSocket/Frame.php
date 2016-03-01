@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 namespace CERN\Alice\DAQ\O2;
 
-require_once __DIR__.'/../Exceptions/WebSocketFrameException.php';
+require_once __DIR__.'/../Exceptions/WebSocketException.php';
 
-use CERN\Alice\DAQ\O2\Exceptions\WebSocketFrameException;
+use CERN\Alice\DAQ\O2\Exceptions\WebSocketException;
 /**
  * Decodes and stores incomming frames or encodes outgoing frames
  * 
@@ -81,7 +82,8 @@ class Frame {
 	 * if is needed (looks like bug cos each websocket frame need first 2 bytes)
 	 * @var $rawHeader data from the socket
 	 */
-	public function processHeader($rawheader) {
+	public function processHeader(string $rawheader) 
+	{
 		if (strlen($rawheader) < 2) {
 			$f = unpack('CByte', $rawheader);
 			$this->fin 		= (0x80 & $f['Byte']) >> 7;
@@ -100,7 +102,8 @@ class Frame {
 	/**
 	 * Encodes the frame, before writting socket
 	 */
-	public function encodeFrame() {
+	public function encodeFrame(): string 
+	{
 		$byte = array();
 		$byte[1] = $this->fin << 7;
 		$byte[1] = $byte[1] | $this->rsv << 4;
@@ -128,7 +131,6 @@ class Frame {
 	 * 
 	 */
 	public function controlFrame() {
-		//try {
 			if ($this->getRsv() != 0) {
 				echo $this->frameDump();
 				throw new WebSocketFrameException("RSV must be 0", 1002);
@@ -156,10 +158,6 @@ class Frame {
 				default: /* reserveed: 0x3 - 0x7 and 0xB - 0xF */ 
 					throw new WebSocketFrameException("Unknows WS frame");
 			}
-		/*} catch (\Exception $e) {
-			return false;
-		} 
-		return true;*/
 	}
 	/**
 	 * Mask or unmask the payload in the frame

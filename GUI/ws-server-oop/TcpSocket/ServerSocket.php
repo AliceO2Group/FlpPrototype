@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace CERN\Alice\DAQ\O2;
 require_once __DIR__.'/Socket.php';
 require_once __DIR__.'/ConnectedClient.php';
@@ -18,7 +19,7 @@ class ServerSocket {
 	}
 	private function bindServerSocket() {
 		$this->serverSocket = stream_socket_server(
-			'tcp://127.0.0.1:4444/', 
+			'tcp://pcald03.cern.ch:4444', 
 			$errno, $errstr, 
 			STREAM_SERVER_BIND|STREAM_SERVER_LISTEN
 		);
@@ -27,7 +28,7 @@ class ServerSocket {
 		for (;;) {
 			$this->checkNewClients();
 			$this->readClientSockets();
-			if (($push = $this->zmqh->checkMessage()) !== false) {
+			if (strlen($push = $this->zmqh->checkMessage()) !== 0) {
 				$this->pushToAll($push);
 			}
 			usleep(10000);
@@ -38,9 +39,9 @@ class ServerSocket {
 		$write  = NULL;
 		$except = NULL;
 		$ssArray = array($this->serverSocket);
-		if (($no_changed = stream_select($ssArray, $write, $except, 0)) === false) {
+		if (($noChanged = stream_select($ssArray, $write, $except, 0)) === false) {
         	//no awaiting connection
-    	} elseif ($no_changed > 0) {
+    	} elseif ($noChanged > 0) {
     		$socket = stream_socket_accept($this->serverSocket);
     		if ($socket) {
     			$id = intval($socket);
@@ -51,14 +52,20 @@ class ServerSocket {
     		}
     	}
 	}
-	private function getSocketsArray() {
+	private function getSocketsArray(): array 
+	{
 		$sockets = array();
-		foreach ($this->clients as &$client) {
+		foreach ($this->clients as $key => &$client) {
+			// checks if socket is still conected (resource of type stream)
+			if ($client->isValid() === false) {
+				unset($this->clients[$key]);
+				continue;
+			}		
 			array_push($sockets, $client->getSocket());
 		}
 		return $sockets;
 	}
-	private function pushToAll($payload) {
+	private function pushToAll(string $payload) {
 		foreach ($this->clients as &$client) {
 			$client->sendFrame($payload);
 		}
@@ -66,9 +73,9 @@ class ServerSocket {
 	private function readClientSockets() {
 		if (empty($sockets = $this->getSocketsArray())) return;
 		$write  = $except = NULL;
-		if (($no_changed = stream_select($sockets, $write, $except, 0)) === false) {
+		if (($noChanged = stream_select($sockets, $write, $except, 0)) === false) {
         	//no awaiting connection
-    	} elseif ($no_changed > 0) {
+    	} elseif ($noChanged > 0) {
     		foreach ($sockets as $socket) {
     			$id = intval($socket);
     			$data = $this->clients[$id]->readSocket();
