@@ -6,6 +6,11 @@
 declare(strict_types=1);
 namespace CERN\Alice\DAQ\O2;
 
+require_once __DIR__.'/../Exceptions/TcpException.php';
+
+use CERN\Alice\DAQ\O2\Exceptions\TcpException;
+
+
 /// Represents TCP-level logic of client connected to the server 
 ///
 /// Provides basic functions to deal with TCP socket: read, write and close.
@@ -42,7 +47,7 @@ class Socket {
 		$this->socket  = $socket;
 		$this->id = intval($this->socket);
 		$this->hostname = stream_socket_get_name($this->socket, true);
-		//stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv3_SERVER);
+		//stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv2_CLIENT);
 	}
 	
 	/// Writes the socket
@@ -51,10 +56,11 @@ class Socket {
 	/// \throw TcpException when failed to write the socket, or number of written bytes is 0
 	protected function write(string $response): int
 	{
-		if (get_resource_type($this->socket) === "Unknown") {
-			throw new TcpException(sprintf("Could not write socket because its type is Unknown : %s", substr($data, 0, 30)));
+		if (!$this->isValid()) {
+			throw new TcpException(sprintf("Could not write socket because of its invalid type : %s", substr($data, 0, 30)));
 		}
-		if (($bytes = stream_socket_sendto($this->socket, $response)) < 0) {
+		//if (($bytes = stream_socket_sendto($this->socket, $response)) < 0) {
+		if (($bytes = fwrite($this->socket, $response)) < 0) {
 			throw new TcpException(sprintf("Could not write socket : %s", substr($response, 0, 30)));
 		}
 		Log::write(sprintf("%s <-- Sending %d bytes", $this->hostname, $bytes));
@@ -64,13 +70,35 @@ class Socket {
 	/// Reads the socket
 	/// \param  number of bytes to read, default = 1500
 	/// \return string that was read from the socket OR false when failed 	
-	protected function read($toRead = 1500): string 
+	protected function readNotExactly(): string 
 	{
-		if (($return = stream_socket_recvfrom($this->socket, $toRead)) === false) {
+		if (!$this->isValid()) {
+                        throw new TcpException(sprintf("Could not read socket because its has invalid type : %s", substr($data, 0, 30)));
+                }
+		//if (($return = stream_socket_recvfrom($this->socket, $toRead)) === false) {
+		if (($return = fread($this->socket, 1500)) === false) {
 			throw new TcpException(sprintf("%s, Error while reading %d bytes of data", $toRead, $this->hostname));
 		}
-		Log::write(sprintf("%s --> Reading %d bytes", $this->hostname, strlen($return)));
+		Log::write(sprintf("%s --> Reading(NX) %d bytes", $this->hostname, strlen($return)));
 		return $return;
+	}
+	protected function read(int $toRead): string 
+	{
+		if (!$this->isValid()) {
+                        throw new TcpException(sprintf("Could not read socket because its has invalid type : %s", substr($data, 0, 30)));
+                }
+                //if (($return = stream_socket_recvfrom($this->socket, $toRead)) === false) {
+	        $return = '';
+		for (;;) {
+			if (($read = fread($this->socket, $toRead)) === false) {
+        	                throw new TcpException(sprintf("%s, Error while reading %d bytes of data", $toRead, $this->hostname));
+                	}
+			$return .= $read;
+			if (($toRead -= strlen($read)) === 0) break;
+		}
+                Log::write(sprintf("%s --> Reading (EX) %d bytes", $this->hostname, strlen($return)));
+                return $return;
+
 	}
 	
 	/// Closes to socket

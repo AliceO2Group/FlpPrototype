@@ -1,6 +1,9 @@
 <?php
-/// \file ZMQHandler.php
-/// \brief Definition and implementation of the CERN\Alice\DAQ\O2\ZMQHandler class.
+/// \brief Handles connectivity with ZeroMQ servers
+///
+/// Two ZeroMQ socket patterns:
+///   1. REQ-REP: Messages received from WebSocket client is forwarded to request socket of ZeroMQ server; then the server's response goes back to the client
+///   2. PUB-SUB: Messages coming from publisher socket are broadcast to all connected WebSocket clients
 ///
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
 declare(strict_types=1);
@@ -10,37 +13,39 @@ require_once __DIR__.'/../Exceptions/ZMQException.php';
 use CERN\Alice\DAQ\O2\Exceptions\ZMQException;
 use ZMQ, ZMQSocket, ZMQContext;
 
-/// Handles connection with ZeroMQ sockets
-///
-/// Subscribes to ZeroMQ server's sockets: (1) PUL-SUB (2) REQ-REP
-/// It is created for each connected client.
 class ZMQHandler {
-
+	/// ZMQ subsriber socket
 	private $subscriber;
+
+	/// ZMQ request socket
 	private $request;
-
-	const ZMQ_REQ_TIMEOUT = 1000;
-	const SUB = "tcp://127.0.0.1:5444";
-	const REQ = "tcp://127.0.0.1:6444";
-
-	public function __construct() {
+	
+	/// Connects to PUB-SUB and REQ-REP sockets
+	/// Subscribes to all incoming messages (empty filter)
+	public function __construct() 
+	{
 		$this->subscriber = new ZMQSocket(new ZMQContext(), ZMQ::SOCKET_SUB);
 		$this->request = new ZMQSocket(new ZMQContext(), ZMQ::SOCKET_REQ);
 		try {
-			$this->subscriber->connect(self::SUB);
-			$this->request->connect(self::REQ);
-			$this->request->setSockOpt(ZMQ::SOCKOPT_RCVTIMEO, self::ZMQ_REQ_TIMEOUT);
-			$this->subscriber->setSockOpt(ZMQ::SOCKOPT_SUBSCRIBE, ""); //this is obligatory to subscribe to all filters
+			$this->subscriber->connect(Config::$zmq['sub']);
+			$this->request->connect(Config::$zmq['req']);
+			$this->request->setSockOpt(ZMQ::SOCKOPT_RCVTIMEO, Config::$zmq['timeout']);
+			$this->subscriber->setSockOpt(ZMQ::SOCKOPT_SUBSCRIBE, "");
 		} catch (\Exception $e) {
 			Log::write(sprintf("Unable to connect to ZeroMQ socket: %s", $e->getMessage()));
 		}
 	}
-	public function sendMessage(string $message): string {
-		return "ZMQ conectivity suppressed in ZMQHandler::sendMessage";
+	
+	/// Sends message to  REQ-REP socket and than awaits response
+	/// \param $message - message to be sent
+	/// \return response from ZMQ server
+	public function sendMessage(string $message): string 
+	{
+		return $message;
 		try {
 			$this->request->send($message);
 			if (($message = $this->request->recv()) === false) {
-				throw new ZMQException('ZMQ_REQ Timeout after ' . self::ZMQ_REQ_TIMEOUT . 'ms');
+				throw new ZMQException('ZMQ_REQ Timeout after ' . Config::$zmq['timeout'] . 'ms');
 			}
 		} catch (\Exception $e) {
 			Log::write(sprintf("Unable to communicate with ZMQ_REQ: %s", $e->getMessage()));
@@ -48,7 +53,11 @@ class ZMQHandler {
 		}
 		return $message;
 	}
-	public function checkMessage(): string {
+	
+	/// Checks is there any message provided by publisher
+	/// \returns received message (or empty string)
+	public function checkMessage(): string 
+	{
 		$string = $this->subscriber->recv(ZMQ::MODE_DONTWAIT);
 		if (($string === null) || ($string === false) || (strlen($string) <= 0)) {
 			return "";

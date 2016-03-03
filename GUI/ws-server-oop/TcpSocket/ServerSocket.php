@@ -4,6 +4,7 @@ namespace CERN\Alice\DAQ\O2;
 require_once __DIR__.'/Socket.php';
 require_once __DIR__.'/ConnectedClient.php';
 require_once __DIR__.'/../Observers/ZMQHandler.php';
+require_once __DIR__.'/SslContext.php';
 
 class ServerSocket {
 	private $clients;
@@ -19,10 +20,12 @@ class ServerSocket {
 	}
 	private function bindServerSocket() {
 		$this->serverSocket = stream_socket_server(
-			'tcp://pcald03.cern.ch:4444', 
+			Config::$socket['url'], 
 			$errno, $errstr, 
-			STREAM_SERVER_BIND|STREAM_SERVER_LISTEN
+			STREAM_SERVER_BIND|STREAM_SERVER_LISTEN,
+			SslContext::getContext()
 		);
+		stream_socket_enable_crypto($this->serverSocket, false);
 	}
 	public function listen() {
 		for (;;) {
@@ -80,10 +83,10 @@ class ServerSocket {
     			$id = intval($socket);
     			$data = $this->clients[$id]->readSocket();
     			//returns Resource ID that is in closed state
-    			if (gettype($data) == 'integer') {
+    			if (strlen($data) === 0) {
     				unset($this->clients[$data]);
     				//received payload of text frame
-    			} else if (gettype($data) == 'string') {
+    			} else {
     				$zmqRsp = $this->zmqh->sendMessage($data);
     				$this->pushToAll($zmqRsp);
     			}

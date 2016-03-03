@@ -11,13 +11,11 @@ require_once __DIR__.'/TcpSocket/ConnectedClient.php';
 
 use CERN\Alice\DAQ\O2\Exceptions\TcpException;
 
+/// WebSocket client to test server implementation
 class Client extends ConnectedClient {
 	
-	/// Client socket timeout
+	/// Socket timeout
 	const SOCKET_TIMEOUT = 30;
-	
-	/// TCP protocol
-	const PROTOCOL_TCP = 'tcp://';
 	
 	/// Remote endpoint URL (server)
 	private $url;
@@ -28,19 +26,19 @@ class Client extends ConnectedClient {
 	/// Validates and stores provided URL
 	public function __construct(string $url) 
 	{
-		if (\filter_var(self::PROTOCOL_TCP . $url, FILTER_VALIDATE_URL) === false) {
+		if (\filter_var($url, FILTER_VALIDATE_URL) === false) {
 			throw new TcpException(sprintf("%s Provided URL is invalid", $url));
 		}
 		$this->url = $url;
 		$this->local = gethostname();
 	}
 
-	/// Connects to a server using $url
+	/// Connects to server using
 	/// Sets socket timeout
 	/// throw TcpException when it fails to connect
 	public function connect() 
 	{
-		$socket = stream_socket_client(self::PROTOCOL_TCP . $this->url, $errno, $errorMessage);
+		$socket = stream_socket_client($this->url, $errno, $errorMessage);
 		if ($socket === false) {
 			throw new TcpException("Failed to connect: $errorMessage");
 		}
@@ -54,8 +52,8 @@ class Client extends ConnectedClient {
 		$this->close();
 	}
 
-	/// Generates and sends WebSocket Handshake
-	/// \return generates handshake
+	/// Generates and sends WebSocket handshake
+	/// \return generated handshake
 	public function handshake(): string
 	{
 		$hdshk = '';
@@ -71,7 +69,8 @@ class Client extends ConnectedClient {
 		return $hdshk;
 	}
 
-	/// Compares handshake received from server with the one calculates on client side
+	/// Compares handshake received from server with one calculates on client side
+	/// \param $sentHandshake - handshake that was sent to server
 	/// return true/false whether handshake matches or not
 	public function verifyHandshake(string $sentHandshake) 
 	{
@@ -79,7 +78,7 @@ class Client extends ConnectedClient {
 		return ($h->handshakeResponse() == $this->readHandshake());
 	}
 
-	/// Sends close frame to server
+	/// Disconnects from server by sending closing frame
 	public function disconnect() 
 	{
 		$this->sendFrame('', Frame::OPCODE_CLS);
@@ -97,7 +96,6 @@ $c->connect();
 $h = $c->handshake();
 $c->verifyHandshake($h);
 $c->sendFrame("Hello");
-var_dump($c->readSocket());
-sleep(2);
+echo $c->readSocket();
 $c->disconnect();
 ?>
