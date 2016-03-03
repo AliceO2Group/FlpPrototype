@@ -27,17 +27,18 @@ class ConnectedClient extends Socket {
 
 	/// Reads handshake (if it was not done before) or WebSocket frame
 	/// \return read message that is forwarder to ZMQ server
-	public function readSocket():
+	public function readSocket(): string
 	{
     		try {
 			if (!$this->handshaked) {
 				$this->handshake();
-				return json_encode(array('action' => 'connected', 'hostname' => $this->hostname), true);
+				return '';
 			} else {
 				$frame = $this->readFrame();
 				/// check whether frame is correct or not
 				$frame->controlFrame();
-				return $this->sendResponse($frame->getOpcode(), $frame->getPayload());
+				//return $frame;
+				return $this->handleControlFrame($frame->getOpcode(), $frame->getPayload());
 			}
     		} catch (\Exception $e) {
 			$this->close();
@@ -51,7 +52,7 @@ class ConnectedClient extends Socket {
 	/// - ping frame - sends a pong frame
 	/// \param $opcode - WebSocket opcode (frame type)
 	/// \param $payload - frame payload
-	private function sendResponse(int $opcode, string $payload): string
+	private function handleControlFrame(int $opcode, string $payload): string
 	{
 		if ($opcode == Frame::OPCODE_TXT) {
 			return $payload;
@@ -61,7 +62,7 @@ class ConnectedClient extends Socket {
 			return '';
 		} else if ($opcode == Frame::OPCODE_PING) {
 			$this->sendFrame($payload, Frame::OPCODE_PONG);
-			return null;
+			return '';
 		}	
 	}
 	public function sendFrame($message, $opcode = Frame::OPCODE_TXT) {

@@ -24,6 +24,9 @@ class Socket {
 
 	/// The orgin of the connection
 	protected $hostname;
+	
+	/// States whether socket is closed or open
+	private $isOpen;
 
 	/// Socket reference getter, needed by ServerSocket class to pass it to socket_select
 	/// \return 	reference to socket
@@ -45,11 +48,19 @@ class Socket {
 	public function __construct(&$socket)
 	{
 		$this->socket  = $socket;
+		$this->isOpen = true;
 		$this->id = intval($this->socket);
 		$this->hostname = stream_socket_get_name($this->socket, true);
 		//stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv2_CLIENT);
 	}
 	
+	public function __destruct() 
+	{
+		if ($this->isOpen) {
+			$this->close();	
+			Log::write(sprintf("%s, Destructor closed the socket!", $this->hostname));
+		}
+	}
 	/// Writes the socket
 	/// \param 	string that is written to socket
 	/// \return number of written bytes
@@ -106,6 +117,7 @@ class Socket {
 	{
 		stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
 		fclose($this->socket);
+		$this->isOpen = false;
 		Log::write(sprintf("Socket #%d has been closed.", $this->id));
 	}
 }
