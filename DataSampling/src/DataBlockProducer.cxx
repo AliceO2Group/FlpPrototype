@@ -19,7 +19,7 @@ DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurre
 
 DataBlockProducer::~DataBlockProducer()
 {
-  delete mCurrent->data;
+  delete[] mCurrent->data;
   delete mCurrent;
 }
 
@@ -47,6 +47,7 @@ void DataBlockProducer::regenerate()
       delete[] mCurrent->data;
     }
     delete mCurrent;
+    mCurrent = 0;
   }
 
   // generate payload size if needed
