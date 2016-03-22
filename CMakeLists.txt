@@ -23,6 +23,11 @@ include(UninstallTarget)
 #ADD_DEPENDENCIES(uninstall uninstallInfoLogger uninstallProjA uninstallConfiguration uninstallDataFormat
 #        uninstallDataSampling uninstallControl uninstallMonitoring uninstallQualityControl)
 
+# Target clang-format
+include(clang-format)
+
+message(Common)
+add_subdirectory(Common)
 message(InfoLogger)
 add_subdirectory(InfoLogger)
 message(projectTemplate)
@@ -43,3 +48,4 @@ message(QualityControl)
 add_subdirectory(QualityControl)
 #message(Readout)
 #add_subdirectory(Readout)
+
