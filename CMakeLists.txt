@@ -26,8 +26,8 @@ include(UninstallTarget)
 # Target clang-format
 #include(clang-format)
 
-message(Common)
-add_subdirectory(Common)
+#message(Common)
+#add_subdirectory(Common)
 message(InfoLogger)
 add_subdirectory(InfoLogger)
 message(projectTemplate)
