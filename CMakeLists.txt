@@ -24,7 +24,7 @@ include(UninstallTarget)
 #        uninstallDataSampling uninstallControl uninstallMonitoring uninstallQualityControl)
 
 # Target clang-format
-include(clang-format)
+#include(clang-format)
 
 message(Common)
 add_subdirectory(Common)
