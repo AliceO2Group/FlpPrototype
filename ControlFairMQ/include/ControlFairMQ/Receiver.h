@@ -37,8 +37,8 @@ class Receiver : public FairMQDevice
     InfoLogger::InfoLogger mLogger;       ///< Logger object
 };
 
-} // namespace Hello
-} // namespace ControlFairMQ
 } // namespace Core
+} // namespace ControlFairMQ
+} // namespace AliceO2
 
 #endif // ALICEO2_CONTROLFAIRMQ_CORE_RECEIVER_H

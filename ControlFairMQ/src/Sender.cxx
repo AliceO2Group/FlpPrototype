@@ -4,10 +4,13 @@
 /// \author  Vasco Barroso, CERN
 
 #include "ControlFairMQ/Sender.h"
-#include <FairMQMessage.h>
-#include <FairMQTransportFactory.h>
-#include <iostream>
+
+#include <boost/thread.hpp>
 #include <memory>
+
+//#include <FairMQMessage.h>
+//#include <FairMQTransportFactory.h>
+//#include <iostream>
 
 namespace AliceO2 {
 namespace ControlFairMQ {
@@ -24,21 +27,24 @@ Sender::~Sender()
 {
 }
 
+void Sender::CustomCleanup(void *data, void *object)
+{
+    delete (std::string*)object;
+}
+
 void Sender::Run()
 {
   while (CheckCurrentState(RUNNING)) {
-    getLogger() << "In Run : string is : " << mText << InfoLogger::endm;
+	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+
+	getLogger() << "In Run : string is : " << mText << InfoLogger::endm;
 
     std::string *text = new std::string(mText);
-
-    std::unique_ptr<FairMQMessage> msg(
-      fTransportFactory->CreateMessage(const_cast<char *>(text->c_str()), text->length(), NULL, text));
+    std::unique_ptr<FairMQMessage> msg(NewMessage(const_cast<char*>(text->c_str()), text->length(), CustomCleanup, text));
 
     getLogger() << "Sending \"" << mText << "\"" << InfoLogger::endm;
 
-    fChannels.at("data-out").at(0).Send(msg);
-
-    //boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+    Send(msg, "data");
   }
 }
 
@@ -47,6 +53,6 @@ InfoLogger& Sender::getLogger()
   return mLogger;
 }
 
-} // namespace AlfaTest
-} // namespace ProjectTemplate
+} // namespace Core
+} // namespace ControlFairMQ
 } // namespace AliceO2

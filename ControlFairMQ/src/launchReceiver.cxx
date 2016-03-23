@@ -18,6 +18,7 @@ namespace ControlFairMQ = AliceO2::ControlFairMQ;
 int main(int argc, char* argv[])
 {
   std::string configFile;
+  std::string deviceId;
   program_options::options_description commandLineOptions("Allowed Options");
   program_options::variables_map optionsValues;
   FairMQProgOptions config;
@@ -28,6 +29,7 @@ int main(int argc, char* argv[])
     ("help,h", "Print help message")
     ("version,v", "Show program name/version banner and exit.")
     ("revision", "Print the revision number")
+	("id", program_options::value<std::string>(&deviceId), "Device ID")
     ("config-file,c", program_options::value<std::string>(&configFile), "ALFA Configuration file path");
 
   try {
@@ -43,7 +45,7 @@ int main(int argc, char* argv[])
 
     // check for version
     if (optionsValues.count("version")) {
-      logger << "sampleCollectorApMon version " << ControlFairMQ::Core::Version::getString() << InfoLogger::endm;
+      logger << "launchReceiver version " << ControlFairMQ::Core::Version::getString() << InfoLogger::endm;
       return EXIT_SUCCESS;
     }
 
@@ -57,6 +59,12 @@ int main(int argc, char* argv[])
     if (!optionsValues.count("config-file")) {
       throw program_options::error("missing mandatory option --config-file");
     }
+
+    // check device ID
+    if (!optionsValues.count("id")) {
+      throw program_options::error("missing mandatory option --id");
+    }
+
   }
   catch(program_options::error& e)
   {
@@ -71,7 +79,7 @@ int main(int argc, char* argv[])
   try
   {
     // Get the config for the receiver
-    config.UserParser<FairMQParser::JSON>("alfa.json", "receiver");
+	  config.UserParser<FairMQParser::JSON>(configFile, deviceId);
 
     // Set the channels based on the config
     receiver.fChannels = config.GetFairMQMap();
@@ -82,8 +90,9 @@ int main(int argc, char* argv[])
 #else
     FairMQTransportFactory* transportFactory = new FairMQTransportFactoryZMQ();
 #endif
-
     receiver.SetTransport(transportFactory);
+
+    receiver.SetProperty(ControlFairMQ::Core::Receiver::Id, deviceId);
 
     receiver.ChangeState("INIT_DEVICE");
     receiver.WaitForEndOfState("INIT_DEVICE");

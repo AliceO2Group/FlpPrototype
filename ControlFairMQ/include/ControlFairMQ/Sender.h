@@ -26,6 +26,8 @@ class Sender : public FairMQDevice
     /// Destructor
     virtual ~Sender();
 
+    static void CustomCleanup(void* data, void* hint);
+
   protected:
     /// Cleanup method
     //static void CustomCleanup(void *data, void *object);
@@ -41,8 +43,8 @@ class Sender : public FairMQDevice
     InfoLogger::InfoLogger mLogger;       ///< Logger object
 };
 
-} // namespace Hello
-} // namespace ControlFairMQ
 } // namespace Core
+} // namespace ControlFairMQ
+} // namespace AliceO2
 
 #endif // ALICEO2_CONTROLFAIRMQ_CORE_SENDER_H

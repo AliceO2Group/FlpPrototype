@@ -17,6 +17,7 @@ namespace ControlFairMQ = AliceO2::ControlFairMQ;
 int main(int argc, char* argv[])
 {
   std::string configFile;
+  std::string deviceId;
   program_options::options_description commandLineOptions("Allowed Options");
   program_options::variables_map optionsValues;
   FairMQProgOptions config;
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
     ("help,h", "Print help message")
     ("version,v", "Show program name/version banner and exit.")
     ("revision", "Print the revision number")
+	("id", program_options::value<std::string>(&deviceId), "Device ID")
     ("config-file,c", program_options::value<std::string>(&configFile), "ALFA Configuration file path");
 
   try {
@@ -42,7 +44,7 @@ int main(int argc, char* argv[])
 
     // check for version
     if (optionsValues.count("version")) {
-      logger << "sampleCollectorApMon version " << ControlFairMQ::Core::Version::getString() << InfoLogger::endm;
+      logger << "launchSender version " << ControlFairMQ::Core::Version::getString() << InfoLogger::endm;
       return EXIT_SUCCESS;
     }
 
@@ -56,6 +58,11 @@ int main(int argc, char* argv[])
     if (!optionsValues.count("config-file")) {
       throw program_options::error("missing mandatory option --config-file");
     }
+
+    // check device ID
+    if (!optionsValues.count("id")) {
+      throw program_options::error("missing mandatory option --id");
+    }
   }
   catch(program_options::error& e)
   {
@@ -66,15 +73,17 @@ int main(int argc, char* argv[])
   }
 
   ControlFairMQ::Core::Sender sender;
+  sender.CatchSignals();
 
   try {
     // Load configuration for sender
-    config.UserParser<FairMQParser::JSON>(configFile, "sender");
+    config.UserParser<FairMQParser::JSON>(configFile, deviceId);
 
     // Set the channels based on the configuration
     sender.fChannels = config.GetFairMQMap();
 
     // Get the proper transport factory
+
 #ifdef NANOMSG
     FairMQTransportFactory* transportFactory = new FairMQTransportFactoryNN();
 #else
@@ -82,7 +91,7 @@ int main(int argc, char* argv[])
 #endif
     sender.SetTransport(transportFactory);
 
-    //  sender.go();  // poller is null if we don't use the state machine of the device
+    sender.SetProperty(ControlFairMQ::Core::Sender::Id, deviceId);
 
     sender.ChangeState("INIT_DEVICE");
     sender.WaitForEndOfState("INIT_DEVICE");
