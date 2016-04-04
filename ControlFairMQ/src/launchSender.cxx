@@ -100,7 +100,15 @@ int main(int argc, char* argv[])
     sender.WaitForEndOfState("INIT_TASK");
 
     sender.ChangeState("RUN");
-    sender.InteractiveStateLoop();
+    sender.WaitForEndOfState("RUN");
+
+    sender.ChangeState("RESET_TASK");
+    sender.WaitForEndOfState("RESET_TASK");
+
+    sender.ChangeState("RESET_DEVICE");
+    sender.WaitForEndOfState("RESET_DEVICE");
+
+    sender.ChangeState("END");
   }
   catch (std::exception &e) {
     logger << e.what() << InfoLogger::endm;

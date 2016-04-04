@@ -101,7 +101,16 @@ int main(int argc, char* argv[])
     receiver.WaitForEndOfState("INIT_TASK");
 
     receiver.ChangeState("RUN");
-    receiver.InteractiveStateLoop();
+    receiver.WaitForEndOfState("RUN");
+
+    receiver.ChangeState("RESET_TASK");
+    receiver.WaitForEndOfState("RESET_TASK");
+
+    receiver.ChangeState("RESET_DEVICE");
+    receiver.WaitForEndOfState("RESET_DEVICE");
+
+    receiver.ChangeState("END");
+
   }
   catch (std::exception& e)
   {
