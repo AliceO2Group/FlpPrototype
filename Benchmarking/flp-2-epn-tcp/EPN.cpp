@@ -1,3 +1,8 @@
+/// Boost Asio - EPN
+/////
+///// \author Christopher M. Kohlhoff (Boost)
+///// \author Adam Wegrzynek (CERN)
+
 #include <cstdlib>
 #include <iostream>
 #include <boost/bind.hpp>
