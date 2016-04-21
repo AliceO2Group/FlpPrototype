@@ -41,7 +41,10 @@ endif()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost COMPONENTS unit_test_framework program_options log thread system REQUIRED)
+find_package(Boost 1.48 COMPONENTS unit_test_framework program_options log thread system)
+if(NOT BOOST_FOUND)
+    message(WARNING "Boost 1.58 not found, we won't compile the ControlFairMQ (skip, no error)")
+endif()
 
 # Alfa
 find_package(FairRoot)
@@ -75,7 +78,7 @@ set(CMAKE_MACOSX_RPATH ON)
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-if(FAIRROOT_FOUND)
+if(NOT (FAIRROOT_FOUND AND BOOST_FOUND))
     enable_testing()
     add_subdirectory(include)
     add_subdirectory(src)

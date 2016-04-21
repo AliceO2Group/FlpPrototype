@@ -3,8 +3,7 @@
 #include <strings.h>
 #include <unistd.h>
 #include <boost/thread/mutex.hpp>
-
-
+#include <iostream>
 
 // implementation of private
 class DirectoryPrivate {
