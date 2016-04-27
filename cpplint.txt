@@ -1,0 +1,16 @@
+### To check the code with cpplint ###
+
+# Preparation
+git clone https://github.com/google/styleguide.git googlestyleguide
+cd googlestyleguide
+./cpplint.py --help
+
+# a Single file : 
+./cpplint.py --extensions=h,hpp,c,cxx --linelength=120 --counting=detailed ~/dev/hackathon/QualityControl/src/AlfaPublisher.cxx
+(replace detailed by toplevel to have errors per toplevel categories)
+
+# a set of files : 
+./cpplint.py --extensions=h,c,cxx --linelength=120 --counting=toplevel $(find ~/dev/hackathon/QualityControl -name \*.h -or -name \*.c -or -name \*.cxx | grep -vE "^\.\/build\/" ) 
+
+# Statistics for a set of files
+./cpplint.py --extensions=h,c,cxx --linelength=120 --counting=toplevel $(find ~/dev/hackathon/QualityControl -name \*.h -or -name \*.c -or -name \*.cxx | grep -vE "^\.\/build\/" ) 2>&1 | grep -e "Category" -e "Total error"

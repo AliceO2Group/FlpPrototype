@@ -163,6 +163,11 @@ To run it on all subdirectories and replace the content of the .cxx and .h
 files with the modified content :
 
     find . -name *.cxx -o -name *.h | xargs clang-format -style=file -i
+    
+To check whether a file complies or not with the format : 
+
+    clang-format -style=file -output-replacements-xml <source file> | grep -c "<replacement " >/dev/null
+    # returns 1 if complies, 0 otherwise
 
 
 ## Remarks
