@@ -44,6 +44,11 @@ set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before se
 find_package(Boost 1.48 COMPONENTS unit_test_framework program_options log thread system)
 if(NOT BOOST_FOUND AND NOT Boost_FOUND)
     message(WARNING "Boost 1.48 not found, we won't compile the ControlFairMQ (skip, no error)")
+    set(BOOST_FOUND 0) # because depending on the version, the cases do not always match
+    set(Boost_FOUND 0)
+else() 
+    set(BOOST_FOUND 1)
+    set(Boost_FOUND 1)
 endif()
 
 # Alfa

@@ -8,8 +8,8 @@
 #include <boost/thread.hpp>
 #include <memory>
 
-//#include <FairMQMessage.h>
-//#include <FairMQTransportFactory.h>
+#include <FairMQMessage.h>
+#include <FairMQTransportFactory.h>
 //#include <iostream>
 
 namespace AliceO2 {
@@ -35,9 +35,9 @@ void Sender::CustomCleanup(void *data, void *object)
 void Sender::Run()
 {
   while (CheckCurrentState(RUNNING)) {
-	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
-	getLogger() << "In Run : string is : " << mText << InfoLogger::endm;
+	  getLogger() << "In Run : string is : " << mText << InfoLogger::endm;
 
     std::string *text = new std::string(mText);
     std::unique_ptr<FairMQMessage> msg(NewMessage(const_cast<char*>(text->c_str()), text->length(), CustomCleanup, text));
