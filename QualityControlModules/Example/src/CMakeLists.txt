@@ -1,6 +1,5 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
-  "${CMAKE_CURRENT_BINARY_DIR}/../include/Example/Version.h" # Generated header
   ../include/Example/ExampleTask.h # Normal header
 )
 
