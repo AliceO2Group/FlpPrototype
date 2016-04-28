@@ -46,6 +46,8 @@ message(Monitoring)
 add_subdirectory(Monitoring)
 message(QualityControl)
 add_subdirectory(QualityControl)
+message(QualityControlModules)
+add_subdirectory(QualityControlModules)
 #message(Readout)
 #add_subdirectory(Readout)
 
