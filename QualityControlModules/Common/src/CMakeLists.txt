@@ -1,21 +1,26 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
-  "${CMAKE_CURRENT_BINARY_DIR}/../include/Common/Version.h" # Generated header
-  ../include/Common/World.h # Normal header
-  ../include/Common/signalUtilities.h # Normal header
-  ../include/Common/Exceptions.h # Normal header
+  ../include/Common/NonEmpty.h # Normal header
 )
 
 set(LIB_SOURCES
-  World.cxx
+  QcCommonDict.cxx # generated
+  NonEmpty.cxx
 )
 
-# Define two variables in order not to repeat ourselves.
-set(LIBRARY_NAME Common)
+set(LIBRARY_NAME QcCommon)
+
+# DICTIONARIES
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{ROOTSYS}/share/root/cmake/modules) # todo how to do it in a cleaner way ?
+#include(RootNewMacros) # todo should we do it in the top cmakelists ?
+list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Common/NonEmpty.h)
+set(CMAKE_ROOTTEST_DICT 1)
+ROOT_GENERATE_DICTIONARY("${LIBRARY_NAME}Dict" ${DICTINC} LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/../include/Common/LinkDef.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}Dict_rdict.pcm DESTINATION lib)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} InfoLogger-static)
+target_link_libraries(${LIBRARY_NAME} QCCore InfoLogger-static)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
@@ -24,9 +29,6 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
   FRAMEWORK FALSE
   PUBLIC_HEADER "${LIB_HEADERS}" # specify the public headers
 )
-
-# Links the target exe (projArunner) against the library (libprojA) and other required libraries
-target_link_libraries(${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 # Says how and where to install software
 install(TARGETS ${LIBRARY_NAME}

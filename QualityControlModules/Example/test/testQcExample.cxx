@@ -32,7 +32,7 @@ namespace Test {
 class TestTask : public TaskInterface
 {
   public:
-    TestTask(std::string name, ObjectsManager *objectsManager) : TaskInterface(name, objectsManager)
+    TestTask(ObjectsManager *objectsManager) : TaskInterface(objectsManager)
     {
       test = 0;
     }

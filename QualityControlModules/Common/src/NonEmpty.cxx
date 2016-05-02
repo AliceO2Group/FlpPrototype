@@ -3,7 +3,7 @@
 /// \author flpprotodev
 ///
 
-#include "QualityControl/NonEmpty.h"
+#include "Common/NonEmpty.h"
 
 #include "TH1.h"
 #include <assert.h>
@@ -11,9 +11,11 @@
 
 using namespace std;
 
+ClassImp(AliceO2::QualityControlModules::Common::NonEmpty)
+
 namespace AliceO2 {
-namespace QualityControl {
-namespace Checker {
+namespace QualityControlModules {
+namespace Common {
 
 NonEmpty::NonEmpty()
 {

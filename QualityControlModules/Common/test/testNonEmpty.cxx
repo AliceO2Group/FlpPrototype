@@ -3,7 +3,7 @@
 /// \author flpprotodev
 ///
 
-#include "../include/QualityControl/NonEmpty.h"
+#include "../include/Common/NonEmpty.h"
 
 #define BOOST_TEST_MODULE Publisher test
 #define BOOST_TEST_MAIN
@@ -14,8 +14,8 @@
 #include <TH1.h>
 
 namespace AliceO2 {
-namespace QualityControl {
-namespace Checker {
+namespace QualityControlModules {
+namespace Common {
 
 BOOST_AUTO_TEST_CASE(checkable)
 {

@@ -13,18 +13,18 @@ class TH1F;
 using namespace AliceO2::QualityControl::Core;
 
 namespace AliceO2 {
-namespace Modules {
+namespace QualityControlModules {
 namespace Example {
 
 /// \brief Example Quality Control Task
-/// \todo It should be put in a user module.
 /// It is final because there is no reason to derive from it. Just remove it if needed.
 /// \author Barthelemy von Haller
 class ExampleTask /*final*/ : public TaskInterface // todo add back the "final" when doxygen is fixed
 {
   public:
-    /// Constructor
-    ExampleTask(std::string name, ObjectsManager *objectsManager);
+    /// \brief Constructor
+    /// Use Init(...) to finish building this object.
+    ExampleTask();
     /// Destructor
     virtual ~ExampleTask();
 

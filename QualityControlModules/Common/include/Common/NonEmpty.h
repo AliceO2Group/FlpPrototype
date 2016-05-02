@@ -9,10 +9,10 @@
 #include "QualityControl/CheckInterface.h"
 
 namespace AliceO2 {
-namespace QualityControl {
-namespace Checker {
+namespace QualityControlModules {
+namespace Common {
 
-class NonEmpty /*final*/: public CheckInterface
+class NonEmpty /*final*/: public AliceO2::QualityControl::Checker::CheckInterface
 {
   public:
     NonEmpty();
@@ -21,6 +21,8 @@ class NonEmpty /*final*/: public CheckInterface
     Quality check(const MonitorObject *mo) override;
     void beautify(MonitorObject *mo, Quality checkResult = Quality::Null) override;
     std::string getAcceptedType() override;
+
+    ClassDefOverride(NonEmpty,1);
 };
 
 } // namespace Checker 

@@ -11,24 +11,28 @@
 #include <TCanvas.h>
 #include <DataFormat/DataBlock.h>
 
-//using namespace std;
-
 namespace AliceO2 {
-namespace Modules {
+namespace QualityControlModules {
 namespace Example {
+//
+//ExampleTask::ExampleTask(std::string name, ObjectsManager *objectsManager)
+//  : TaskInterface(name, objectsManager), mHisto1(nullptr), mHisto2(nullptr)
+//{
+//}
 
-ExampleTask::ExampleTask(std::string name, ObjectsManager *objectsManager)
-  : TaskInterface(name, objectsManager), mHisto1(nullptr), mHisto2(nullptr)
+ExampleTask::ExampleTask()
+    : TaskInterface(), mHisto1(nullptr), mHisto2(nullptr)
 {
+
 }
 
 ExampleTask::~ExampleTask()
 {
   // TODO use unique_ptr instead
-  if(mHisto1) {
+  if (mHisto1) {
     delete mHisto1;
   }
-  if(mHisto2) {
+  if (mHisto2) {
     delete mHisto2;
   }
 }
@@ -59,9 +63,6 @@ void ExampleTask::monitorDataBlock(DataBlock &block)
   QcInfoLogger::GetInstance() << "Payload size " << payloadSizeBytes << AliceO2::InfoLogger::InfoLogger::endm;
   mHisto1->Fill(payloadSizeBytes);
   mHisto2->FillRandom("gaus", 10);
-
-
-
 
 //  QcInfoLogger::GetInstance() << "ExampleTask monitorDataBlock (5x1s)" << AliceO2::InfoLogger::InfoLogger::endm;
 //  sleep(2);

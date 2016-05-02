@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # main (top) cmake dir
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) # project specific cmake dir
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{ROOTSYS}/share/root/cmake/modules)
 
 # CMake useful variables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
@@ -45,6 +46,7 @@ find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(ROOT)
 if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found")
+    include(RootNewMacros)
 else()
     message(WARNING "ROOT not found, we won't compile the QC (skip, no error)")
 endif()
@@ -63,7 +65,10 @@ endif(FAIRROOT_FOUND)
 
 # Dependency on another subproject (InfoLogger)
 link_o2_subproject(InfoLogger)
+link_o2_subproject(Configuration)
 link_o2_subproject(DataFormat)
+link_o2_subproject(DataSampling)
+link_o2_subproject(Monitoring)
 link_o2_subproject(QualityControl)
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
