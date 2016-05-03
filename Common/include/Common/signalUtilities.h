@@ -8,8 +8,8 @@
 /// received before the end of the clean up we exit immediately (return value 0).
 ///
 
-#ifndef QUALITY_CONTROL_SIGNALUTILITIES_H
-#define QUALITY_CONTROL_SIGNALUTILITIES_H
+#ifndef COMMON_SIGNALUTILITIES_H
+#define COMMON_SIGNALUTILITIES_H
 
 #include <execinfo.h>
 
@@ -62,4 +62,4 @@ void handler_interruption(int sig)
   }
 }
 
-#endif //QUALITY_CONTROL_SIGNALUTILITIES_H
+#endif //COMMON_SIGNALUTILITIES_H

@@ -25,8 +25,9 @@ class TaskFactory
 
     /// \brief Create a new instance of a TaskInterface.
     /// The TaskInterface actual class is decided based on the parameters passed.
+    /// TODO make it static ?
     /// \author Barthelemy von Haller
-    TaskInterface *create(std::string taskName, std::string moduleName, std::string className, ObjectsManager* objectsManager);
+    TaskInterface *create(/*std::string taskName, */std::string moduleName, std::string className, ObjectsManager* objectsManager);
 };
 
 } // namespace Core

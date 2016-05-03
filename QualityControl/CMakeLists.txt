@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # main (top) cmake dir
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) # project specific cmake dir
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{ROOTSYS}/share/root/cmake/modules)
 
 # CMake useful variables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
@@ -71,6 +72,7 @@ endif()
 
 # Other subprojects
 link_o2_subproject(InfoLogger)
+link_o2_subproject(Common)
 link_o2_subproject(Configuration)
 link_o2_subproject(DataFormat)
 link_o2_subproject(DataSampling)
@@ -88,8 +90,8 @@ endif(FAIRROOT_FOUND)
 
 # ROOT
 if(FAIRROOT_FOUND)
-    SET(ROOT_DIR "/home/flpprotodev/dev/ALFA-Externals/lib/root/")
-    set(ROOT_CONFIG_SEARCHPATH "/home/flpprotodev/dev/ALFA-Externals/lib/root/")
+#    SET(ROOT_DIR "/home/flpprotodev/dev/ALFA-Externals/lib/root/")
+#    set(ROOT_CONFIG_SEARCHPATH "/home/flpprotodev/dev/ALFA-Externals/lib/root/")
     find_package(ROOT)
     set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ)
 else(FAIRROOT_FOUND)
@@ -102,6 +104,7 @@ endif(FAIRROOT_FOUND)
 # TODO make it required once in its own repo
 if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found")
+    include(RootNewMacros)
 else()
     message(WARNING "ROOT not found, we won't compile the QC (skip, no error)")
 endif()

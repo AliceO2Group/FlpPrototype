@@ -21,14 +21,13 @@ class World {
 
     /// @brief   Greets the caller
     /// @author 	Barthelemy von Haller
-    /// @brief	Simple hello world
     void greet();
 
     /// @brief   Returns the value passed to it
     /// Longer description that is useless here.
     /// @author 	Barthelemy von Haller
     /// @param n (In) input number.
-    /// @return Returns the input number given.
+    /// @return The input number given.
     int returnsN(int n);
 };
 

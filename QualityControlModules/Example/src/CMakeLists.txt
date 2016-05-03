@@ -1,21 +1,18 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
-  "${CMAKE_CURRENT_BINARY_DIR}/../include/Common/Version.h" # Generated header
-  ../include/Common/World.h # Normal header
-  ../include/Common/signalUtilities.h # Normal header
-  ../include/Common/Exceptions.h # Normal header
+  ../include/Example/ExampleTask.h # Normal header
 )
 
 set(LIB_SOURCES
-  World.cxx
+  ExampleTask.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
-set(LIBRARY_NAME Common)
+set(LIBRARY_NAME QcExample)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} InfoLogger-static)
+target_link_libraries(${LIBRARY_NAME} QCCore InfoLogger-static)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
@@ -24,9 +21,6 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
   FRAMEWORK FALSE
   PUBLIC_HEADER "${LIB_HEADERS}" # specify the public headers
 )
-
-# Links the target exe (projArunner) against the library (libprojA) and other required libraries
-target_link_libraries(${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 # Says how and where to install software
 install(TARGETS ${LIBRARY_NAME}
