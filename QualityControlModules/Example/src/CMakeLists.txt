@@ -4,11 +4,18 @@ set(LIB_HEADERS
 )
 
 set(LIB_SOURCES
+  QcExampleDict.cxx # generated
   ExampleTask.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
 set(LIBRARY_NAME QcExample)
+
+# DICTIONARIES
+list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/ExampleTask.h)
+set(CMAKE_ROOTTEST_DICT 1)
+ROOT_GENERATE_DICTIONARY("${LIBRARY_NAME}Dict" ${DICTINC} LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/LinkDef.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}Dict_rdict.pcm DESTINATION lib)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
