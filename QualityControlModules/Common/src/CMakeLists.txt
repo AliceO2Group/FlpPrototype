@@ -11,8 +11,6 @@ set(LIB_SOURCES
 set(LIBRARY_NAME QcCommon)
 
 # DICTIONARIES
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{ROOTSYS}/share/root/cmake/modules) # todo how to do it in a cleaner way ?
-#include(RootNewMacros) # todo should we do it in the top cmakelists ?
 list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Common/NonEmpty.h)
 set(CMAKE_ROOTTEST_DICT 1)
 ROOT_GENERATE_DICTIONARY("${LIBRARY_NAME}Dict" ${DICTINC} LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/../include/Common/LinkDef.h)
