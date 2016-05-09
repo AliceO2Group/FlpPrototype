@@ -43,6 +43,7 @@ void ExampleTask::initialize()
   mHisto1 = new TH1F("first", "first", 2048, 0, 2047);
   mHisto2 = new TH1F("second", "second", 100, -10, 10);
   getObjectsManager()->startPublishing("my object", mHisto1);
+  getObjectsManager()->addChecker("my object", "check 1", "NonEmpty");
   getObjectsManager()->startPublishing("my second object", mHisto2);
 }
 
