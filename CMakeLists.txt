@@ -15,6 +15,14 @@ enable_testing() # needed on top-level CMakeLists.txt
 add_custom_target(doc) # DEPENDS docProjA docProjB) Note: with CMake 3.X the DEPENDS would work
 ADD_DEPENDENCIES(doc docInfoLogger docProjA docConfiguration docDataFormat docDataSampling docControl
         docMonitoring docQualityControl)
+        
+# Target coverage
+set(CODE_COVERAGE FALSE CACHE BOOL "Turn on code coverage (build with not optimization!)")
+if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE)
+    set(CMAKE_BUILD_TYPE "Coverage" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel Coverage." FORCE)
+    include(CodeCoverage)
+    setup_target_for_coverage(coverage ctest coverage)
+endif()
 
 # Target uninstall definition
 include(UninstallTarget)

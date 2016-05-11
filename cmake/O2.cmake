@@ -27,11 +27,28 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -fPIC -std=c99")
 
 # Set the default build type to "RelWithDebInfo"
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING
-            "Choose the type of build, options are: Debug Release
-      RelWithDebInfo MinSizeRel."
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel Coverage."
             FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
+
+# Code coverage
+set(CODE_COVERAGE FALSE CACHE BOOL "Turn on code coverage (build with not optimization!)")
+if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE)
+    message(STATUS "Code coverage turned on, force the build type to Coverage (no optimization)")
+    set(CMAKE_BUILD_TYPE "Coverage" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel Coverage." FORCE)
+#    SET(CODE_COVERAGE_EXCLUSION_LIST "'include/*' 'build/*' 'test/*'" PARENT_SCOPE) # this does not work yet
+  
+    # Set the name of the target : "doc" if it doesn't already exist and "doc<projectname>" if it does.
+    # This way we make sure to have a single "doc" target. Either it is the one of the top directory or
+    # it is the one of the subproject that we are compiling alone.
+    set(COVERAGE_TARGET_NAME "coverage")
+    if(TARGET coverage)
+      set(COVERAGE_TARGET_NAME "coverage${PROJECT_NAME}")
+    endif()
+  
+    include(CodeCoverage)
+    setup_target_for_coverage(${COVERAGE_TARGET_NAME} ctest coverage)
+endif()
 
 # Uninstall target (is it really a good idea ?)
 include(UninstallTarget)
