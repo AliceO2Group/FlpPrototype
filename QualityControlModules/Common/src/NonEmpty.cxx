@@ -1,6 +1,6 @@
 ///
 /// \file   NonEmpty.cxx
-/// \author flpprotodev
+/// \author Barthelemy von Haller
 ///
 
 #include "Common/NonEmpty.h"
@@ -25,17 +25,26 @@ NonEmpty::~NonEmpty()
 {
 }
 
+void NonEmpty::configure(std::string name)
+{
+  // First call the parent !
+  CheckInterface::configure(name);
+}
+
 Quality NonEmpty::check(const MonitorObject *mo)
 {
   Quality result = Quality::Null;
 
   // The framework guarantees that the encapsulated object is of the accepted type.
   TH1 *histo = dynamic_cast<TH1*>(mo->getObject());
-  assert(histo != nullptr);
-  if (histo->GetEntries() > 0) {
-    result = Quality::Good;
-  } else {
-    result = Quality::Bad;
+
+  // assert(histo != nullptr);
+  if (histo != nullptr) {
+    if (histo->GetEntries() > 0) {
+      result = Quality::Good;
+    } else {
+      result = Quality::Bad;
+    }
   }
 
   return result;

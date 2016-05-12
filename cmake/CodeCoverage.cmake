@@ -148,8 +148,8 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 		# Capturing lcov counters and generating report
 		COMMAND ${LCOV_PATH} --directory . --capture --output-file ${_outputname}.info
 		COMMAND ${LCOV_PATH} --remove ${_outputname}.info '/opt/*' 'test/*' 'build/*' --output-file ${_outputname}.info.cleaned #${CODE_COVERAGE_EXCLUSION_LIST}
-		COMMAND ${GENHTML_PATH} -o ${_outputname} ${_outputname}.info.cleaned
-		COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
+		COMMAND ${GENHTML_PATH} -s --demangle-cpp --rc genhtml_hi_limit=80 --rc genhtml_med_limit=60 -o ${_outputname} ${_outputname}.info.cleaned
+		#COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
 
 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 		COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."

@@ -45,9 +45,9 @@ if(CMAKE_COMPILER_IS_GNUCXX AND CODE_COVERAGE)
     if(TARGET coverage)
       set(COVERAGE_TARGET_NAME "coverage${PROJECT_NAME}")
     endif()
-  
+    
     include(CodeCoverage)
-    setup_target_for_coverage(${COVERAGE_TARGET_NAME} ctest coverage)
+    setup_target_for_coverage(${COVERAGE_TARGET_NAME} "ctest -j4" coverage)
 endif()
 
 # Uninstall target (is it really a good idea ?)

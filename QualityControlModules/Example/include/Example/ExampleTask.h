@@ -23,7 +23,6 @@ class ExampleTask /*final*/ : public TaskInterface // todo add back the "final" 
 {
   public:
     /// \brief Constructor
-    /// Use Init(...) to finish building this object.
     ExampleTask();
     /// Destructor
     virtual ~ExampleTask();

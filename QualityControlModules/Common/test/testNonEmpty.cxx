@@ -1,6 +1,6 @@
 ///
 /// \file   testNonEmpty.cxx
-/// \author flpprotodev
+/// \author Barthelemy von Haller
 ///
 
 #include "../include/Common/NonEmpty.h"
@@ -22,9 +22,14 @@ BOOST_AUTO_TEST_CASE(checkable)
   TH1F histo("test", "test", 100, 0, 99);
   MonitorObject monitorObject("testObject", &histo);
   NonEmpty myCheck;
+  myCheck.configure("test");
 
   BOOST_CHECK_EQUAL(myCheck.getAcceptedType(), "TH1");
   BOOST_CHECK_EQUAL(myCheck.isObjectCheckable(&monitorObject), true);
+
+  TObject obj;
+  monitorObject.setObject(&obj);
+  BOOST_CHECK_EQUAL(myCheck.isObjectCheckable(&monitorObject), false);
 }
 
 BOOST_AUTO_TEST_CASE(beautify)
@@ -32,6 +37,7 @@ BOOST_AUTO_TEST_CASE(beautify)
   TH1F histo("test", "test", 100, 0, 99);
   MonitorObject monitorObject("testObject", &histo);
   NonEmpty myCheck;
+  myCheck.configure("test");
 
   myCheck.beautify(&monitorObject, Quality::Null);
   BOOST_CHECK_EQUAL(histo.GetFillColor(), kWhite);

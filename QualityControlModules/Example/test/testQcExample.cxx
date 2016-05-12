@@ -1,101 +1,58 @@
 ///
-/// @file    TestHello.cxx
-/// @author  Barthelemy von Haller
+/// \file   testQcExample.cxx
+/// \author Barthelemy von Haller
 ///
 
-#include "../include/Example/ExampleTask.h"
+#define private public // hack to have access to everything
 
-#define BOOST_TEST_MODULE hello test
+#include "../include/Example/ExampleTask.h"
+#include "QualityControl/TaskFactory.h"
+#include "QualityControl/ObjectsManager.h"
+#include <boost/exception/diagnostic_information.hpp>
+#include <TSystem.h>
+
+#define BOOST_TEST_MODULE Publisher test
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <assert.h>
-#include <iostream>
+
+#include <TH1.h>
 
 using namespace std;
 
-BOOST_AUTO_TEST_CASE(arithmetic_test)
+namespace AliceO2 {
+namespace QualityControlModules {
+namespace Example {
+
+BOOST_AUTO_TEST_CASE(insantiate_task)
 {
-  int a = 1;
-  int b = 2;
-  BOOST_CHECK_NE(a, b);
-  b = a;
-  BOOST_CHECK_EQUAL(a, b);
+  ExampleTask task;
+  ObjectsManager manager("MockPublisher");
+  task.setObjectsManager(&manager);
+  task.initialize();
+
+  BOOST_CHECK(task.mHisto1 != nullptr);
+  BOOST_CHECK(task.mHisto2 != nullptr);
+
+  Activity activity;
+  task.startOfActivity(activity);
+  task.startOfCycle();
+  DataBlock block;
+  task.monitorDataBlock(block);
+
+  BOOST_CHECK(task.mHisto1->GetEntries() > 0);
+
+  task.endOfCycle();
+  task.endOfActivity(activity);
+  task.startOfActivity(activity);
+
+  BOOST_CHECK(task.mHisto1->GetEntries() == 0);
+
+  task.endOfActivity(activity);
+
 }
 
-namespace AliceO2 {
-namespace QualityControl {
-
-using namespace Core;
-
-namespace Test {
-class TestTask : public TaskInterface
-{
-  public:
-    TestTask(ObjectsManager *objectsManager) : TaskInterface(objectsManager)
-    {
-      test = 0;
-    }
-
-    virtual ~TestTask()
-    {
-
-    }
-
-    // Definition of the methods for the template method pattern
-    virtual void initialize()
-    {
-      cout << "initialize" << endl;
-      test = 1;
-    }
-
-    virtual void startOfActivity(Activity &activity)
-    {
-      cout << "startOfActivity" << endl;
-      test = 2;
-    }
-
-    virtual void startOfCycle()
-    {
-      cout << "startOfCycle" << endl;
-    }
-
-    virtual void monitorDataBlock(DataBlock &block)
-    {
-      cout << "monitorDataBlock" << endl;
-    }
-
-    virtual void endOfCycle()
-    {
-      cout << "endOfCycle" << endl;
-    }
-
-    virtual void endOfActivity(Activity &activity)
-    {
-      cout << "endOfActivity" << endl;
-    }
-
-    virtual void Reset()
-    {
-      cout << "Reset" << endl;
-    }
-
-    int test;
-};
-
-} /* namespace Test */
-} /* namespace QualityControl */
-} /* namespace AliceO2 */
-
-//BOOST_AUTO_TEST_CASE(TestInstantiate)
-//{
-//  ObjectsManager objectsManager; // TODO we need a mock object
-//  Test::TestTask tt("asdf", &objectsManager);
-//  BOOST_CHECK_EQUAL(tt.test, 0);
-//  tt.initialize();
-//  BOOST_CHECK_EQUAL(tt.test, 1);
-//  Activity act;
-//  tt.startOfActivity(act);
-//  BOOST_CHECK_EQUAL(tt.test, 2);
-//}
-
+} // namespace Example
+} // namespace QualityControlModules
+} // namespace AliceO2

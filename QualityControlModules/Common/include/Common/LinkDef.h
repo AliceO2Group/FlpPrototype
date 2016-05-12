@@ -4,4 +4,5 @@
 #pragma link off all functions;
 
 #pragma link C++ class AliceO2::QualityControlModules::Common::NonEmpty+;
+#pragma link C++ class AliceO2::QualityControlModules::Common::MeanIsAbove+;
 #endif

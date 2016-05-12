@@ -129,6 +129,10 @@ For coverage :
 	make coverage
 3. Open in a browser the file indicated in the last line of the output.
 
+Important note about coverage : the number of functions for a given class might seem off. It is because it counts
+the compiler generated methods as well, such as the constructors, the copiers etc...
+It should encourage you to use the "delete" keyword provided by c++11.
+
 ## Boost
 
 We include boost in the CMakeLists.txt using find_package(Boost ...) and
