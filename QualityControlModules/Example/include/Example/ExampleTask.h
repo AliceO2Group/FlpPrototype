@@ -19,7 +19,7 @@ namespace Example {
 /// \brief Example Quality Control Task
 /// It is final because there is no reason to derive from it. Just remove it if needed.
 /// \author Barthelemy von Haller
-class ExampleTask /*final*/ : public TaskInterface // todo add back the "final" when doxygen is fixed
+class ExampleTask /*final*/: public TaskInterface // todo add back the "final" when doxygen is fixed
 {
   public:
     /// \brief Constructor
@@ -35,6 +35,16 @@ class ExampleTask /*final*/ : public TaskInterface // todo add back the "final" 
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
     void Reset() override;
+
+    // Accessors
+    const TH1F*& getHisto1() const
+    {
+      return mHisto1;
+    }
+    const TH1F*& getHisto2() const
+    {
+      return mHisto2;
+    }
 
   private:
 

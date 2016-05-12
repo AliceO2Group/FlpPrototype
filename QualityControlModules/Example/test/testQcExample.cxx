@@ -3,8 +3,6 @@
 /// \author Barthelemy von Haller
 ///
 
-#define private public // hack to have access to everything
-
 #include "../include/Example/ExampleTask.h"
 #include "QualityControl/TaskFactory.h"
 #include "QualityControl/ObjectsManager.h"
@@ -32,8 +30,8 @@ BOOST_AUTO_TEST_CASE(insantiate_task)
   task.setObjectsManager(&manager);
   task.initialize();
 
-  BOOST_CHECK(task.mHisto1 != nullptr);
-  BOOST_CHECK(task.mHisto2 != nullptr);
+  BOOST_CHECK(task.getHisto1() != nullptr);
+  BOOST_CHECK(task.getHisto2() != nullptr);
 
   Activity activity;
   task.startOfActivity(activity);
@@ -41,13 +39,13 @@ BOOST_AUTO_TEST_CASE(insantiate_task)
   DataBlock block;
   task.monitorDataBlock(block);
 
-  BOOST_CHECK(task.mHisto1->GetEntries() > 0);
+  BOOST_CHECK(task.getHisto1()->GetEntries() > 0);
 
   task.endOfCycle();
   task.endOfActivity(activity);
   task.startOfActivity(activity);
 
-  BOOST_CHECK(task.mHisto1->GetEntries() == 0);
+  BOOST_CHECK(task.getHisto1()->GetEntries() == 0);
 
   task.endOfActivity(activity);
 
