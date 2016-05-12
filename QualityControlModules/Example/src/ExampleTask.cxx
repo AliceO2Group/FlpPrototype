@@ -43,9 +43,10 @@ void ExampleTask::initialize()
   mHisto1 = new TH1F("first", "first", 2048, 0, 2047);
   mHisto2 = new TH1F("second", "second", 100, -10, 10);
   getObjectsManager()->startPublishing("my object", mHisto1);
-  getObjectsManager()->addCheck("my object", "checkNonEmpty", "AliceO2::QualityControl::Checker::NonEmpty");
-  getObjectsManager()->addCheck("my object", "checkMeanIsAbove", "AliceO2::QualityControl::Checker::MeanIsAbove");
+  getObjectsManager()->addCheck("my object", "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty", "QcCommon");
+  getObjectsManager()->addCheck("my object", "checkMeanIsAbove", "AliceO2::QualityControlModules::Common::MeanIsAbove", "QcCommon");
   getObjectsManager()->startPublishing("my second object", mHisto2);
+  cout << "mo checks : " << endl;
 }
 
 void ExampleTask::startOfActivity(Activity &activity)
