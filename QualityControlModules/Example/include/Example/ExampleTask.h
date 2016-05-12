@@ -37,11 +37,11 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
     void Reset() override;
 
     // Accessors
-    const TH1F*& getHisto1() const
+    TH1F*& getHisto1()
     {
       return mHisto1;
     }
-    const TH1F*& getHisto2() const
+    TH1F*& getHisto2()
     {
       return mHisto2;
     }

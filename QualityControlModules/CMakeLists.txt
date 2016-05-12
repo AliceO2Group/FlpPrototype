@@ -64,6 +64,7 @@ else(FAIRROOT_FOUND)
 endif(FAIRROOT_FOUND)
 
 # Dependency on another subproject (InfoLogger)
+link_o2_subproject(Common)
 link_o2_subproject(InfoLogger)
 link_o2_subproject(Configuration)
 link_o2_subproject(DataFormat)
