@@ -48,7 +48,7 @@ if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found")
     include(RootNewMacros)
 else()
-    message(WARNING "ROOT not found, we won't compile the QC (skip, no error)")
+    message(WARNING "ROOT not found, we won't compile the QC modules (skip, no error)")
 endif()
 
 find_package(FairRoot)
@@ -88,20 +88,22 @@ set(CMAKE_MACOSX_RPATH ON)
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-enable_testing()
+if(ROOT_FOUND AND FAIRROOT_FOUND)
+  enable_testing()
 
-add_subdirectory(Common)
-add_subdirectory(Example)
-#add_subdirectory(ITS)
+  add_subdirectory(Common)
+  add_subdirectory(Example)
+  #add_subdirectory(ITS)
 
-#
-# SYSTEM PACKAGING (RPM, TGZ, ...)
-# _____________________________________________________________________________
+  #
+  # SYSTEM PACKAGING (RPM, TGZ, ...)
+  # _____________________________________________________________________________
 
-include(CPackConfig)
+  include(CPackConfig)
 
-#
-# CMAKE PACKAGING (for other CMake projects to use this one easily)
-# _____________________________________________________________________________
+  #
+  # CMAKE PACKAGING (for other CMake projects to use this one easily)
+  # _____________________________________________________________________________
 
-include(PackageConfigurator)
+  include(PackageConfigurator)
+endif()
