@@ -124,7 +124,7 @@ test".
 For coverage : 
 1. Install gcov and lcov
 2. Build like this : 
-	cmake -DCMAKE_BUILD_TYPE=Coverage ..
+	cmake -DCODE_COVERAGE=ON ..
 	make
 	make coverage
 3. Open in a browser the file indicated in the last line of the output.
