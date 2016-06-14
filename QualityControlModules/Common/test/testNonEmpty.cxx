@@ -20,7 +20,7 @@ namespace Common {
 BOOST_AUTO_TEST_CASE(checkable)
 {
   TH1F histo("test", "test", 100, 0, 99);
-  MonitorObject monitorObject("testObject", &histo);
+  MonitorObject monitorObject("testObject", &histo, "task");
   NonEmpty myCheck;
   myCheck.configure("test");
 
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(checkable)
 BOOST_AUTO_TEST_CASE(beautify)
 {
   TH1F histo("test", "test", 100, 0, 99);
-  MonitorObject monitorObject("testObject", &histo);
+  MonitorObject monitorObject("testObject", &histo, "task");
   NonEmpty myCheck;
   myCheck.configure("test");
 
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(beautify)
 BOOST_AUTO_TEST_CASE(nonempty)
 {
   TH1F histo("test", "test", 100, 0, 99);
-  MonitorObject monitorObject("testObject", &histo);
+  MonitorObject monitorObject("testObject", &histo, "task");
   NonEmpty myCheck;
 
   Quality quality = myCheck.check(&monitorObject);

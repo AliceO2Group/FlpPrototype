@@ -16,6 +16,9 @@ namespace Common {
 typedef boost::error_info<struct errinfo_object_name_, std::string> errinfo_object_name;
 typedef boost::error_info<struct errinfo_details_, std::string> errinfo_details;
 
+typedef boost::error_info<struct errinfo_db_errno_, int> errinfo_db_errno;
+typedef boost::error_info<struct errinfo_db_message_, std::string> errinfo_db_message;
+
 struct ExceptionBase : virtual std::exception, virtual boost::exception
 {
 };
@@ -29,6 +32,9 @@ struct ObjectNotFoundError : virtual ExceptionBase
 };
 
 struct FatalException : virtual ExceptionBase {};
+
+struct DatabaseException : virtual ExceptionBase {};
+struct FatalDatabaseException : virtual FatalException{};
 
 // we could define further exceptions this way :
 //    struct io_error: virtual exception_base { };

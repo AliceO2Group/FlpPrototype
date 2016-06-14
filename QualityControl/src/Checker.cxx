@@ -19,6 +19,7 @@
 #include "Common/Exceptions.h"
 // QC
 #include "QualityControl/CheckInterface.h"
+#include "QualityControl/DatabaseFactory.h"
 
 using namespace AliceO2::Common;
 
@@ -35,8 +36,10 @@ class TestTMessage: public TMessage
 using namespace std;
 
 namespace AliceO2 {
+using namespace AliceO2::InfoLogger;
 namespace QualityControl {
 using namespace Core;
+using namespace Repository;
 namespace Checker {
 
 // TODO do we need a CheckFactory ? here it is embedded in the Checker
@@ -44,10 +47,27 @@ namespace Checker {
 Checker::Checker()
     : mLogger(QcInfoLogger::GetInstance())
 {
+	// TODO load the configuration of the database here
+	mDatabase = DatabaseFactory::create("MySql");
+	mDatabase->Connect("localhost", "quality_control", "qc_user", "qc_user");
+
+	mBroadcast = true; // TODO configure
+	if(mBroadcast) {
+	  FairMQChannel histoChannel;
+	  histoChannel.UpdateType("pub");
+	  histoChannel.UpdateMethod("bind");
+	  histoChannel.UpdateAddress("tcp://*:5557");
+	  histoChannel.UpdateSndBufSize(10000);
+	  histoChannel.UpdateRcvBufSize(10000);
+	  histoChannel.UpdateRateLogging(0);
+	  fChannels["data-out"].push_back(histoChannel);
+	}
 }
 
 Checker::~Checker()
 {
+  mDatabase->Disconnect();
+  delete mDatabase;
 }
 
 void Checker::Run()
@@ -57,11 +77,13 @@ void Checker::Run()
     unique_ptr<FairMQMessage> msg(fTransportFactory->CreateMessage());
 
     if (fChannels.at("data-in").at(0).Receive(msg) > 0) {
-      cout << "Receiving a mo of size " << msg->GetSize() << endl;
+      mLogger << "Receiving a mo of size " << msg->GetSize() << AliceO2::InfoLogger::InfoLogger::endm;
       TestTMessage tm(msg->GetData(), msg->GetSize());
       MonitorObject *mo = dynamic_cast<MonitorObject *>(tm.ReadObject(tm.GetClass()));
       if (mo) {
         check(mo);
+        store(mo);
+        send(mo);
       }
     }
   }
@@ -84,10 +106,34 @@ void Checker::check(MonitorObject *mo)
     CheckInterface *checkInstance = instantiateCheck(check.name, check.className);
     Quality q = checkInstance->check(mo);
 
-    std::cout << "        result of the check : " << q.getName() << std::endl;
+    mLogger << "        result of the check : " << q.getName() << AliceO2::InfoLogger::InfoLogger::endm;
 
     checkInstance->beautify(mo, q);
   }
+}
+
+void Checker::store(MonitorObject *mo)
+{
+  try {
+    mDatabase->Store(mo);
+  } catch (boost::exception & e) {
+    mLogger << "Unable to " << diagnostic_information(e) << AliceO2::InfoLogger::InfoLogger::endm;
+  }
+}
+
+void Checker::CustomCleanupTMessage(void *data, void *object)
+{
+  delete (TMessage *) object;
+}
+
+void Checker::send(MonitorObject *mo)
+{
+  mLogger << "Sending \"" << mo->getName() << "\"" << AliceO2::InfoLogger::InfoLogger::endm;
+
+  TMessage *message = new TMessage(kMESS_OBJECT);
+  message->WriteObjectAny(mo, mo->IsA());
+  unique_ptr<FairMQMessage> msg(NewMessage(message->Buffer(), message->BufferSize(), CustomCleanupTMessage, message));
+  fChannels.at("data-out").at(0).Send(msg);
 }
 
 /// \brief Load a library.
@@ -95,7 +141,7 @@ void Checker::check(MonitorObject *mo)
 void Checker::loadLibrary(const string libraryName) const
 {
   if (boost::algorithm::trim_copy(libraryName) == "") {
-    cout << "no library name specified" << endl;
+    mLogger << "no library name specified" << AliceO2::InfoLogger::InfoLogger::endm;
     return;
   }
 

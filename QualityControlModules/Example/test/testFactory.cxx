@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(Task_Factory)
   try {
     std::string addition = "lib:../../lib:../../../lib:";
     gSystem->Setenv("LD_LIBRARY_PATH", (addition + gSystem->Getenv("LD_LIBRARY_PATH")).c_str());
-    factory.create("QcCommon", "AliceO2::QualityControlModules::Example::ExampleTask", &manager);
+    factory.create("task", "QcCommon", "AliceO2::QualityControlModules::Example::ExampleTask", &manager);
   } catch (...) {
     BOOST_TEST_FAIL(boost::current_exception_diagnostic_information());
   }
@@ -47,12 +47,12 @@ BOOST_AUTO_TEST_CASE(Task_Factory_failures)
   TaskFactory factory;
   ObjectsManager manager("MockPublisher");
 
-  BOOST_CHECK_EXCEPTION(factory.create("WRONGNAME", "AliceO2::QualityControlModules::Example::ExampleTask", &manager),
+  BOOST_CHECK_EXCEPTION(factory.create("task", "WRONGNAME", "AliceO2::QualityControlModules::Example::ExampleTask", &manager),
 			AliceO2::Common::FatalException, is_critical);
 
   std::string addition = "lib:../../lib:../../../lib:";
   gSystem->Setenv("LD_LIBRARY_PATH", (addition + gSystem->Getenv("LD_LIBRARY_PATH")).c_str());
-  BOOST_CHECK_EXCEPTION(factory.create("QcCommon", "WRIONGCLASS", &manager), AliceO2::Common::FatalException, is_critical);
+  BOOST_CHECK_EXCEPTION(factory.create("task", "QcCommon", "WRIONGCLASS", &manager), AliceO2::Common::FatalException, is_critical);
 
 }
 

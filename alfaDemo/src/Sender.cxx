@@ -70,14 +70,14 @@ void Sender::Run()
   while (CheckCurrentState(RUNNING)) {
     std::cout << "In Run : string is : " << mText << std::endl;
 
-    std::string *text = new std::string(mText);
-
-    unique_ptr<FairMQMessage> msg(
-      fTransportFactory->CreateMessage(const_cast<char *>(text->c_str()), text->length(), CustomCleanup, text));
-
-    std::cout << "Sending \"" << mText << "\"" << std::endl;
-
-    fChannels.at("data-out").at(0).Send(msg);
+//    std::string *text = new std::string(mText);
+//
+//    unique_ptr<FairMQMessage> msg(
+//      fTransportFactory->CreateMessage(const_cast<char *>(text->c_str()), text->length(), CustomCleanup, text));
+//
+//    std::cout << "Sending \"" << mText << "\"" << std::endl;
+//
+//    fChannels.at("data-out").at(0).Send(msg);
 
     cout << "and now sending a histo" << endl;
 
