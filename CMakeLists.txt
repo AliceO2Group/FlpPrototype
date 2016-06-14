@@ -56,6 +56,8 @@ message(QualityControl)
 add_subdirectory(QualityControl)
 message(QualityControlModules)
 add_subdirectory(QualityControlModules)
+message(RORC)
+add_subdirectory(RORC)
 #message(Readout)
 #add_subdirectory(Readout)
 
