@@ -38,7 +38,7 @@ class Fifo {
     int pop(T* &data);
 
     /// Retrieve first element from FIFO, without removing it from FIFO.
-    /// @return   NULL if FIFO empty, a pointer to 1st element if found.
+    /// @return   nullptr if FIFO empty, a pointer to 1st element if found.
     T* front();
 
     /// Check if Fifo is full.
@@ -144,7 +144,7 @@ T* Fifo<T>::front() {
 
   // check if FIFO empty
   if (isEmpty()) {
-    return NULL;
+    return nullptr;
   }
 
   return data[(this->indexStart+1)%(this->size+1)];
