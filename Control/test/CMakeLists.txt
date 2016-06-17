@@ -18,10 +18,10 @@
 #target_link_libraries(testZdaq_cxx zdaq ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 #add_test(NAME testZdaq_cxx COMMAND testZdaq_cxx)
 
-#add_executable(testStateMachine_cxx testStateMachine.cxx)
-#target_link_libraries(testStateMachine_cxx StateMachine ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-#add_test(NAME testStateMachine_cxx COMMAND testStateMachine_cxx)
-#
+add_executable(testStateMachine_cxx testStateMachine.cxx)
+target_link_libraries(testStateMachine_cxx StateMachine ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+add_test(NAME testStateMachine_cxx COMMAND testStateMachine_cxx)
+
 add_executable(testSendCommand_cxx testSendCommand.cxx)
 target_link_libraries(testSendCommand_cxx StateMachine ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 add_test(NAME testSendCommand_cxx COMMAND testSendCommand_cxx)
@@ -30,5 +30,7 @@ add_executable(testClient_cxx testClient.cxx)
 target_link_libraries(testClient_cxx StateMachine ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 add_test(NAME testClient_cxx COMMAND testClient_cxx)
 
+add_executable(testBaseControl_cxx testBaseControl.cxx)
+target_link_libraries(testBaseControl_cxx StateMachine)
 
 include(CTest)
