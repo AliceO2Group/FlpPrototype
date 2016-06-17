@@ -22,30 +22,31 @@ set(LIB_STATE_MACHINE_HEADERS
 
 set(LIB_STATE_MACHINE_SOURCES
         StateMachine.cxx
-       # BaseControl.cxx
+        BaseControl.cxx
         )
 
 # -------
 # ZDAQ
 # -------
 
-set(LIBRARY_ZDAQ_NAME zdaq)
-add_library(${LIBRARY_ZDAQ_NAME} SHARED ${LIB_ZDAQ_SOURCES})
-target_link_libraries(
-        ${LIBRARY_ZDAQ_NAME}
-        ${Boost_SYSTEM_LIBRARY}
-        ${Boost_THREAD_LIBRARY}
-        pthread
-        ${Zookeeper_LIBRARIES}
-        ${ZMQ_LIB})
+#set(LIBRARY_ZDAQ_NAME zdaq)
+#add_library(${LIBRARY_ZDAQ_NAME} SHARED ${LIB_ZDAQ_SOURCES})
+#target_link_libraries(
+#        ${LIBRARY_ZDAQ_NAME}
+#        ${Boost_SYSTEM_LIBRARY}
+#        ${Boost_THREAD_LIBRARY}
+#        pthread
+#        ${Zookeeper_LIBRARIES}
+#        ${ZMQ_LIB})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
-set_target_properties(${LIBRARY_ZDAQ_NAME} PROPERTIES
-        VERSION ${VERSION}  # ${VERSION} was defined in the main CMakeLists.
-        FRAMEWORK FALSE
-        PUBLIC_HEADER "${LIB_ZDAQ_HEADERS}" # specify the public headers
-        )
+#set_target_properties(${LIBRARY_ZDAQ_NAME} PROPERTIES
+#        VERSION ${VERSION}  # ${VERSION} was defined in the main CMakeLists.
+#        FRAMEWORK FALSE
+#        PUBLIC_HEADER "${LIB_ZDAQ_HEADERS}" # specify the public headers
+#        )
+
 
 # -------
 # StateMachine
@@ -59,7 +60,7 @@ target_link_libraries(
         ${Boost_THREAD_LIBRARY}
         pthread
         ${Zookeeper_LIBRARIES}
-        ${ZMQ_LIB})
+        Common)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version.
