@@ -48,7 +48,7 @@ typedef struct {
 typedef struct
 {
     DataBlockHeaderBase header;   ///< Base common data header
-    char data[1];
+    char *data; ///< Pointer to data. May or may not immediately follow this variable.
 } DataBlock;
 
 #endif /* DATAFORMAT_DATABLOCK */
