@@ -25,8 +25,11 @@ class myStateMachine:public ControlObject {
 int main(int argc, const char *argv[]) {
   
   const char *objName="test";
+  int autoExit=1;
+  
   if (argc>1) {
     objName=argv[1];
+    autoExit=0;
   }
     
     
@@ -51,9 +54,14 @@ int main(int argc, const char *argv[]) {
     
     myStateMachine obj(objName,&d);
     
-    sleep(100);
+    if (autoExit) {
+      sleep(3);
+    } else {
+      for (;;) {
+        sleep(1);
+      }
+    }
     printf("done\n");
-
   }
   catch (const char *e) {
     printf("error : %s\n",e);
