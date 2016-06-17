@@ -6,8 +6,11 @@
 #ifndef QUALITY_CONTROL_SpyDevice_H
 #define QUALITY_CONTROL_SpyDevice_H
 
-#include <FairMQDevice.h>
+// ROOT
 #include <TMessage.h>
+// FairRoot
+#include <FairMQDevice.h>
+// QC
 #include "SpyMainFrame.h"
 
 namespace AliceO2 {
@@ -35,11 +38,15 @@ class SpyDevice: public FairMQDevice
     virtual ~SpyDevice();
 
     static void CustomCleanup(void *data, void* hint);
-    void start();
     void stop();
-    void displayObject(const char* objectName); // not a string because it is a slot
+    void displayObject(const char* objectName); // SLOT
 
     void setFrame(SpyMainFrame *frame);
+    /**
+     * \param address <url>:<port>
+     */
+    void startChannel(std::string address, std::string type);
+    void stopChannel();
 
   protected:
     virtual void Run() override;
@@ -48,8 +55,7 @@ class SpyDevice: public FairMQDevice
     SpyMainFrame *mFrame;
     std::map<std::string, TObject*> mCache;
 
-  ClassDef(SpyDevice,1)
-    ;
+  ClassDef(SpyDevice,1);
 };
 
 } // namespace Gui

@@ -46,7 +46,13 @@ void ExampleTask::initialize()
   getObjectsManager()->addCheck("my object", "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty", "QcCommon");
   getObjectsManager()->addCheck("my object", "checkMeanIsAbove", "AliceO2::QualityControlModules::Common::MeanIsAbove", "QcCommon");
   getObjectsManager()->startPublishing("task", "my second object", mHisto2);
-  cout << "mo checks : " << endl;
+
+  for(int i = 0 ; i < 25 ; i++) {
+    stringstream name;
+    name << "array-" << i;
+    mHistos[i]  = new TH1F(name.str().c_str(), name.str().c_str(), 100, 0, 99);
+    getObjectsManager()->startPublishing("task", name.str(), mHistos[i]);
+  }
 }
 
 void ExampleTask::startOfActivity(Activity &activity)

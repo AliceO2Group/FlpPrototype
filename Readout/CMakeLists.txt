@@ -12,11 +12,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # Set the name of your project here
-project("Control")
+project("Readout")
 
 # Set the version number of your project here (format is MAJOR.MINOR.PATCHLEVEL - e.g. 1.0.0)
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "0")
+set(VERSION_MINOR "1")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
@@ -40,21 +40,17 @@ endif()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost COMPONENTS unit_test_framework thread system REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-# zeroMQ
-# TODO use rather a find_package
-FIND_LIBRARY(ZMQ_LIB zmq)
-
-# Zookeeper
-find_package(Zookeeper)
-if(Zookeeper_FOUND)
-    include_directories(${Zookeeper_INCLUDE_DIRS})
-else(Zookeeper_FOUND)
-    message(WARNING "Zookeeper not found, we won't compile the Control module (skip, no error). Try to add \"-DZookeeper_LIBRARY=<path>/lib -DZookeeper_INCLUDE_DIR=<path>/include\" to your cmake command.")
-    return()
-endif(Zookeeper_FOUND)
-
+# Dependency on another subproject (InfoLogger)
+#if(NOT TARGET InfoLogger) # target unknown because we build only this subproject, ProjA must have been built AND installed
+#    find_package(InfoLogger CONFIG REQUIRED)
+#else() # we know the target thus we are doing a build from the top directory
+#    include_directories(../InfoLogger/include)
+#endif()
+link_o2_subproject(InfoLogger)
+link_o2_subproject(Configuration)
+link_o2_subproject(DataFormat)
 link_o2_subproject(Common)
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
@@ -65,7 +61,6 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include   # add the binary tree to the search path so that we will find Version.h
     ${Boost_INCLUDE_DIRS}
-    
 )
 
 # Mac needed variables (adapt according to your needs)
@@ -75,12 +70,11 @@ set(CMAKE_MACOSX_RPATH ON)
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-add_subdirectory(doc)
-
 enable_testing()
 add_subdirectory(include)
 add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(doc)
+#add_subdirectory(test)
 
 #
 # SYSTEM PACKAGING (RPM, TGZ, ...)

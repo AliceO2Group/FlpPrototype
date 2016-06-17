@@ -6,6 +6,8 @@ set(LIB_HEADERS
 
 set(LIB_SOURCES
         DataBlock.cxx
+        DataBlockContainer.cxx
+        MemPool.cxx
 )
 
 # IMPORTANT NOTE :

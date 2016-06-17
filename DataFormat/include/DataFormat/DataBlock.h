@@ -23,14 +23,18 @@ typedef enum {
 } DataBlockType;
 
 
+/// Definition of a unique identifier for blocks
+typedef uint64_t DataBlockId;
+
 
 /// Data structure is based on standard data types with specified width.
 /// headerPtr + headerSize = payloadPtr
 /// headerPtr + headerSize + dataSize = nextHeaderPtr (if not toplevel block header)
 typedef struct {
-  uint32_t   blockType;     ///< ID to identify structure type
-  uint32_t   headerSize;     ///< header size in bytes
-  uint32_t   dataSize;     ///< data size following this structure (until next header, if this is not a toplevel block header)
+  uint32_t      blockType;     ///< ID to identify structure type
+  uint32_t      headerSize;     ///< header size in bytes
+  uint32_t      dataSize;     ///< data size following this structure (until next header, if this is not a toplevel block header)
+  DataBlockId   id;           ///< id of the block (monotonic increasing sequence)
 } DataBlockHeaderBase;
 
 
@@ -44,7 +48,7 @@ typedef struct {
 typedef struct
 {
     DataBlockHeaderBase header;   ///< Base common data header
-    char *data;
+    char *data; ///< Pointer to data. May or may not immediately follow this variable.
 } DataBlock;
 
 #endif /* DATAFORMAT_DATABLOCK */

@@ -1,11 +1,15 @@
-#include <StateMachine.h>
+#include <Control/StateMachine.h>
+#include <Common/Fifo.h>
+#include <Common/MakeUnique.h>
 
 #include <vector>
 #include <thread>
 #include <atomic>
 #include <stdio.h>
 #include <unistd.h>
-#include <BaseControl.h>
+#include <boost/thread/mutex.hpp>
+
+#include <Control/BaseControl.h>
 
 typedef Directory* t_ControlSystemHandle ;
 
@@ -50,7 +54,9 @@ RuntimeControlledObject::RuntimeControlledObject(const std::string objectName){
 RuntimeControlledObject::~RuntimeControlledObject(){
   if (dPtr!=NULL) {
     delete dPtr;
+    dPtr=NULL;
   }
+
 }
 
 
@@ -91,10 +97,13 @@ int RuntimeControlledObject::executeResume() {
 }
 
 int RuntimeControlledObject::iterateRunning() {
+  printf("step run\n");
+  sleep(1);
   return 0;
 }
 
 int RuntimeControlledObject::iterateCheck() {
+  //printf("check\n");
   return 0;
 }
 
@@ -132,9 +141,10 @@ const std::string getStringFromState(t_State s) {
 
 // structure to hold a command execution request
 class CommandRequest {
+  public:
   ControlStateMachine *stateMachine;
   std::string command;
-}
+};
 
 // todo: handle exceptions (what types?) of RuntimeControlledObject
 
@@ -144,6 +154,8 @@ class ControlStateMachine:public ControlObject {
   ControlStateMachine(RuntimeControlledObject *objectPtr, Directory * dir ):ControlObject(objectPtr->getName(),dir) {
     mObject=objectPtr;
     updateState(t_State::standby);
+    
+    pendingCommands=std::make_unique<AliceO2::Common::Fifo<CommandRequest>>(1);
   };
   
   ~ControlStateMachine() {
@@ -151,6 +163,16 @@ class ControlStateMachine:public ControlObject {
   
   // this is the callback triggered by the ControlObject
   void executeCommand(const std::string command){
+    printf("command received: %s\n",command.c_str());
+    //processStateTransition(command);
+    
+    //push to command queue
+    CommandRequest *newCommand=new CommandRequest();
+    newCommand->stateMachine=this;
+    newCommand->command=command;
+    if (pendingCommands->push(newCommand)) {
+      printf("%s - already busy with %d pending command = %s\n",mObject->getName().c_str(),pendingCommands->getNumberOfUsedSlots(),pendingCommands->front()->command.c_str());
+    }
   }
   
   // this is the actual method for command execution,
@@ -274,6 +296,10 @@ class ControlStateMachine:public ControlObject {
       mObject->dPtr->setState(s);
       printf("Object: %s - updating state = %s\n",mObject->getName().c_str(),getStringFromState(s).c_str());
     }
+    
+    std::unique_ptr<AliceO2::Common::Fifo<CommandRequest>> pendingCommands;
+
+  friend class RuntimeControlEngine;
 };
 
 
@@ -285,58 +311,119 @@ class ControlStateMachine:public ControlObject {
 
 // Can itself advertise a "master" control object through which one can control all sub-objects
 
-class RuntimeControlEngine {
-  public:
-  RuntimeControlEngine();
-  ~RuntimeControlEngine();
 
-  int registerObject(RuntimeControlledObject *o);
-  
+
+
+class RuntimeControlEngine::Impl {
+  friend class RuntimeControlEngine;
   private:
-  std::vector<ControlStateMachine *> mStateMachines;
-  std::thread *mEngineThread;
+  
+  std::vector<std::unique_ptr<ControlStateMachine>> mStateMachines;
+  std::unique_ptr<std::thread> mEngineThread;
 
   std::atomic<int> exitRequest;
   static void startThread(void *arg);
   
   Directory *mDirectory;
+  
+  boost::mutex mMutex;
+  
 };
 
 
 
 
+
+
+
+
 RuntimeControlEngine::RuntimeControlEngine() {
-  exitRequest=0;
-  mEngineThread=new std::thread(startThread,this);
+  pImpl=std::make_unique<RuntimeControlEngine::Impl>();
+  
+  pImpl->mEngineThread=nullptr;
+//  pImpl->pendingCommands=nullptr;
+  pImpl->mDirectory=nullptr;
+  
+  
+  pImpl->exitRequest=0;
+  pImpl->mEngineThread=std::make_unique<std::thread>(RuntimeControlEngine::Impl::startThread,this);
 
   DirectoryConfig dCfg("localhost:2181");
-  mDirectory=new Directory(dCfg);
+  pImpl->mDirectory=new Directory(dCfg);
 }
 
 RuntimeControlEngine::~RuntimeControlEngine() {
-  exitRequest=1;
-  mEngineThread->join();
-  delete mEngineThread;
-  delete mDirectory;
+  pImpl->exitRequest=1;
+  pImpl->mEngineThread->join();
+  delete pImpl->mDirectory;
 }
 
 int RuntimeControlEngine::registerObject(RuntimeControlledObject *o) {
 
-  ControlStateMachine *newSM= new ControlStateMachine(o, mDirectory);
-
-  mStateMachines.push_back(newSM);
+  // TODO: lock ! can not register before running
+  // or allow registerObj only when not running, before starting engine
+  
+  pImpl->mMutex.lock();
+  pImpl->mStateMachines.push_back(std::make_unique<ControlStateMachine>(o, pImpl->mDirectory));
+  pImpl->mMutex.unlock();
+  
+  // TODO: one thread per object?
+  
+  
   return 0;
 }
 
 
-void RuntimeControlEngine::startThread(void *arg) {
+void RuntimeControlEngine::Impl::startThread(void *arg) {
   
   RuntimeControlEngine *dPtr;
   dPtr=(RuntimeControlEngine *)arg;
   
+  int isActive=0;
+  
   for(;;) {
-    sleep(1);
-    if (dPtr->exitRequest) {break;}    
+    isActive=0;
+    
+    dPtr->pImpl->mMutex.lock();
+    
+    // process pending commands    
+    for (auto& ctrlObj : dPtr->pImpl->mStateMachines) {
+
+      // check for commands in queue
+      CommandRequest *newCommand=ctrlObj->pendingCommands->front();
+      if (newCommand!=nullptr) {
+        printf("starting processing %s : %s\n",ctrlObj->mObject->getName().c_str(),newCommand->command.c_str());        
+        newCommand->stateMachine->processStateTransition(newCommand->command);
+        printf("done processing %s : %s\n",ctrlObj->mObject->getName().c_str(),newCommand->command.c_str());        
+        ctrlObj->pendingCommands->pop(newCommand);
+        delete newCommand;
+        isActive=1;
+      }
+      
+      // execute periodic actions, as defined for corresponding state
+      if (ctrlObj->mObject->getState()==t_State::running) {
+        int err=ctrlObj->mObject->iterateRunning();
+        if (err) {
+          ctrlObj->updateState(t_State::error);
+        }
+      }
+      
+      
+      // execute object periodic check, in any state
+      int err=ctrlObj->mObject->iterateCheck();
+      if (err) {
+        ctrlObj->updateState(t_State::error);
+      }
+      
+    }
+
+    dPtr->pImpl->mMutex.unlock();
+
+   
+    if (!isActive) {
+      usleep(1000);
+    }
+    if (dPtr->pImpl->exitRequest) {break;}    
   }
 }
 
@@ -348,20 +435,27 @@ void RuntimeControlEngine::startThread(void *arg) {
 
 
 
-
+/*
 
 int main(int argc, char **argv) {
   RuntimeControlledObject o("test");
-/*  RuntimeControlEngine *e;
+//  RuntimeControlEngine *e;
   
-  e=new RuntimeControlEngine();
+//  e=new RuntimeControlEngine();
   
-  sleep(3);
-  delete e;
-*/
+//  sleep(3);
+//  delete e;
+
  
   RuntimeControlEngine e;
   e.registerObject(&o);
   sleep(1000);
   return 0;
 }
+*/
+/*
+// TODO
+
+specify if controlled object uses self-thread or can use a pool of thread
+
+*/
