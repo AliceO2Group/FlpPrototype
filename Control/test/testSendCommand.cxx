@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
       obj.sendCommand(cmdl);
       */
     }
-    sleep(10);
+    sleep(1);
     printf("done\n");
 
   }
