@@ -49,6 +49,7 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
   private:
 
     TH1F *mHisto1, *mHisto2;
+    TH1F *mHistos[25];
 };
 
 }
