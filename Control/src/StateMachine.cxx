@@ -58,6 +58,7 @@ void DirectoryPrivate::z_watcher (zhandle_t *zzh, int type, int state, const cha
     h=(DirectoryPrivate *)watcherCtx;
     if (h==NULL) {return;}
     if (h->z_shutdown) {return;}
+    
     h->mMutex.lock();
     if (type == ZOO_SESSION_EVENT) {
         if (state == ZOO_CONNECTED_STATE) {
@@ -170,6 +171,10 @@ int Directory::SetValue(const std::string node ,const std::string value) {
     }
   }
   dPtr->mMutex.unlock();
+  if (err) {
+    return 1;
+  }
+  return 0;
 }
 
 
@@ -202,7 +207,7 @@ void DirectoryPrivate::z_watcher_subNode (zhandle_t *zzh, int type, int state, c
                 }
               }
               err=zoo_delete(zzh,childNode.c_str(),-1);
-              if (err=ZOK) {
+              if (err==ZOK) {
                 //printf("%s deleted\n",childNode.c_str());
               }
           }      
