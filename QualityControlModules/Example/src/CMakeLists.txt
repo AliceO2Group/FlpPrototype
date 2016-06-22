@@ -11,6 +11,12 @@ set(LIB_SOURCES
 # Define two variables in order not to repeat ourselves.
 set(LIBRARY_NAME QcExample)
 
+# special trick due to ROOT_GENERATE_DICTIONARY that needs the include dirs of the dependencies
+get_target_property(test_inc QCCore INTERFACE_INCLUDE_DIRECTORIES)
+if(test_inc)
+    include_directories(${test_inc})
+endif()
+
 # DICTIONARIES
 list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/ExampleTask.h)
 set(CMAKE_ROOTTEST_DICT 1)
