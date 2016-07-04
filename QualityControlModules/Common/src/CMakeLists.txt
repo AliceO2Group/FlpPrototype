@@ -22,7 +22,7 @@ set(CMAKE_ROOTTEST_DICT 1)
 # special trick due to ROOT_GENERATE_DICTIONARY that needs the include dirs of the dependencies
 get_target_property(test_inc QCCore INTERFACE_INCLUDE_DIRECTORIES)
 if(test_inc)
-include_directories(${test_inc})
+    include_directories(${test_inc})
 endif()
 
 ROOT_GENERATE_DICTIONARY("${LIBRARY_NAME}Dict" ${DICTINC} LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/../include/Common/LinkDef.h)
