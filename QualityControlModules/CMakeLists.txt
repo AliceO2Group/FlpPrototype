@@ -42,14 +42,6 @@ endif()
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-find_package(ROOT)
-if(ROOT_FOUND)
-    message(STATUS "ROOT ${ROOT_VERSION} found")
-    include(RootNewMacros)
-else()
-    message(WARNING "ROOT not found, we won't compile the QC modules (skip, no error)")
-endif()
-
 find_package(FairRoot)
 if(FAIRROOT_FOUND)
     # this should go away when fairrot provides a proper Find script or proper config scripts
@@ -61,6 +53,14 @@ if(FAIRROOT_FOUND)
 else(FAIRROOT_FOUND)
     message(WARNING "FairRoot not found, corresponding classes will not be compiled.")
 endif(FAIRROOT_FOUND)
+
+find_package(ROOT)
+if(ROOT_FOUND)
+    message(STATUS "ROOT ${ROOT_VERSION} found")
+    include(RootNewMacros)
+else()
+    message(WARNING "ROOT not found, we won't compile the QC modules (skip, no error)")
+endif()
 
 # Dependency on another subproject (InfoLogger)
 link_o2_subproject(InfoLogger)
