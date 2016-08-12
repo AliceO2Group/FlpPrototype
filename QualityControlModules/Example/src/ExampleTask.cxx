@@ -6,10 +6,9 @@
 #include "Example/ExampleTask.h"
 #include "QualityControl/QcInfoLogger.h"
 #include <TH1.h>
-
-#include <iostream>
 #include <TCanvas.h>
-#include <DataFormat/DataBlock.h>
+
+using namespace std;
 
 namespace AliceO2 {
 namespace QualityControlModules {
@@ -40,7 +39,7 @@ ExampleTask::~ExampleTask()
 void ExampleTask::initialize()
 {
   QcInfoLogger::GetInstance() << "initialize" << AliceO2::InfoLogger::InfoLogger::endm;
-  mHisto1 = new TH1F("first", "first", 2048, 0, 2047);
+  mHisto1 = new TH1F("payloadsize", "Payload size of blocks", 2048, 0, 2047);
   mHisto2 = new TH1F("second", "second", 100, -10, 10);
   getObjectsManager()->startPublishing("task", "my object", mHisto1);
   getObjectsManager()->addCheck("my object", "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty", "QcCommon");

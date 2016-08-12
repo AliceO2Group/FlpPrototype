@@ -1,11 +1,15 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
-  ../include/Example/ExampleTask.h # Normal header
+  ../include/Example/ExampleTask.h
+  ../include/Example/FakeCheck.h
+  ../include/Example/BenchmarkTask.h
 )
 
 set(LIB_SOURCES
   QcExampleDict.cxx # generated
   ExampleTask.cxx
+  FakeCheck.cxx
+  BenchmarkTask.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
@@ -19,6 +23,9 @@ endif()
 
 # DICTIONARIES
 list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/ExampleTask.h)
+list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/FakeCheck.h)
+list(APPEND DICTINC ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/BenchmarkTask.h)
+
 set(CMAKE_ROOTTEST_DICT 1)
 ROOT_GENERATE_DICTIONARY("${LIBRARY_NAME}Dict" ${DICTINC} LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/../include/Example/LinkDef.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}Dict_rdict.pcm DESTINATION lib)
