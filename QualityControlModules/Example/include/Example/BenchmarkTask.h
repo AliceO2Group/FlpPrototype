@@ -19,10 +19,12 @@ namespace AliceO2 {
 namespace QualityControlModules {
 namespace Example {
 
-/// \brief Example Quality Control Task
-/// It is final because there is no reason to derive from it. Just remove it if needed.
+/// \brief Quality Control Task for benchmarking
+/// It publishes a number of TH1F (configurable, see example.ini in module QualityControl).
+/// The histos are reset and refilled (1000 random) at EOC. They have 1000 bins.
+/// The monitoring of data blocks is empty (sleep 100 ms).
 /// \author Barthelemy von Haller
-class BenchmarkTask /*final*/: public TaskInterface // todo add back the "final" when doxygen is fixed
+class BenchmarkTask: public TaskInterface
 {
   public:
     /// \brief Constructor

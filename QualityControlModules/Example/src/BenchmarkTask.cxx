@@ -18,7 +18,6 @@ namespace Example {
 BenchmarkTask::BenchmarkTask()
   : TaskInterface()
 {
-
 }
 
 BenchmarkTask::~BenchmarkTask()
@@ -41,9 +40,10 @@ void BenchmarkTask::initialize()
 
   // Create and publish the histos
   for (size_t i = 0; i < mNumberHistos; i++) {
+    assert(mHistos.size() == 0); // because otherwise the code below makes no sense.
     stringstream name;
     name << "histogram_" << getName() << "_" << i;
-    mHistos.push_back(new TH1F(name.str().c_str(), name.str().c_str(), 1000, 0, 999));
+    mHistos.push_back(new TH1F(name.str().c_str(), name.str().c_str(), 1000, -5, 5));
     getObjectsManager()->startPublishing(getName(), name.str(), mHistos[i]);
 
     // Add the checks
@@ -66,12 +66,15 @@ void BenchmarkTask::startOfCycle()
 
 void BenchmarkTask::monitorDataBlock(DataBlock &block)
 {
-  std::this_thread::sleep_for(std::chrono::milliseconds(100)/*1ms*/);
+  std::this_thread::sleep_for(std::chrono::milliseconds(100)/*100ms*/);
 }
 
 void BenchmarkTask::endOfCycle()
 {
-  // TODO insert data in plot
+  for(auto histo : mHistos) {
+    histo->Reset();
+    histo->FillRandom("gaus", 1000);
+  }
   QcInfoLogger::GetInstance() << "endOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
