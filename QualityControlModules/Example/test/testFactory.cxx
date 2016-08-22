@@ -13,6 +13,7 @@
 #define BOOST_TEST_MODULE Publisher test
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
+
 #include <boost/test/unit_test.hpp>
 #include <assert.h>
 
@@ -27,17 +28,22 @@ namespace Common {
 BOOST_AUTO_TEST_CASE(Task_Factory)
 {
   TaskFactory factory;
-  ObjectsManager manager("MockPublisher");
+  TaskConfig config;
+  config.taskName = "task";
+  config.moduleName = "QcCommon";
+  config.className = "AliceO2::QualityControlModules::Example::ExampleTask";
+  config.publisherClassName = "MockPublisher";
+  ObjectsManager manager(config);
   try {
     std::string addition = "lib:../../lib:../../../lib:";
     gSystem->Setenv("LD_LIBRARY_PATH", (addition + gSystem->Getenv("LD_LIBRARY_PATH")).c_str());
-    factory.create("task", "QcCommon", "AliceO2::QualityControlModules::Example::ExampleTask", &manager);
+    factory.create(config, &manager);
   } catch (...) {
     BOOST_TEST_FAIL(boost::current_exception_diagnostic_information());
   }
 }
 
-  bool is_critical(AliceO2::Common::FatalException const& ex)
+bool is_critical(AliceO2::Common::FatalException const &ex)
 {
   return true;
 }
@@ -45,14 +51,23 @@ BOOST_AUTO_TEST_CASE(Task_Factory)
 BOOST_AUTO_TEST_CASE(Task_Factory_failures)
 {
   TaskFactory factory;
-  ObjectsManager manager("MockPublisher");
+  TaskConfig config;
+  config.publisherClassName = "MockPublisher";
+  ObjectsManager manager(config);
 
-  BOOST_CHECK_EXCEPTION(factory.create("task", "WRONGNAME", "AliceO2::QualityControlModules::Example::ExampleTask", &manager),
-			AliceO2::Common::FatalException, is_critical);
+  config.taskName = "task";
+  config.moduleName = "WRONGNAME";
+  config.className = "AliceO2::QualityControlModules::Example::ExampleTask";
+  BOOST_CHECK_EXCEPTION(
+    factory.create(config, &manager),
+    AliceO2::Common::FatalException, is_critical);
 
   std::string addition = "lib:../../lib:../../../lib:";
   gSystem->Setenv("LD_LIBRARY_PATH", (addition + gSystem->Getenv("LD_LIBRARY_PATH")).c_str());
-  BOOST_CHECK_EXCEPTION(factory.create("task", "QcCommon", "WRIONGCLASS", &manager), AliceO2::Common::FatalException, is_critical);
+  config.taskName = "task";
+  config.moduleName = "QcCommon";
+  config.className = "WRONGCLASS";
+  BOOST_CHECK_EXCEPTION(factory.create(config, &manager), AliceO2::Common::FatalException, is_critical);
 
 }
 

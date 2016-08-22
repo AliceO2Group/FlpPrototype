@@ -26,7 +26,9 @@ namespace Example {
 BOOST_AUTO_TEST_CASE(insantiate_task)
 {
   ExampleTask task;
-  ObjectsManager manager("MockPublisher");
+  TaskConfig config;
+  config.publisherClassName = "MockPublisher";
+  ObjectsManager manager(config);
   task.setObjectsManager(&manager);
   task.initialize();
 
