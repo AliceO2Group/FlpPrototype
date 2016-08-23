@@ -212,3 +212,7 @@ TODO
 - Extract everything that is common in O2.cmake.
 - Tests in Control must not depend on a running zookeeper or it must launch it in the setup of the test suite.
 - Only two tests in Control are able to run, others have been desactivated.
+
+
+Clion setup : launch from a terminal where we have the correct env. Add CMake options :
+-DBOOST_ROOT=/opt/hackathon/ -DBOOST_LIBRARYDIR=/opt/hackathon/lib64 -DBoost_NO_SYSTEM_PATH=ON
