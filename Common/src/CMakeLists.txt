@@ -1,14 +1,17 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/Common/Version.h" # Generated header
-  ../include/Common/World.h # Normal header
+        # Normal header
   ../include/Common/signalUtilities.h # Normal header
+  ../include/Common/Timer.h # Normal header
   ../include/Common/Exceptions.h # Normal header
+  ../include/Common/Thread.h # Normal header
+  ../include/Common/Fifo.h # Normal header
+  ../include/Common/MakeUnique.h # Normal header
 )
 
 set(LIB_SOURCES
-  World.cxx
-  Timer.cxx
+        Timer.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
