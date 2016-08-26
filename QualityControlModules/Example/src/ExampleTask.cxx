@@ -68,7 +68,7 @@ void ExampleTask::startOfCycle()
 void ExampleTask::monitorDataBlock(DataBlock &block)
 {
   uint32_t payloadSizeBytes = block.header.dataSize / 8;
-  QcInfoLogger::GetInstance() << "Payload size " << payloadSizeBytes << AliceO2::InfoLogger::InfoLogger::endm;
+//  QcInfoLogger::GetInstance() << "Payload size " << payloadSizeBytes << AliceO2::InfoLogger::InfoLogger::endm;
   mHisto1->Fill(payloadSizeBytes);
   mHisto2->FillRandom("gaus", 10);
 
