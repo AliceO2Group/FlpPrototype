@@ -144,7 +144,7 @@ endfunction()
 #                                                    STAGE1 LINKDEF linkdef OPTIONS opt1 opt2 ...)
 #---------------------------------------------------------------------------------------------------
 function(ROOT_GENERATE_DICTIONARY dictionary)
-  CMAKE_PARSE_ARGUMENTS(ARG "STAGE1;MULTIDICT" "MODULE" "LINKDEF;OPTIONS;DEPENDENCIES" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "STAGE1;MULTIDICT" "MODULE" "LINKDEF;OPTIONS;DEPENDENCIES;EXTRA_INC_DIRS" ${ARGN})
 
   #---roottest compability---------------------------------
   if(CMAKE_ROOTTEST_DICT)
@@ -167,6 +167,7 @@ function(ROOT_GENERATE_DICTIONARY dictionary)
     endif()
   endforeach()
   string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/inc/" ""  rheaderfiles "${headerfiles}")
+  string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/../include/" ""  rheaderfiles "${headerfiles}")
   #---Get the list of include directories------------------
   get_directory_property(incdirs INCLUDE_DIRECTORIES)
   if(CMAKE_PROJECT_NAME STREQUAL ROOT)
@@ -175,6 +176,13 @@ function(ROOT_GENERATE_DICTIONARY dictionary)
   elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/inc)
     set(includedirs -I${CMAKE_CURRENT_SOURCE_DIR}/inc)
   endif()
+  foreach( f ${ARG_EXTRA_INC_DIRS})
+    if( IS_ABSOLUTE ${f})
+      set(incdirs ${incdirs} ${f})
+    else()
+      set(incdirs ${incdirs} ${CMAKE_CURRENT_SOURCE_DIR}/${f})
+    endif()
+  endforeach()
   foreach( d ${incdirs})
    set(includedirs ${includedirs} -I${d})
   endforeach()
@@ -259,6 +267,8 @@ function(ROOT_GENERATE_DICTIONARY dictionary)
   endif()
 
   #---call rootcint------------------------------------------
+    message("${command} -f  ${dictionary}.cxx ${newargs} ${rootmapargs}
+            ${ARG_OPTIONS} ${definitions} ${includedirs} ${rheaderfiles} ${_linkdef}")
   add_custom_command(OUTPUT ${dictionary}.cxx ${pcm_name} ${rootmap_name}
                      COMMAND ${command} -f  ${dictionary}.cxx ${newargs} ${rootmapargs}
                                         ${ARG_OPTIONS} ${definitions} ${includedirs} ${rheaderfiles} ${_linkdef}
