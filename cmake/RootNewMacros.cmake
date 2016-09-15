@@ -267,8 +267,6 @@ function(ROOT_GENERATE_DICTIONARY dictionary)
   endif()
 
   #---call rootcint------------------------------------------
-    message("${command} -f  ${dictionary}.cxx ${newargs} ${rootmapargs}
-            ${ARG_OPTIONS} ${definitions} ${includedirs} ${rheaderfiles} ${_linkdef}")
   add_custom_command(OUTPUT ${dictionary}.cxx ${pcm_name} ${rootmap_name}
                      COMMAND ${command} -f  ${dictionary}.cxx ${newargs} ${rootmapargs}
                                         ${ARG_OPTIONS} ${definitions} ${includedirs} ${rheaderfiles} ${_linkdef}
