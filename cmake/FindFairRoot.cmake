@@ -6,13 +6,15 @@
  #                  copied verbatim in the file "LICENSE"                       #
  ################################################################################
 # Find FairRoot installation 
-# Check the environment variable "FAIRROOTPATH"
+# Check the environment variable "FAIRROOTPATH" or "FAIRROOT_ROOT"
 
 if(FairRoot_DIR)
   SET(FAIRROOTPATH ${FairRoot_DIR})
+elseif(DEFINED ENV{FAIRROOT_ROOT})
+  SET(FAIRROOTPATH $ENV{FAIRROOT_ROOT})	
 else()
   if(NOT DEFINED ENV{FAIRROOTPATH})
-    set(user_message "You did not define the environment variable FAIRROOTPATH which is needed to find FairRoot.\nPlease set this variable and execute cmake again." )
+    set(user_message "You did not define the environment variable FAIRROOTPATH or FAIRROOT_ROOT which are needed to find FairRoot.\nPlease set one of these variables and execute cmake again." )
     if(FairRoot_FIND_REQUIRED)
         MESSAGE(FATAL_ERROR ${user_message})
     else(FairRoot_FIND_REQUIRED)

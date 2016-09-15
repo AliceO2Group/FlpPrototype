@@ -62,6 +62,8 @@ else(FAIRROOT_FOUND)
     message(WARNING "FairRoot not found, module ControlFairMQ will not be compiled.")
 endif(FAIRROOT_FOUND)
 
+find_package(ZeroMQ REQUIRED)
+
 # Dependency on another subproject (InfoLogger)
 link_o2_subproject(InfoLogger)
 
@@ -73,7 +75,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include   # add the binary tree to the search path so that we will find Version.h
     ${Boost_INCLUDE_DIRS}
-    ${FAIRROOT_INCLUDE_DIR}    
+    ${FAIRROOT_INCLUDE_DIR}   
 )
 
 # Mac needed variables (adapt according to your needs)
