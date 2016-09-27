@@ -7,12 +7,14 @@ set(LIB_HEADERS
   ../include/Common/Exceptions.h # Normal header
   ../include/Common/Thread.h # Normal header
   ../include/Common/Fifo.h # Normal header
+  ../include/Common/Configuration.h
 )
 
 set(LIB_SOURCES
   World.cxx
   Timer.cxx
   Thread.cxx
+  Configuration.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
