@@ -3,7 +3,9 @@
 /// @author  Barthelemy von Haller
 ///
 
-#include "ProjA/World.h"
+#include "Common/World.h"
+#include "Common/SimpleLog.h"
+
 
 #include <iostream>
 
@@ -13,6 +15,12 @@ namespace ProjA {
 
 void World::greet()
 {
+  SimpleLog log;
+  
+  log.info("hello(info)");
+  log.error("hello(error)");
+  log.warning("hello(warning)");  
+  
   std::cout << "Common world!!" << std::endl;
 }
 
