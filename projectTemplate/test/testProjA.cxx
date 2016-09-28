@@ -26,3 +26,9 @@ BOOST_AUTO_TEST_CASE(hello_test)
   const int ret = world.returnsN(3);
   BOOST_CHECK_EQUAL(ret, 3);
 }
+
+BOOST_AUTO_TEST_CASE(greet_test)
+{
+  AliceO2::Common::World world;
+  world.greet();
+}
