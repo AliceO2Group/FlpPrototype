@@ -38,27 +38,36 @@ ChannelFactory::~ChannelFactory()
 
 std::shared_ptr<ChannelMasterInterface> ChannelFactory::getMaster(int serial, int channel)
 {
-  return makeChannel<ChannelMasterInterface>(serial, DUMMY_SERIAL_NUMBER,
-    DummyTag, [&](){ return std::make_shared<DummyChannelMaster>(serial, channel, ChannelParameters()); },
-    CrorcTag, [&](){ return std::make_shared<CrorcChannelMaster>(serial, channel); },
-    CruTag,   [&](){ return std::make_shared<CruChannelMaster>(serial, channel); });
+  return makeChannel<ChannelMasterInterface>(serial, DUMMY_SERIAL_NUMBER
+    , DummyTag, [&]{ return std::make_shared<DummyChannelMaster>(serial, channel, Parameters::Map()); }
+#ifdef ALICEO2_RORC_PDA_ENABLED
+    , CrorcTag, [&]{ return std::make_shared<CrorcChannelMaster>(serial, channel); }
+    , CruTag,   [&]{ return std::make_shared<CruChannelMaster>(serial, channel); }
+#endif
+    );
 }
 
 std::shared_ptr<ChannelMasterInterface> ChannelFactory::getMaster(int serial, int channel,
     const ChannelParameters& params)
 {
-  return makeChannel<ChannelMasterInterface>(serial, DUMMY_SERIAL_NUMBER,
-    DummyTag, [&](){ return std::make_shared<DummyChannelMaster>(serial, channel, params); },
-    CrorcTag, [&](){ return std::make_shared<CrorcChannelMaster>(serial, channel, params); },
-    CruTag,   [&](){ return std::make_shared<CruChannelMaster>(serial, channel, params); });
+  return makeChannel<ChannelMasterInterface>(serial, DUMMY_SERIAL_NUMBER
+    , DummyTag, [&]{ return std::make_shared<DummyChannelMaster>(serial, channel, params); }
+#ifdef ALICEO2_RORC_PDA_ENABLED
+    , CrorcTag, [&]{ return std::make_shared<CrorcChannelMaster>(serial, channel, params); }
+    , CruTag,   [&]{ return std::make_shared<CruChannelMaster>(serial, channel, params); }
+#endif
+    );
 }
 
 std::shared_ptr<ChannelSlaveInterface> ChannelFactory::getSlave(int serial, int channel)
 {
-  return makeChannel<ChannelSlaveInterface>(serial, DUMMY_SERIAL_NUMBER,
-    DummyTag, [&](){ return std::make_shared<DummyChannelSlave>(serial, channel); },
-    CrorcTag, [&](){ return std::make_shared<CrorcChannelSlave>(serial, channel); },
-    CruTag,   [&](){ return std::make_shared<CruChannelSlave>(serial, channel); });
+  return makeChannel<ChannelSlaveInterface>(serial, DUMMY_SERIAL_NUMBER
+    , DummyTag, [&]{ return std::make_shared<DummyChannelSlave>(serial, channel); }
+#ifdef ALICEO2_RORC_PDA_ENABLED
+    , CrorcTag, [&]{ return std::make_shared<CrorcChannelSlave>(serial, channel); }
+    , CruTag,   [&]{ return std::make_shared<CruChannelSlave>(serial, channel); }
+#endif
+    );
 }
 
 } // namespace Rorc
