@@ -145,6 +145,7 @@ class ProgramAliceLowlevelFrontendServer: public Program
     }
 
     double mTemperature = 45;
+    uint32_t mReadRegisterInt = 0;
 };
 } // Anonymous namespace
 
