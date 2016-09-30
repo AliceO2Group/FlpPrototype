@@ -61,15 +61,15 @@ int SimpleLog::Impl::logV(SimpleLog::Impl::Severity s, const char *message, va_l
   ix+=strftime(&buffer[ix], len-ix, "%Y-%m-%d %T", &tm_str);
   char str_fractionOfSecond[10];
   snprintf(str_fractionOfSecond,sizeof(str_fractionOfSecond),"%.6lf",fractionOfSecond);
-  ix+=snprintf(&buffer[ix], len-ix, ".%s\t",&str_fractionOfSecond[2]);
+  ix+=snprintf(&buffer[ix], len-ix, ".%s",&str_fractionOfSecond[2]);
   if (ix>len) { ix=len; }
 
   if (s==Severity::Error) {
-    ix+=snprintf(&buffer[ix], len-ix, "!!!\t");
+    ix+=snprintf(&buffer[ix], len-ix, " !!! ");
   } else if (s==Severity::Warning) {
-    ix+=snprintf(&buffer[ix], len-ix, " ! \t");
+    ix+=snprintf(&buffer[ix], len-ix, "  !  ");
   } else {
-    ix+=snprintf(&buffer[ix], len-ix, "   \t");
+    ix+=snprintf(&buffer[ix], len-ix, "     ");
   }
 
   ix+=vsnprintf(&buffer[ix], len-ix, message, ap);
