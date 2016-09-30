@@ -59,13 +59,17 @@ int SimpleLog::Impl::logV(SimpleLog::Impl::Severity s, const char *message, va_l
   localtime_r(&now, &tm_str);
   double fractionOfSecond=fullTimeNow-now;
   ix+=strftime(&buffer[ix], len-ix, "%Y-%m-%d %T", &tm_str);
-  ix+=snprintf(&buffer[ix], len-ix, ".%.3lf\t",fractionOfSecond);
+  char str_fractionOfSecond[10];
+  snprintf(str_fractionOfSecond,sizeof(str_fractionOfSecond),"%.6lf",fractionOfSecond);
+  ix+=snprintf(&buffer[ix], len-ix, ".%s\t",&str_fractionOfSecond[2]);
   if (ix>len) { ix=len; }
 
   if (s==Severity::Error) {
-    ix+=snprintf(&buffer[ix], len-ix, "Error - ");
+    ix+=snprintf(&buffer[ix], len-ix, "!!!\t");
   } else if (s==Severity::Warning) {
-    ix+=snprintf(&buffer[ix], len-ix, "Warning - ");
+    ix+=snprintf(&buffer[ix], len-ix, " ! \t");
+  } else {
+    ix+=snprintf(&buffer[ix], len-ix, "   \t");
   }
 
   ix+=vsnprintf(&buffer[ix], len-ix, message, ap);
