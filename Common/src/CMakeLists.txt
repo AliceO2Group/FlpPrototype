@@ -11,7 +11,6 @@ set(LIB_HEADERS
 )
 
 set(LIB_SOURCES
-  World.cxx
   Timer.cxx
   Thread.cxx
   Configuration.cxx

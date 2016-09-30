@@ -29,6 +29,6 @@ BOOST_AUTO_TEST_CASE(hello_test)
 
 BOOST_AUTO_TEST_CASE(greet_test)
 {
-  AliceO2::Common::World world;
+  AliceO2::ProjectTemplate::ProjA::World world;
   world.greet();
 }

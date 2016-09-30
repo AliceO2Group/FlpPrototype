@@ -3,8 +3,8 @@
 /// @author  Barthelemy von Haller
 ///
 
-#include "Common/World.h"
-#include "Common/SimpleLog.h"
+#include <ProjA/World.h>
+#include <Common/SimpleLog.h>
 
 
 #include <iostream>
