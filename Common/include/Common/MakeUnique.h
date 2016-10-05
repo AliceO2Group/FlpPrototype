@@ -9,7 +9,8 @@ https://isocpp.org/files/papers/N3656.txt
 #ifndef COMMON_MAKEUNIQUE_H
 #define COMMON_MAKEUNIQUE_H
 
-
+// Only provide for C++11 or lower, since the C++14 STL includes this functionality (which means a compile error)
+#if __cplusplus <= 201103L 
 
 #include <cstddef>
 #include <memory>
@@ -47,4 +48,5 @@ namespace std {
         make_unique(Args&&...) = delete;
 }
 
+#endif // __cplusplus == 201103L
 #endif // COMMON_MAKEUNIQUE_H
