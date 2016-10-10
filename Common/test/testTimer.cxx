@@ -3,6 +3,7 @@
 #define BOOST_TEST_MODULE Timer test
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
+#include <cmath>
 #include <boost/test/unit_test.hpp>
 #include <assert.h>
 
@@ -22,7 +23,7 @@ BOOST_AUTO_TEST_CASE(timer_test)
   
   printf("Timer elapsed=%.4lf\n",elapsed);
   int success=0;
-  if (fabs(elapsed-1.0)<0.01) {
+  if (std::fabs(elapsed-1.0)<0.01) {
     success=1;
   }
 
