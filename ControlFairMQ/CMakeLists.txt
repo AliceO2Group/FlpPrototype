@@ -65,6 +65,7 @@ endif(FAIRROOT_FOUND)
 find_package(ZeroMQ REQUIRED)
 
 # Dependency on another subproject (InfoLogger)
+link_o2_subproject(Common)
 link_o2_subproject(InfoLogger)
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
