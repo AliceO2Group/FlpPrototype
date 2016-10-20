@@ -100,3 +100,98 @@ void getValueSpecialization(void) {
 
 
 //template void ConfigFile::getValue<float>(std::string, float&);
+
+
+
+
+
+// http://stackoverflow.com/questions/4586768/how-to-iterate-a-boost-property-tree
+string indent(int level) {
+  string s; 
+  for (int i=0; i<level; i++) s += "  ";
+  return s; 
+}
+
+void printTree (boost::property_tree::ptree &pt, int level) {
+  if (pt.empty()) {
+    cerr << "\""<< pt.data()<< "\"";
+  } else {
+    if (level) cerr << endl; 
+    cerr << indent(level) << "{" << endl;     
+    for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end();) {
+      cerr << indent(level+1) << "\"" << pos->first << "\": "; 
+      printTree(pos->second, level + 1); 
+      ++pos; 
+      if (pos != pt.end()) {
+        cerr << ","; 
+      }
+      cerr << endl;
+    } 
+    cerr << indent(level) << " }";     
+  }
+  return; 
+}
+
+void ConfigFile::print() {
+  printTree(dPtr->pt,0);
+}
+
+
+
+
+
+
+
+ConfigFileBrowser::Iterator::Iterator(ConfigFileBrowser *_bPtr, ConfigFileBrowser::Iterator::t_Iterator _it, ConfigFileBrowser::Iterator::t_Iterator _itEnd)
+:bPtr(_bPtr),it(_it),itEnd(_itEnd) {
+  // skip initial elements if filter defined
+  findNext();
+}
+
+// iterate until matching sub-tree name found, in case a filter is defined
+void ConfigFileBrowser::Iterator::findNext() {
+  int l=bPtr->filter.length();
+  if (l) {
+    while (it!=itEnd) {
+      std::string s((*it).first);
+      if (!s.compare(0,l,bPtr->filter)) {
+         break;
+      }
+      ++it;
+    }
+  }
+}
+
+const std::string & ConfigFileBrowser::Iterator::operator*() {
+  return (*it).first;
+}
+
+ConfigFileBrowser::Iterator& ConfigFileBrowser::Iterator::operator++() {
+   ++it;
+   findNext();      
+   return *this;
+}
+
+bool ConfigFileBrowser::Iterator::operator!=(const ConfigFileBrowser::Iterator& _it) const {
+  return it!=_it.it;
+}
+
+  
+
+
+ConfigFileBrowser::ConfigFileBrowser(ConfigFile *_p, std::string _filter) {
+  p=_p;
+  filter=_filter;
+}
+
+ConfigFileBrowser::~ConfigFileBrowser() {
+}
+
+ConfigFileBrowser::Iterator ConfigFileBrowser::begin() {
+  return {this,p->dPtr->pt.begin(),p->dPtr->pt.end()};
+}
+
+ConfigFileBrowser::Iterator ConfigFileBrowser::end() {
+  return Iterator(this,p->dPtr->pt.end(),p->dPtr->pt.end());
+}
+ 

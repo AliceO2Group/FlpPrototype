@@ -17,6 +17,7 @@ class ConfigFilePrivate
     ~ConfigFilePrivate();
 
     friend class ConfigFile;
+    friend class ConfigFileBrowser;
 
   protected:
     boost::property_tree::ptree pt;
@@ -77,9 +78,65 @@ class ConfigFile
       return res;
     }
 
+
+    /// Print configuration tree
+    void print();
+
   private:
     ConfigFilePrivate *dPtr;
+
+  friend class ConfigFileBrowser;
 };
+
+
+
+
+
+/// Helper class to iterate over 1st level sub-tree of config file with a for range-based loop.
+///
+/// \example        To print section names starting with "part" found in a .ini file:
+/// \example          for (auto sectionName : ConfigFileBrowser (&myConfigFile,"part") { std::cout << "Found section : " << sectionName << std::endl;}
+class ConfigFileBrowser {
+
+ 
+public:
+  /// Constructor
+  /// \param cfgPtr   Pointer to a ConfigFile object
+  /// \param filter   Optional string to be matched with sub-tree name. Non-matching elements will be skipped. Only sub-tree names starting by this string will be returned.
+  ConfigFileBrowser(ConfigFile *cfgPtr, std::string filter="");
+  ~ConfigFileBrowser();
+  
+  class Iterator;
+  Iterator begin();
+  Iterator end();
+ 
+private:
+  ConfigFile *p;
+  std::string filter;
+};
+
+
+/// Internal class used to implement ConfigFileBrowser iterator
+class ConfigFileBrowser::Iterator {
+
+   typedef boost::property_tree::ptree::iterator t_Iterator;
+
+   private:
+   ConfigFileBrowser *bPtr;
+   t_Iterator it;
+   t_Iterator itEnd;
+   void findNext();
+
+   public: 
+   Iterator(ConfigFileBrowser *_bPtr, Iterator::t_Iterator _it, Iterator::t_Iterator _itEnd);
+   const std::string & operator*();
+   Iterator& operator++();
+   bool operator!=(const Iterator& _it) const;
+};
+
+
+
+
 
 #endif /* SRC_CONFIGURATION_H_ */
 
