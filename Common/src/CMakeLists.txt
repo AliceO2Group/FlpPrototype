@@ -7,11 +7,15 @@ set(LIB_HEADERS
   ../include/Common/Exceptions.h # Normal header
   ../include/Common/Thread.h # Normal header
   ../include/Common/Fifo.h # Normal header
-  ../include/Common/MakeUnique.h # Normal header
+  ../include/Common/Configuration.h
 )
 
 set(LIB_SOURCES
-        Timer.cxx
+  Timer.cxx
+  Thread.cxx
+  Configuration.cxx
+  Daemon.cxx
+  SimpleLog.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
@@ -19,7 +23,7 @@ set(LIBRARY_NAME Common)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} InfoLogger-static)
+target_link_libraries(${LIBRARY_NAME})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 

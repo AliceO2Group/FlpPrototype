@@ -34,10 +34,10 @@ include(UninstallTarget)
 # Target clang-format
 #include(clang-format)
 
-message(STATUS InfoLogger)
-add_subdirectory(InfoLogger)
 message(STATUS Common)
 add_subdirectory(Common)
+message(STATUS InfoLogger)
+add_subdirectory(InfoLogger)
 message(STATUS projectTemplate)
 add_subdirectory(projectTemplate)
 message(STATUS Configuration)

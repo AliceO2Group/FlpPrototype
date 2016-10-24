@@ -8,9 +8,9 @@
 
 
 #include <chrono>
-
-#include <InfoLogger/InfoLogger.hxx>
-
+#include <string>
+#include <atomic>
+#include <thread>
 
 namespace AliceO2 {
 namespace Common {
@@ -27,7 +27,7 @@ class Thread {
     /// @param[in]   vLoopArg         Pointer to argument passed to user-defined function, if any.
     /// @param[in]   vThreadName      Name to be used to identify this thread (for debug printouts)
     /// @param[in]   loopSleepTime    Idle sleep time (in microseconds), when loop callback function/method returns idle. This is the maximum time between 2 calls.  
-     CThread(CThread::CallbackResult (*vLoopCallback)(void *) = NULL , void *vLoopArg = NULL, std::string vThreadName = "", int loopSleepTime=1000);
+    Thread(Thread::CallbackResult (*vLoopCallback)(void *) = NULL , void *vLoopArg = NULL, std::string vThreadName = "", int loopSleepTime=1000);
 
     /// Destructor
     ~Thread();
@@ -56,9 +56,8 @@ class Thread {
     void *loopArg;                // arg to be passed to callback function
    
     CallbackResult doLoop();   // function called at each thread iteration. Returns a result code.
-    static void threadMain(CThread *e); // this is the (internal) thread entry point
+    static void threadMain(Thread *e); // this is the (internal) thread entry point
     
-    AliceO2::InfoLogger::InfoLogger theLog;
   private:
     std::chrono::time_point<std::chrono::high_resolution_clock> t0; // time of reset
     double tmax; // duration between reset and timeout condition, in seconds

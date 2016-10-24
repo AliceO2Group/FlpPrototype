@@ -23,7 +23,7 @@ ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 #    set(CMAKE_CXX_STANDARD 14)  # proper way in CMake >= 3.1 
 #ENDIF ()
 
-# Add compiler flags for warnings and (more importantly) fPIC and debug symbols
+## Add compiler flags for warnings and (more importantly) fPIC and debug symbols
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -fPIC")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -fPIC -std=c99")
 
