@@ -2,12 +2,15 @@
 set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/Common/Version.h" # Generated header
         # Normal header
-  ../include/Common/signalUtilities.h # Normal header
-  ../include/Common/Timer.h # Normal header
+  ../include/Common/Configuration.h # Normal header
+  ../include/Common/Daemon.h # Normal header
   ../include/Common/Exceptions.h # Normal header
-  ../include/Common/Thread.h # Normal header
   ../include/Common/Fifo.h # Normal header
-  ../include/Common/Configuration.h
+  ../include/Common/MakeUnique.h # Normal header
+  ../include/Common/signalUtilities.h # Normal header
+  ../include/Common/SimpleLog.h # Normal header
+  ../include/Common/Thread.h # Normal header
+  ../include/Common/Timer.h # Normal header
 )
 
 set(LIB_SOURCES
