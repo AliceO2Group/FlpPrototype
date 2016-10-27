@@ -12,6 +12,7 @@ set(LIB_SOURCES
   FileSampler.cxx
   MockSampler.cxx
   SamplerInterface.cxx
+  InjectSamples.cxx
 )
 
 
