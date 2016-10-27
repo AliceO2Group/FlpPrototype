@@ -39,11 +39,11 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
 
 set(APPLICATION_dataDump dataDump)
 add_executable(${APPLICATION_dataDump} dataDump.cxx)
-target_link_libraries(${APPLICATION_dataDump} ${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
+target_link_libraries(${APPLICATION_dataDump} ${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} DataFormat)
 
 set(APPLICATION_fileProducer dataFileProducer)
 add_executable(${APPLICATION_fileProducer} dataFileProducerMain.cxx)
-target_link_libraries(${APPLICATION_fileProducer} ${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
+target_link_libraries(${APPLICATION_fileProducer} ${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} DataFormat)
 
 
 
