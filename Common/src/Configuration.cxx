@@ -22,11 +22,6 @@ ConfigFilePrivate::~ConfigFilePrivate()
 ConfigFile::ConfigFile()
 {
   dPtr = new ConfigFilePrivate();
-  if (dPtr == NULL) {
-    std::stringstream ss;
-    ss << "new() error in " << __FILE__ << " line " << __LINE__;
-    throw ss.str();
-  }
 }
 
 ConfigFile::~ConfigFile()
