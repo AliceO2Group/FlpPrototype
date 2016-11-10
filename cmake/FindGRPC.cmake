@@ -1,4 +1,7 @@
 # From: https://github.com/wastl/cmarmotta/blob/master/cmake/FindGRPC.cmake
+
+set(GRPC_FOUND FALSE)
+
 find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin) # Get full path to plugin
 
 find_library(GRPC_LIBRARY NAMES grpc)
@@ -9,8 +12,9 @@ find_path(GRPC_INCLUDE_DIR
   NAMES grpc/grpc.h grpc++/grpc++.h
   PATHS /usr/local/include /opt/
   DOC "Path to gRPC include header files.")
-if(GRPC_LIBRARIES)
-    message(STATUS "Found GRPC: ${GRPC_LIBRARIES}; include - ${GRPC_INCLUDE_DIR}; plugin - ${GRPC_CPP_PLUGIN}")
+if(GRPC_LIBRARIES AND GRPC_INCLUDE_DIR)
+  message(STATUS "Found GRPC: ${GRPC_LIBRARIES}; include - ${GRPC_INCLUDE_DIR}; plugin - ${GRPC_CPP_PLUGIN}")
+  set(GRPC_FOUND TRUE)
 endif()
 
 function(PROTOBUF_GENERATE_GRPC_CPP SRCS HDRS)
