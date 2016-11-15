@@ -65,11 +65,13 @@ endif()
 # Dependency on another subproject (InfoLogger)
 link_o2_subproject(InfoLogger)
 link_o2_subproject(Common)
-link_o2_subproject(Configuration)
+#link_o2_subproject(Configuration)
 link_o2_subproject(DataFormat)
 link_o2_subproject(DataSampling)
 link_o2_subproject(Monitoring)
 link_o2_subproject(QualityControl)
+
+find_package(Configuration REQUIRED)
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,
@@ -77,7 +79,8 @@ link_o2_subproject(QualityControl)
 # subdirectory's CMakeLists.
 include_directories(
     ${Boost_INCLUDE_DIRS}
-  ${ROOT_INCLUDE_DIRS}
+    ${ROOT_INCLUDE_DIRS}
+    ${Configuration_INCLUDE_DIRS}
 )
 
 # Mac needed variables (adapt according to your needs)
