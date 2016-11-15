@@ -38,7 +38,7 @@ void MeanIsAbove::configure(std::string name)
   CheckInterface::configure(name);
 
   // TODO use the configuration system to set the params
-  ConfigFile configFile;
+  AliceO2::Configuration::ConfigFile configFile;
   try {
     configFile.load("file:../example.ini"); // not ok...
   } catch (string &exception) {

@@ -44,7 +44,7 @@ class BenchmarkTask: public TaskInterface
   private:
 
     std::vector<TH1F*> mHistos;
-    ConfigFile mConfigFile;
+    AliceO2::Configuration::ConfigFile mConfigFile;
     size_t mNumberHistos;
     size_t mNumberChecks;
     std::string mTypeOfChecks;
