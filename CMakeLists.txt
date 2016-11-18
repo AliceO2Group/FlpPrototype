@@ -60,4 +60,5 @@ message(STATUS RORC)
 add_subdirectory(RORC)
 message(STATUS Readout)
 add_subdirectory(Readout)
-
+message(STATUS GUI)
+add_subdirectory(GUI)
