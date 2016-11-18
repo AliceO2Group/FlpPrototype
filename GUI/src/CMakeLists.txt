@@ -1,6 +1,6 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
-  "${CMAKE_CURRENT_BINARY_DIR}/../include/ProjA/Version.h" # Generated header
+  "${CMAKE_CURRENT_BINARY_DIR}/../include/GUI/Version.h" # Generated header
   ../include/GUI/zmq.hpp
   ../include/GUI/Publisher.hpp
   ../include/GUI/Replier.hpp
@@ -17,13 +17,17 @@ set(APP_HEADERS
 set(APP_SOURCES
 )
 
+FIND_PACKAGE(ZeroMQ)
+
 # Define two variables in order not to repeat ourselves.
 set(LIBRARY_NAME GUI)
 set(INCLUDE include/GUI)
 
+include_directories(${ZMQ_INCLUDE_DIR})
+
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} Common InfoLogger-static Configuration-static)
+target_link_libraries(${LIBRARY_NAME} Common InfoLogger-static Configuration-static ${ZEROMQ_LIBRARIES})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
