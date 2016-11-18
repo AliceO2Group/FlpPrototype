@@ -1,4 +1,4 @@
-#include "GUI/Replier.h"
+#include "GUI/RequestNotifier.h"
 
 #include <iostream>
 #include <sstream>
@@ -13,7 +13,7 @@ namespace AliceO2
 /// ALICE O2 GUI
 namespace GUI 
 {
-Replier::Replier(std::string &_url):
+RequestNotifier::RequestNotifier(std::string &_url):
   context(1),
   socket(context, ZMQ_REP),
   url(_url)
@@ -25,20 +25,20 @@ Replier::Replier(std::string &_url):
   }
 
   queueNotEmpty = false;
-  zeromqThread = std::thread(&Replier::zeromqLoop, this);
+  zeromqThread = std::thread(&RequestNotifier::zeromqLoop, this);
 }
 
-Replier::~Replier()
+RequestNotifier::~RequestNotifier()
 {
   socket.unbind(url.c_str());
 }
 
-void Replier::bind(std::string name, std::function<void(std::unique_ptr<boost::property_tree::ptree>)> callback)
+void RequestNotifier::bind(std::string name, std::function<void(std::unique_ptr<boost::property_tree::ptree>)> callback)
 {
   callbacks.insert(std::make_pair(name, callback));
 }
 
-void Replier::processRequests()
+void RequestNotifier::processRequests()
 {
   if (queueNotEmpty) {
     std::lock_guard<std::mutex> lock(queueMutex);
@@ -57,7 +57,7 @@ void Replier::processRequests()
   queueNotEmpty = false;
 }
 
-void Replier::zeromqLoop()
+void RequestNotifier::zeromqLoop()
 {
   for (;;) {
     std::string received = receiveData();
@@ -72,20 +72,20 @@ void Replier::zeromqLoop()
   }
 }
 
-boost::property_tree::ptree Replier::parseJson(std::string json) {
+boost::property_tree::ptree RequestNotifier::parseJson(std::string json) {
   boost::property_tree::ptree parsed;
   std::istringstream is(json);
   boost::property_tree::read_json(is, parsed);
   return parsed;
 }
 
-std::string Replier::receiveData() {
+std::string RequestNotifier::receiveData() {
   zmq::message_t request;
   socket.recv(&request); /// loop blocks in here!!!
   return std::string(static_cast<char*>(request.data()), request.size());
 }
 
-void Replier::notifyReceived()
+void RequestNotifier::notifyReceived()
 {
   std::string message = "{\"received\": true }";
   zmq::message_t reply (message.size());
