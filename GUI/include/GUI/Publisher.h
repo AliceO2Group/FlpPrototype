@@ -15,6 +15,7 @@ namespace AliceO2
 namespace GUI
 {
 
+/// Allows to publish generic messages that are passed through WebSocket server and then delivered to given widget on client side
 class Publisher
 {
   private:
@@ -24,21 +25,19 @@ class Publisher
     /// ZeroMQ publisher socket
     zmq::socket_t socket;
 
-    /// Socket URL
+    /// Publishr server socket URL
     std::string url;
-
-    unsigned long getTimestampMilisecs();
   public:
     /// Creates context and socket
     /// Binds ZeroMQ socket to provided URL
     /// \param url 	URL used to bind socket
     Publisher(std::string &url);
 
-    /// Unbind
+    /// Unbinds server sockets
     ~Publisher();
 
-    /// Publishes value
-    bool publish(std::string &name, std::string &value);
+    /// Sends message to WebSocket server
+    bool publish(std::string &message);
 };
 } // namespace Monitoring
 } // namespace AliceO2
