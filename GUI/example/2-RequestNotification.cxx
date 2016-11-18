@@ -4,6 +4,7 @@
 ///
 
 #include <iostream>
+#include <memory>
 #include "GUI/RequestNotifier.h"
 
 // Example callback funtion, received message is passed as ptree (user needs to be aware of message structure)
@@ -17,7 +18,7 @@ int main() {
     std::string url = "tcp://127.0.0.1:3001";
 
     // create request notifier object
-    AliceO2::GUI::RequestNotifier *rep = new AliceO2::GUI::RequestNotifier(url);
+    std::unique_ptr<AliceO2::GUI::RequestNotifier> rep = std::make_unique<AliceO2::GUI::RequestNotifier>(url);
     
     // bind message name; provided function will be called whenever message with given name arrives
     rep->bind(std::string("hello"), &exampleCallback);
