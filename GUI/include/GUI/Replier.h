@@ -22,7 +22,9 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace GUI 
 {
-
+/// Receives requests (in new thread) from client side and stores them in queue.
+/// User binds callback functions to messages names
+/// User decides when to obtain messages from the queue; callbacks are executed in his context
 class Replier
 {
   private:
@@ -32,7 +34,7 @@ class Replier
     /// ZeroMQ publisher socket
     zmq::socket_t socket;
 
-    /// Socket URL
+    /// Replier server socket URL
     std::string url;
 
     /// Map that stores callbacks
@@ -57,7 +59,7 @@ class Replier
     /// \return received data
     std::string receiveData();
 
-    /// Sends confirmation that data has been received
+    /// Sends acknowledgement - data received
     void notifyReceived();
 
     /// parses JSON-string into boost ptree
@@ -70,9 +72,9 @@ class Replier
     Replier(std::string &url);
 
     /// binds a request name to a callback function;
-    /// if given message received, following callback will be invoked
+    /// if a message received with given name, bound callback will be invoked
     /// \param name 	request name, that arrives in JSON-encoded message
-    /// \param callback callback function that receives as parameter pointer to ptree
+    /// \param callback callback function that receives as parameter pointer to ptree (user needs to be aware of message structure)
     void bind(std::string name, std::function<void(std::unique_ptr<boost::property_tree::ptree>)> callback);
 
     /// disconnects sockets
