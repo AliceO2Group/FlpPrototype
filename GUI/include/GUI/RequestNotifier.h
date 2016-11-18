@@ -1,5 +1,5 @@
 ///
-/// \file Replier.h
+/// \file RequestNotifier.h
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
 ///
 
@@ -25,7 +25,7 @@ namespace GUI
 /// Receives requests (in new thread) from client side and stores them in queue.
 /// User binds callback functions to messages names
 /// User decides when to obtain messages from the queue; callbacks are executed in his context
-class Replier
+class RequestNotifier
 {
   private:
     /// ZeroMQ context
@@ -34,7 +34,7 @@ class Replier
     /// ZeroMQ publisher socket
     zmq::socket_t socket;
 
-    /// Replier server socket URL
+    /// RequestNotifier server socket URL
     std::string url;
 
     /// Map that stores callbacks
@@ -69,7 +69,7 @@ class Replier
   public:
     /// binds ZeroMQ server socket
     /// \param url 	url of socket that will be bound
-    Replier(std::string &url);
+    RequestNotifier(std::string &url);
 
     /// binds a request name to a callback function;
     /// if a message received with given name, bound callback will be invoked
@@ -78,7 +78,7 @@ class Replier
     void bind(std::string name, std::function<void(std::unique_ptr<boost::property_tree::ptree>)> callback);
 
     /// disconnects sockets
-    ~Replier();
+    ~RequestNotifier();
 
     /// checks whether there are new messages, if so invokes apropriate callbacks
     void processRequests();

@@ -3,12 +3,12 @@ set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/GUI/Version.h" # Generated header
   ../include/GUI/zmq.hpp
   ../include/GUI/Publisher.hpp
-  ../include/GUI/Replier.hpp
+  ../include/GUI/RequestNotifier.hpp
 )
 
 set(LIB_SOURCES
   Publisher.cxx
-  Replier.cxx
+  RequestNotifier.cxx
 )
 
 set(APP_HEADERS
