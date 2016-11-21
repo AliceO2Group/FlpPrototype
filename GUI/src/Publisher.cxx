@@ -4,6 +4,7 @@
 ///
 
 #include "GUI/Publisher.h"
+#include "GuiInfoLogger.h"
 
 #include <iostream>
 #include <sstream>
@@ -23,9 +24,9 @@ Publisher::Publisher(std::string &_url):
   try {
     socket.bind(url.c_str());
   } catch (std::exception &e) {
-    std::cout << "Could not bind socket " << url.c_str();
+    GuinInfoLogger::GetInstance() << "GUI Publisher : Cannot bind socket: " << url << AliceO2::InfoLogger::InfoLogger::endm;
   }
-  std::cout << "Socket bound";
+  GuinInfoLogger::GetInstance() << "GUI Publisher : Socket bound: " << url << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
 Publisher::~Publisher()
