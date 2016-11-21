@@ -81,8 +81,14 @@ void RequestNotifier::zeromqLoop()
 
 boost::property_tree::ptree RequestNotifier::parseJson(std::string json) {
   boost::property_tree::ptree parsed;
-  std::istringstream is(json);
-  boost::property_tree::read_json(is, parsed);
+  try {
+    std::istringstream is(json);
+    boost::property_tree::read_json(is, parsed);
+  } catch(...) {
+    GuiInfoLogger::GetInstance() << "GUI RequestNotifier : Couldn't parse JSON message" << AliceO2::InfoLogger::InfoLogger::endm;
+    parsed.put("name", "error");
+    parsed.put("value", "Could not parse JSON message");
+  }
   return parsed;
 }
 
