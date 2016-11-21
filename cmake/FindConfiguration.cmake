@@ -23,7 +23,11 @@ set(Configuration_LIBRARIES ${CONFIGURATION_LIBRARY})
 
 # handle the QUIETLY and REQUIRED arguments and set CONFIGURATION_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(Configuration  "Configuration could not be found. Install package Configuration_cpp."
+find_package_handle_standard_args(Configuration  "Configuration could not be found. Install package Configuration."
                                   CONFIGURATION_LIBRARY CONFIGURATION_INCLUDE_DIR)
+
+if(${CONFIGURATION_FOUND})
+    message(STATUS "Configuration found : ${Configuration_LIBRARIES}")
+endif()
 
 mark_as_advanced(CONFIGURATION_INCLUDE_DIR CONFIGURATION_LIBRARY)
