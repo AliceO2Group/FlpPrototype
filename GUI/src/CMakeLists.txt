@@ -27,7 +27,7 @@ include_directories(${ZMQ_INCLUDE_DIR})
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} Common InfoLogger-static ${Configuration_LIBRARIES} ${ZEROMQ_LIBRARIES})
+target_link_libraries(${LIBRARY_NAME} Common InfoLogger-static ${ZEROMQ_LIBRARIES})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
