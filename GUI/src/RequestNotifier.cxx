@@ -22,9 +22,9 @@ RequestNotifier::RequestNotifier(std::string &_url):
   try {
     socket.bind(url.c_str());
   } catch (std::exception &e) {
-    GuinInfoLogger::GetInstance() << "GUI RequestNotifier : Cannot bind socket: " << url << AliceO2::InfoLogger::InfoLogger::endm;
+    GuiInfoLogger::GetInstance() << "GUI RequestNotifier : Cannot bind socket: " << url << AliceO2::InfoLogger::InfoLogger::endm;
   }
-  GuinInfoLogger::GetInstance() << "GUI RequestNotifier : Socket bound: " << url << AliceO2::InfoLogger::InfoLogger::endm;
+  GuiInfoLogger::GetInstance() << "GUI RequestNotifier : Socket bound: " << url << AliceO2::InfoLogger::InfoLogger::endm;
 
   queueNotEmpty = false;
   mThreadRunning = true;

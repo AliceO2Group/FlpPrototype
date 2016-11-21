@@ -44,6 +44,7 @@ find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
 # Dependency on another subproject (Common)
 link_o2_subproject(Common)
+link_o2_subproject(InfoLogger)
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,

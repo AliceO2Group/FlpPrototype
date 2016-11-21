@@ -24,9 +24,9 @@ Publisher::Publisher(std::string &_url):
   try {
     socket.bind(url.c_str());
   } catch (std::exception &e) {
-    GuinInfoLogger::GetInstance() << "GUI Publisher : Cannot bind socket: " << url << AliceO2::InfoLogger::InfoLogger::endm;
+    GuiInfoLogger::GetInstance() << "GUI Publisher : Cannot bind socket: " << url << AliceO2::InfoLogger::InfoLogger::endm;
   }
-  GuinInfoLogger::GetInstance() << "GUI Publisher : Socket bound: " << url << AliceO2::InfoLogger::InfoLogger::endm;
+  GuiInfoLogger::GetInstance() << "GUI Publisher : Socket bound: " << url << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
 Publisher::~Publisher()
