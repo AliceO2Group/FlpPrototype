@@ -50,7 +50,10 @@ class RequestNotifier
     std::mutex queueMutex;
 
     /// dedicated thread where ZeroMQ is runnig at
-    std::thread zeromqThread;
+    std::thread mZeromqThread;
+
+    /// States whether zeromq thread is running
+    std::atomic<bool> mThreadRunning;
 
     /// ZeroMQ thread loop
     void zeromqLoop();

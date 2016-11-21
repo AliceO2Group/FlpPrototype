@@ -27,12 +27,17 @@ RequestNotifier::RequestNotifier(std::string &_url):
   GuinInfoLogger::GetInstance() << "GUI RequestNotifier : Socket bound: " << url << AliceO2::InfoLogger::InfoLogger::endm;
 
   queueNotEmpty = false;
-  zeromqThread = std::thread(&RequestNotifier::zeromqLoop, this);
+  mThreadRunning = true;
+  mZeromqThread = std::thread(&RequestNotifier::zeromqLoop, this);
 }
 
 RequestNotifier::~RequestNotifier()
 {
+  mThreadRunning = false;
   socket.unbind(url.c_str());
+  if (mZeromqThread.joinable()) {
+    mZeromqThread.join();
+  }
 }
 
 void RequestNotifier::bind(std::string name, std::function<void(std::unique_ptr<boost::property_tree::ptree>)> callback)
