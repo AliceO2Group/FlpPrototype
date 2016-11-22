@@ -3,9 +3,11 @@
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
 ///
 
+#include "GUI/Publisher.h"
+
 #include <iostream>
 #include <memory>
-#include "GUI/Publisher.h"
+#include <thread>
 
 /// Example that shows how to publish message
 int main() {
@@ -17,7 +19,10 @@ int main() {
   
   // create a message (JSON-encoded)
   std::string message = "{\"name\" : \"test\"}";
-
-  // send message
-  publisher->publish(message);
+  
+  // publish values
+  for (;;) {
+    publisher->publish(message);
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+  }
 }
