@@ -72,7 +72,7 @@ class RequestNotifier
   public:
     /// binds ZeroMQ server socket
     /// \param url 	url of socket that will be bound
-    RequestNotifier(std::string &url);
+    RequestNotifier(const std::string &url);
 
     /// binds a request name to a callback function;
     /// if a message received with given name, bound callback will be invoked

@@ -14,7 +14,7 @@ namespace AliceO2
 /// ALICE O2 GUI
 namespace GUI 
 {
-RequestNotifier::RequestNotifier(std::string &_url):
+RequestNotifier::RequestNotifier(const std::string &_url):
   context(1),
   socket(context, ZMQ_REP),
   url(_url)
