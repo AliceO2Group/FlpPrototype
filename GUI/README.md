@@ -28,7 +28,7 @@ publisher->publish(blob);
 publisher->publish(message);
 ```
 
-See full example example/1-Publisher.cxx
+See full example [1-Publisher.cxx](example/1-Publisher.cxx)
 
 ## Receiving notifications
 Received notifications/commands are passed to user specified methods.
@@ -49,4 +49,4 @@ rep->bind(std::string("hello"), &exampleCallback);
 // do something else, and call processRequests periodically to obtain new messages from queue
 rep->processRequests();
 ```
-See full example example/2-RequestNotification.cxx
+See full example [2-RequestNotification.cxx](example/2-RequestNotification.cxx)
