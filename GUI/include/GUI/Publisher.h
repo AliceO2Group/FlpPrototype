@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "zmq.hpp"
+#include <boost/property_tree/ptree.hpp>
 
 namespace AliceO2
 {
@@ -31,13 +32,20 @@ class Publisher
     /// Creates context and socket
     /// Binds ZeroMQ socket to provided URL
     /// \param url 	URL used to bind socket
-    Publisher(std::string &url);
+    Publisher(const std::string &url);
 
     /// Unbinds server sockets
     ~Publisher();
 
-    /// Sends message to WebSocket server
-    bool publish(std::string &message);
+    /// Sends blob message to WebSocket server
+    /// \param message 	message body
+    /// \return 	success
+    bool publish(const std::string &message);
+  
+    /// Sends JSON-encoded message to WebSocket server
+    /// \param message 	key-value message
+    /// \return 	success
+    bool publish(const boost::property_tree::ptree &message);
 };
 } // namespace Monitoring
 } // namespace AliceO2

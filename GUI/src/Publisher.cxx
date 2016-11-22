@@ -9,6 +9,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/property_tree/json_parser.hpp>
+
 /// ALICE O2
 namespace AliceO2
 {
@@ -16,7 +18,7 @@ namespace AliceO2
 namespace GUI
 {
 
-Publisher::Publisher(std::string &_url):
+Publisher::Publisher(const std::string &_url):
   context(1),
   socket(context, ZMQ_PUB),
   url(_url)
@@ -34,7 +36,7 @@ Publisher::~Publisher()
   socket.unbind(url.c_str());
 }
 
-bool Publisher::publish(std::string &message)
+bool Publisher::publish(const std::string &message)
 {
   zmq::message_t zmqMessage(message.size());
   memcpy(zmqMessage.data(), message.data(), message.size());
@@ -42,6 +44,13 @@ bool Publisher::publish(std::string &message)
     return true;
   }
   return false;
+}
+
+bool Publisher::publish(const boost::property_tree::ptree &message)
+{
+  std::ostringstream buffer;
+  boost::property_tree::write_json(buffer, message, false);
+  return publish(buffer.str());
 }
 
 } // namespace GUI

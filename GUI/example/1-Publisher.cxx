@@ -17,11 +17,16 @@ int main() {
   // create GUI publisher object
   std::unique_ptr<AliceO2::GUI::Publisher> publisher = std::make_unique<AliceO2::GUI::Publisher>(url);
   
-  // create a message (JSON-encoded)
-  std::string message = "{\"name\" : \"test\"}";
-  
+  // create a blob
+  std::string blob = "name=test";
+
+  // create ptree message (it will be converted to JSON)
+  boost::property_tree::ptree message;
+  message.put("name", "test");
+
   // publish values
   for (;;) {
+    publisher->publish(blob);
     publisher->publish(message);
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   }
