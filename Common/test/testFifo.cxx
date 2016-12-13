@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_CASE(fifo_test)
 
   AliceO2::Common::Fifo<int> f(fifoSz);
   int *v=new int[fifoSz];
-  int *j=NULL;
+  int j=-1;
   int sum1=0;
   int sum2=0;
   
@@ -25,18 +25,20 @@ BOOST_AUTO_TEST_CASE(fifo_test)
     v[i]=i;
     sum1+=i;
     BOOST_CHECK_EQUAL(f.isFull(),0);
-    BOOST_CHECK_EQUAL(f.push(&v[i]),0);
+    BOOST_CHECK_EQUAL(f.push(v[i]),0);
     BOOST_CHECK_EQUAL(f.isEmpty(),0);
   }
   BOOST_CHECK_EQUAL(f.isFull(),1);
-  BOOST_CHECK_PREDICATE( std::not_equal_to<int>(), (f.push(NULL))(0) ); 
+  BOOST_CHECK_PREDICATE( std::not_equal_to<int>(), (f.push(-1))(0) ); 
+  BOOST_CHECK_EQUAL(f.front(j),0);
+  BOOST_CHECK_EQUAL(j,0);
 
   for (int i=0;i<fifoSz;i++){
-    j=NULL;
+    j=-1;
     BOOST_CHECK_EQUAL(f.isEmpty(),0);
     BOOST_CHECK_EQUAL(f.pop(j),0);
     BOOST_CHECK_EQUAL(f.isFull(),0);
-    sum2+=*j;
+    sum2+=j;
   }
   BOOST_CHECK_EQUAL(f.isEmpty(),1);
   BOOST_CHECK_PREDICATE( std::not_equal_to<int>(), (f.pop(j))(0) );
