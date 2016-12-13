@@ -28,18 +28,20 @@ class Fifo {
     ~Fifo();
 
     /// Push an element in FIFO.
-    /// \param[in]  data   Pointer to element to be added to FIFO.
+
+    /// \param[in]  data   Element to be added to FIFO.
     /// \return   0 on success
-    int push(T* data);    // push an element in FIFO. Returns 0 on success.
+    int push(const T &data);    // push an element in FIFO. Returns 0 on success.
     
     /// Retrieve first element of FIFO.
-    /// \param[in,out]  data   Pointer to element read from FIFO (by reference).
+    /// \param[in,out]  data   Element read from FIFO (by reference).
     /// \return   0 on success   
-    int pop(T* &data);
+    int pop(T &data);
 
     /// Retrieve first element from FIFO, without removing it from FIFO.
-    /// \return   nullptr if FIFO empty, a pointer to 1st element if found.
-    T* front();
+    /// \param[in,out]  data   Element read from FIFO (by reference).
+    /// \return   0 on success
+    int front(T &data);
 
     /// Check if Fifo is full.
     /// \return   non-zero if FIFO full
@@ -62,7 +64,7 @@ class Fifo {
     int size; // size of FIFO (number of elements it can store)
     std::atomic<int> indexStart; // index of latest element poped
     std::atomic<int> indexEnd; // index of latest element pushed
-    std::vector<T*> data;  // array storing FIFO elements (circular buffer - has one more item than max number of elements stored)
+    std::vector<T> data;  // array storing FIFO elements (circular buffer - has one more item than max number of elements stored)
     
     unsigned long long nIn; // statistics - number of elements pushed to FIFO
     unsigned long long nOut; // statistics - number of elements retrieved from FIFO
@@ -92,7 +94,7 @@ Fifo<T>::~Fifo() {
 }
 
 template <class T>
-int Fifo<T>::push(T* item) {
+int Fifo<T>::push(const T &item) {
   int indexEndNew;
 
 //  printf("push : start=%d end=%d\n",(int)indexStart,(int)indexEnd);
@@ -115,7 +117,7 @@ int Fifo<T>::push(T* item) {
 }
 
 template <class T>
-int Fifo<T>::pop(T* &item) {
+int Fifo<T>::pop(T &item) {
 
   //printf("pop : start=%d end=%d\n",(int)indexStart,(int)indexEnd);
 
@@ -138,16 +140,17 @@ int Fifo<T>::pop(T* &item) {
 }
 
 template <class T>
-T* Fifo<T>::front() {
+int Fifo<T>::front(T &item) {
 
   //printf("front : start=%d end=%d\n",(int)indexStart,(int)indexEnd);
 
   // check if FIFO empty
   if (isEmpty()) {
-    return nullptr;
+    return -1;
   }
 
-  return data[(this->indexStart+1)%(this->size+1)];
+  item=data[(this->indexStart+1)%(this->size+1)];
+  return 0;
 }
 
 
