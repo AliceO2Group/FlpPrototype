@@ -171,22 +171,33 @@ bool ConfigFileBrowser::Iterator::operator!=(const ConfigFileBrowser::Iterator& 
   return it!=_it.it;
 }
 
-  
+  /*
+ To use separator character other than default '.', each of the get versions has another form, which takes an additional parameter in front of path. This parameter of type char/wchar_t specifies the separating character. This is a lifesaving device for those who may have dots in their keys:
 
+pt.get<float>('/', "p.a.t.h/t.o/v.a.l.u.e");
+pt.get('/', "p.a.t.h/t.o/v.a.l.u.e", 0, NULL);
+pt.get_optional<std::string>('/', "p.a.t.h/t.o/v.a.l.u.e");
+*/
 
-ConfigFileBrowser::ConfigFileBrowser(ConfigFile *_p, std::string _filter) {
+ConfigFileBrowser::ConfigFileBrowser(ConfigFile *_p, std::string _filter, std::string _startingNode) {
   p=_p;
   filter=_filter;
+  startingNode=_startingNode;
+  if (startingNode.length()>0) {
+    ptPtr=&p->dPtr->pt.get_child(startingNode);
+  } else {
+    ptPtr=&p->dPtr->pt;
+  }
 }
 
 ConfigFileBrowser::~ConfigFileBrowser() {
 }
 
 ConfigFileBrowser::Iterator ConfigFileBrowser::begin() {
-  return {this,p->dPtr->pt.begin(),p->dPtr->pt.end()};
+  return {this,ptPtr->begin(),ptPtr->end()};
 }
 
 ConfigFileBrowser::Iterator ConfigFileBrowser::end() {
-  return Iterator(this,p->dPtr->pt.end(),p->dPtr->pt.end());
+  return Iterator(this,ptPtr->end(),ptPtr->end());
 }
  
