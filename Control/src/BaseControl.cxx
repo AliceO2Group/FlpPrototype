@@ -155,7 +155,7 @@ class ControlStateMachine:public ControlObject {
     mObject=objectPtr;
     updateState(t_State::standby);
     
-    pendingCommands=std::make_unique<AliceO2::Common::Fifo<CommandRequest>>(1);
+    pendingCommands=std::make_unique<AliceO2::Common::Fifo<CommandRequest*>>(1);
   };
   
   ~ControlStateMachine() {
@@ -171,7 +171,14 @@ class ControlStateMachine:public ControlObject {
     newCommand->stateMachine=this;
     newCommand->command=command;
     if (pendingCommands->push(newCommand)) {
-      printf("%s - already busy with %d pending command = %s\n",mObject->getName().c_str(),pendingCommands->getNumberOfUsedSlots(),pendingCommands->front()->command.c_str());
+      printf("%s - already busy with %d pending command(s)",mObject->getName().c_str(),pendingCommands->getNumberOfUsedSlots());
+      CommandRequest *currentCommand=nullptr;
+      pendingCommands->front(currentCommand);
+      if (currentCommand!=nullptr) {
+        printf("= %s",currentCommand->command.c_str());
+      }
+      printf("\n");
+      delete newCommand;
     }
   }
   
@@ -297,7 +304,7 @@ class ControlStateMachine:public ControlObject {
       printf("Object: %s - updating state = %s\n",mObject->getName().c_str(),getStringFromState(s).c_str());
     }
     
-    std::unique_ptr<AliceO2::Common::Fifo<CommandRequest>> pendingCommands;
+    std::unique_ptr<AliceO2::Common::Fifo<CommandRequest*>> pendingCommands;
 
   friend class RuntimeControlEngine;
 };
@@ -390,7 +397,8 @@ void RuntimeControlEngine::Impl::startThread(void *arg) {
     for (auto& ctrlObj : dPtr->pImpl->mStateMachines) {
 
       // check for commands in queue
-      CommandRequest *newCommand=ctrlObj->pendingCommands->front();
+      CommandRequest *newCommand=nullptr;
+      ctrlObj->pendingCommands->front(newCommand);
       if (newCommand!=nullptr) {
         printf("starting processing %s : %s\n",ctrlObj->mObject->getName().c_str(),newCommand->command.c_str());        
         newCommand->stateMachine->processStateTransition(newCommand->command);
