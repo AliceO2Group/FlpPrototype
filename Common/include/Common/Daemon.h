@@ -1,3 +1,8 @@
+/// \file Daemon.h
+/// \brief Create a daemon
+///
+/// \author Sylvain Chapeland, CERN
+
 #include "SimpleLog.h"
 #include <string>
 

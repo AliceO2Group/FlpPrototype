@@ -1,7 +1,7 @@
 ///
-/// @file    Thread.h
-/// @author  Sylvain Chapeland
-///
+/// \file    Thread.h
+/// \author  Sylvain Chapeland
+/// \brief   Class to implement controllable looping threads
 
 #ifndef COMMON_THREAD_H
 #define COMMON_THREAD_H
@@ -15,18 +15,18 @@
 namespace AliceO2 {
 namespace Common {
 
-/// @brief   Class to implement controllable looping threads
+/// \brief   Class to implement controllable looping threads
 /// User just needs to overload the "doLoop()" method  or to provide a callback function to the base class constructor
-/// @author   Sylvain Chapeland
+/// \author   Sylvain Chapeland
 class Thread {
   public:
      enum CallbackResult {Ok,Idle,Done,Error};
      
     /// Constructor
-    /// @param[in]   vLoopCallback    Pointer to user-defined function called periodically. (optional)
-    /// @param[in]   vLoopArg         Pointer to argument passed to user-defined function, if any.
-    /// @param[in]   vThreadName      Name to be used to identify this thread (for debug printouts)
-    /// @param[in]   loopSleepTime    Idle sleep time (in microseconds), when loop callback function/method returns idle. This is the maximum time between 2 calls.  
+    /// \param[in]   vLoopCallback    Pointer to user-defined function called periodically. (optional)
+    /// \param[in]   vLoopArg         Pointer to argument passed to user-defined function, if any.
+    /// \param[in]   vThreadName      Name to be used to identify this thread (for debug printouts)
+    /// \param[in]   loopSleepTime    Idle sleep time (in microseconds), when loop callback function/method returns idle. This is the maximum time between 2 calls.  
     Thread(Thread::CallbackResult (*vLoopCallback)(void *) = NULL , void *vLoopArg = NULL, std::string vThreadName = "", int loopSleepTime=1000);
 
     /// Destructor
@@ -40,7 +40,7 @@ class Thread {
     void join();
 
     /// get thread name
-    // @returns   name of the thread, as defined at construct time.
+    /// \returns   name of the thread, as defined at construct time.
     std::string getName();
  
     

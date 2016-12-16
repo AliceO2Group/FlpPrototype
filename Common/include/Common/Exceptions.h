@@ -1,7 +1,7 @@
-///
-/// \file   Exceptions.cxx
+/// \file   Exceptions.h
 /// \author Barthelemy von Haller
 ///
+/// \brief  Define all the exceptions based on boost::exception that we use in the project.
 
 #ifndef COMMON_EXCEPTIONS_H
 #define COMMON_EXCEPTIONS_H

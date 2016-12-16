@@ -1,10 +1,7 @@
-/*
-
-Provides make_unique functionnality to c++11
-
-https://isocpp.org/files/papers/N3656.txt
-
-*/
+/// \file MakeUnique.h
+/// \brief Provides make_unique functionnality to C++11
+/// https://isocpp.org/files/papers/N3656.txt
+/// \author Sylvain Chapeland, CERN
 
 #ifndef COMMON_MAKEUNIQUE_H
 #define COMMON_MAKEUNIQUE_H

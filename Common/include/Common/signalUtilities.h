@@ -1,7 +1,8 @@
 ///
 /// \file   signalUtilities.h
 /// \author Barthelemy von Haller
-/// This file proposes a set of functions to handle the signals in your program.
+/// \brief  This file proposes a set of functions to handle the signals in your program.
+///
 /// Typically, you want to print the stack trace when there is a sigsev.
 /// It also handles elegantly SIGINT and SIGTERM by catching them and allowing the program
 /// to clean itself up before exiting (see handler_interruption). If a second SIGINT/SIGTERM is

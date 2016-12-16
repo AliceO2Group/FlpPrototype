@@ -1,11 +1,11 @@
 ///
-/// @file    Fifo.h
-/// @author  Sylvain Chapeland
+/// \file    Fifo.h
+/// \brief   Class to implement a lock-free 1-to-1 FIFO
+/// \author  Sylvain Chapeland
 ///
 
 #ifndef COMMON_FIFO_H
 #define COMMON_FIFO_H
-
 
 #include <vector>
 #include <atomic>
@@ -14,47 +14,47 @@
 namespace AliceO2 {
 namespace Common {
 
-/// @brief   Class to implement a lock-free 1-to-1 FIFO (1 writer, 1 reader)
-/// @author   Sylvain Chapeland
+/// \brief   Class to implement a lock-free 1-to-1 FIFO (1 writer, 1 reader)
+/// \author   Sylvain Chapeland
 template <class T>
 class Fifo {
   public:
 
     /// Constructor
-    /// @param[in]  size   Size of the FIFO (number of elements it can hold).
+    /// \param[in]  size   Size of the FIFO (number of elements it can hold).
     Fifo(int size);
     
     /// Destructor
     ~Fifo();
 
     /// Push an element in FIFO.
-    /// @param[in]  data   Pointer to element to be added to FIFO.
-    /// @return   0 on success
+    /// \param[in]  data   Pointer to element to be added to FIFO.
+    /// \return   0 on success
     int push(T* data);    // push an element in FIFO. Returns 0 on success.
     
     /// Retrieve first element of FIFO.
-    /// @param[in,out]  data   Pointer to element read from FIFO (by reference).
-    /// @return   0 on success   
+    /// \param[in,out]  data   Pointer to element read from FIFO (by reference).
+    /// \return   0 on success   
     int pop(T* &data);
 
     /// Retrieve first element from FIFO, without removing it from FIFO.
-    /// @return   nullptr if FIFO empty, a pointer to 1st element if found.
+    /// \return   nullptr if FIFO empty, a pointer to 1st element if found.
     T* front();
 
     /// Check if Fifo is full.
-    /// @return   non-zero if FIFO full
+    /// \return   non-zero if FIFO full
     int isFull();
 
     /// Check if Fifo is empty.
-    /// @return   non-zero if FIFO empty
+    /// \return   non-zero if FIFO empty
     int isEmpty();
     
     /// Retrieve space available in FIFO
-    /// @return   number of free slots in FIFO
+    /// \return   number of free slots in FIFO
     int getNumberOfFreeSlots();
     
     /// Retrieve space used in FIFO
-    /// @return   number of pending items in FIFO
+    /// \return   number of pending items in FIFO
     int getNumberOfUsedSlots();
     
   private:
@@ -107,7 +107,7 @@ int Fifo<T>::push(T* item) {
     return -1;
   }
   
-  //printf("push @ %d = %p\n",indexEndNew,item);  
+  //printf("push \ %d = %p\n",indexEndNew,item);  
   data[indexEndNew]=item;
   this->indexEnd=indexEndNew;
   nIn++;
@@ -132,7 +132,7 @@ int Fifo<T>::pop(T* &item) {
   this->indexStart=new_indexStart;
   
   item=data[this->indexStart];
-  //printf("pop @ %d = %p\n",new_indexStart,item);  
+  //printf("pop \ %d = %p\n",new_indexStart,item);  
   nOut++;
   return 0;
 }

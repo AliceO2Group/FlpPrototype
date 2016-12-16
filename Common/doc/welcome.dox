@@ -11,12 +11,9 @@
 
 @mainpage Documentation
 
-This document contains a technical introduction to [PRODUCT_NAME]. It is designed to help readers with technical skills such as developers, testers or others get a starting point into [PRODUCT_NAME].
+The package Common contains a set of unrelated classes and utilities that are used or might be used throughout
+the submodules.
 
-The document has three sections:
-
-- @subpage User_Guide
-- @subpage Technical_Overview
-- @subpage Release_Notes
+See in the <a href="files.html">list of files</a> for a quick overlook of the functionality you can find here.
 
 */

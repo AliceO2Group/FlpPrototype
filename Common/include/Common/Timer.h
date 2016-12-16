@@ -1,6 +1,7 @@
 ///
-/// @file    Timer.h
-/// @author  Sylvain Chapeland
+/// \file    Timer.h
+/// \brief   Class to implement a high resolution timer function
+/// \author  Sylvain Chapeland
 ///
 
 #ifndef COMMON_TIMER_H
@@ -13,10 +14,10 @@
 namespace AliceO2 {
 namespace Common {
 
-/// @brief   Class to implement a high resolution timer function.
+/// \brief   Class to implement a high resolution timer function.
 /// All times in microseconds.
 /// Functionality: reset counter, set timeout value, get counter value, check timeout, fixed interval timeout.
-/// @author   Sylvain Chapeland
+/// \author   Sylvain Chapeland
 class Timer {
   public:
 
@@ -36,10 +37,10 @@ class Timer {
     void increment();
     
     /// Check if time elapsed since timer reset (or last increment set) is bigger than timeout value set.
-    /// @return Returns 1 if timeout, 0 otherwise.
+    /// \return Returns 1 if timeout, 0 otherwise.
     int isTimeout();
     
-    /// @return Returns time elapsed since reset, in microseconds.
+    /// \return Returns time elapsed since reset, in microseconds.
     double getTime();    
     
   private:
