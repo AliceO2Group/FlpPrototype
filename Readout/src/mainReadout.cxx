@@ -4,6 +4,7 @@
 ///
 #include <InfoLogger/InfoLogger.hxx>
 #include <Common/Configuration.h>
+#include <Configuration/ConfigurationFactory.h>
 #include <DataFormat/DataBlock.h>
 #include <DataFormat/DataBlockContainer.h>
 #include <DataFormat/MemPool.h>
@@ -26,6 +27,7 @@
 
 using namespace AliceO2::InfoLogger;
 using namespace AliceO2::Common;
+using namespace AliceO2::Configuration;
   
 
 InfoLogger theLog;
@@ -45,7 +47,7 @@ static void signalHandler(int){
 
 class CReadout {
   public:
-  CReadout(ConfigFile *cfg, std::string name="readout");
+  CReadout(Tree::Node readoutConfig, std::string name="readout");
   virtual ~CReadout();
   
   DataBlockContainer *getBlock();
@@ -71,7 +73,7 @@ class CReadout {
   std::string name;
 };
 
-CReadout::CReadout(ConfigFile *cfg, std::string _name) {
+CReadout::CReadout(Tree::Node readoutConfig, std::string _name) {
   // todo: take thread name from config, or as argument
   
   name=_name;
@@ -80,14 +82,9 @@ CReadout::CReadout(ConfigFile *cfg, std::string _name) {
   //readoutThread->start();
   int outFifoSize=1000;
   dataOut=new AliceO2::Common::Fifo<DataBlockContainer>(outFifoSize);
-  
-  readoutRate=-1; //(target readout rate in Hz, -1 for unlimited)
-  try {
-    readoutRate=cfg->getValue<double>("readout.rate");
-  }
-  catch(std::string e) {
-    theLog.log("Configuration error: %s",e.c_str());
-  }
+
+  //(target readout rate in Hz, -1 for unlimited)
+  readoutRate = Tree::getOptional<int>(readoutConfig, "rate").get_value_or(-1);
 
   nBlocksOut=0;
 }
@@ -151,7 +148,7 @@ Thread::CallbackResult  CReadout::threadCallback(void *arg) {
 class CReadoutDummy : public CReadout {
 
   public:
-    CReadoutDummy(ConfigFile *cfg, std::string name="dummyReadout");
+    CReadoutDummy(Tree::Node config, std::string name="dummyReadout");
     ~CReadoutDummy();
   
   private:
@@ -161,7 +158,7 @@ class CReadoutDummy : public CReadout {
 };
 
 
-CReadoutDummy::CReadoutDummy(ConfigFile *cfg, std::string name) : CReadout(cfg, name) {
+CReadoutDummy::CReadoutDummy(Tree::Node readoutConfig, std::string name) : CReadout(readoutConfig, name) {
   mp=new MemPool(1000,0.01*1024*1024);
   currentId=0;
 }
@@ -321,7 +318,7 @@ class DataBlockContainerFromRORC : public DataBlockContainer {
 class CReadoutRORC : public CReadout {
 
   public:
-    CReadoutRORC(ConfigFile *cfg, std::string name="rorcReadout");
+    CReadoutRORC(Tree::Node readoutConfig, Tree::Node equipmentConfig, std::string name);
     ~CReadoutRORC();
   
   private:
@@ -334,12 +331,11 @@ class CReadoutRORC : public CReadout {
 
 
 
-CReadoutRORC::CReadoutRORC(ConfigFile *cfg, std::string name) : CReadout(cfg, name) {
-  
+CReadoutRORC::CReadoutRORC(Tree::Node readoutConfig, Tree::Node equipmentConfig, std::string name)
+    : CReadout(readoutConfig, name) {
   try {
-
-    int serialNumber=cfg->getValue<int>(name + ".serial");
-    int channelNumber=cfg->getValue<int>(name + ".channel");
+    int serialNumber = Tree::get<int>(equipmentConfig, "serial");
+    int channelNumber = Tree::get<int>(equipmentConfig, "channel");
   
     theLog.log("Opening RORC %d:%d",serialNumber,channelNumber);
 
@@ -682,8 +678,7 @@ FLP hackaton meeting 3rd
 
 
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 /*
   #define N_PAGES 10
   
@@ -721,78 +716,87 @@ int main(int argc, char* argv[])
   return 0;
 */
 
+  using namespace AliceO2;
+  using namespace std::string_literals;
 
-
-  ConfigFile cfg;
-
-
-  const char* cfgFile="";
-  if (argc<2) {
+  std::string uri = "";
+  if (argc < 2) {
     printf("Please provide path to configuration file\n");
     return -1;
   }
-  cfgFile=argv[1];
+  uri = argv[1];
   theLog.log("Readout process starting");
-  theLog.log("Reading configuration from %s",cfgFile);  
+  theLog.log("Reading configuration from %s", uri.c_str());
 
-
+  std::unique_ptr<ConfigurationInterface> configuration;
 
   try {
-    cfg.load(cfgFile);
-   }
-  catch (std::string err) {
-    theLog.log("Error : %s",err.c_str());
+    configuration = ConfigurationFactory::getConfiguration(uri);
+  }
+  catch (const std::exception &e) {
+    theLog.log("Error : %s", e.what());
     return -1;
   }
 
-  double cfgExitTimeout=-1;
-  try {
-    cfgExitTimeout=cfg.getValue<double>("readout.exitTimeout");
-  }
-  catch(std::string e) {
-  }
-
-
+  double cfgExitTimeout = configuration->getFloat("/readout/exitTimeout").get_value_or(-1);
 
   std::vector<CReadout*> readoutDevices;
 
-  for (auto kName : ConfigFileBrowser (&cfg,"equipment-")) {     
+  Tree::Node readout = configuration->getRecursive("/readout");
+  Tree::Node equipments = configuration->getRecursive("/equipments");
 
-    int enabled=1;
-    try {
-      enabled=cfg.getValue<int>(kName + ".enabled");
-    }
-    catch (...) {
-    }
-    // skip disabled equipments
-    if (!enabled) {continue;}
+  for (const std::pair<std::string, Tree::Node>& keyValue : Tree::getBranch(equipments)) {
+    const auto& name = keyValue.first;
+    const auto& equipment = keyValue.second;
 
-    std::string cfgEquipmentType="";
-    cfgEquipmentType=cfg.getValue<std::string>(kName + ".equipmentType");
-
-    theLog.log("Configuring equipment %s: %s",kName.c_str(),cfgEquipmentType.c_str());
-    
-    CReadout *newDevice=nullptr;
-    try {
-      if (!cfgEquipmentType.compare("dummy")) {
-      // todo: how to pass extra params: rate, size, etc. Handle to config subsection?
-        newDevice=new CReadoutDummy(&cfg,kName);
-      } else if (!cfgEquipmentType.compare("rorc")) {
-        newDevice=new CReadoutRORC(&cfg,kName);
+    if (Tree::get<int>(equipment, "enabled")) {
+      auto type = Tree::get<std::string>(equipment, "type");
+      if (type == "dummy"s) {
+        readoutDevices.push_back(new CReadoutDummy(readout, name));
+      } else if (type == "rorc"s) {
+        readoutDevices.push_back(new CReadoutRORC(readout, equipment, name));
       } else {
-        theLog.log("Unknown equipment type '%s' for [%s]",cfgEquipmentType.c_str(),kName.c_str());
+        theLog.log("Unknown equipment type '%s' for [%s]", type.c_str(), name.c_str());
       }
     }
-    catch (...) {
-        theLog.log("Failed to configure equipment %s",kName.c_str());
-        continue;
-    }
-        
-    if (newDevice!=nullptr) {
-      readoutDevices.push_back(newDevice);
-    }
-    
   }
+
+
+//  for (auto kName : ConfigFileBrowser (&cfg,"equipment-")) {
+//    int enabled=1;
+//    try {
+//      enabled=cfg.getValue<int>(kName + ".enabled");
+//    }
+//    catch (...) {
+//    }
+//    // skip disabled equipments
+//    if (!enabled) {continue;}
+//
+//    std::string cfgEquipmentType="";
+//    cfgEquipmentType=cfg.getValue<std::string>(kName + ".equipmentType");
+//
+//    theLog.log("Configuring equipment %s: %s",kName.c_str(),cfgEquipmentType.c_str());
+//
+//    CReadout *newDevice=nullptr;
+//    try {
+//      if (!cfgEquipmentType.compare("dummy")) {
+//      // todo: how to pass extra params: rate, size, etc. Handle to config subsection?
+//        newDevice=new CReadoutDummy(&cfg,kName);
+//      } else if (!cfgEquipmentType.compare("rorc")) {
+//        newDevice=new CReadoutRORC(&cfg,kName);
+//      } else {
+//        theLog.log("Unknown equipment type '%s' for [%s]",cfgEquipmentType.c_str(),kName.c_str());
+//      }
+//    }
+//    catch (...) {
+//        theLog.log("Failed to configure equipment %s",kName.c_str());
+//        continue;
+//    }
+//
+//    if (newDevice!=nullptr) {
+//      readoutDevices.push_back(newDevice);
+//    }
+//  }
 
   AliceO2::Common::Fifo<std::vector<DataBlockContainer *>> agg_output(1000);  
   CAggregator agg(&agg_output,"Aggregator");
@@ -805,12 +809,8 @@ int main(int argc, char* argv[])
 
 
   // configuration of data recording
-
-  int recordingEnabled=0;
-  std::string recordingFile="";
-  
-  recordingEnabled=cfg.getValue<int>("recording.enabled");
-  recordingFile=cfg.getValue<std::string>("recording.fileName");
+  bool recordingEnabled = configuration->get<int>("/recording/enabled").get_value_or(0);
+  std::string recordingFile = configuration->get<std::string>("/recording/fileName").get_value_or(""s);
   
   FILE *fp=NULL;
   if (recordingEnabled) {
@@ -826,8 +826,7 @@ int main(int argc, char* argv[])
 
   // configuration of data sampling
 
-  int dataSampling=0; 
-  dataSampling=cfg.getValue<int>("sampling.enabled");
+  bool dataSampling = configuration->get<int>("/sampling/enabled").get_value_or(0);
   
   if (dataSampling) {
     theLog.log("Data sampling enabled");
@@ -836,7 +835,6 @@ int main(int argc, char* argv[])
   }
   // todo: add time counter to measure how much time is spent waiting for data sampling injection
   
-
 
   theLog.log("Starting aggregator");
   agg.start();
