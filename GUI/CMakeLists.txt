@@ -40,7 +40,19 @@ endif()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework program_options log thread system REQUIRED)
+
+# Alfa
+find_package(FairRoot)
+if(FAIRROOT_FOUND)
+    # this should go away when fairrot provides a proper Find script or proper config scripts
+    # See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
+    link_directories(${FAIRROOT_LIBRARY_DIR})
+    set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ fairmq_logger)
+else(FAIRROOT_FOUND)
+    message(WARNING "FairRoot not found, module ControlFairMQ will not be compiled.")
+endif(FAIRROOT_FOUND)
+
 
 # Dependency on another subproject (Common)
 link_o2_subproject(Common)
