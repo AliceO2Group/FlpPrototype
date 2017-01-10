@@ -721,7 +721,7 @@ int main(int argc, char* argv[]) {
 
   std::string uri = "";
   if (argc < 2) {
-    printf("Please provide path to configuration file\n");
+    printf("Please provide configuration URI\n");
     return -1;
   }
   uri = argv[1];
@@ -760,43 +760,6 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-
-
-//  for (auto kName : ConfigFileBrowser (&cfg,"equipment-")) {
-//    int enabled=1;
-//    try {
-//      enabled=cfg.getValue<int>(kName + ".enabled");
-//    }
-//    catch (...) {
-//    }
-//    // skip disabled equipments
-//    if (!enabled) {continue;}
-//
-//    std::string cfgEquipmentType="";
-//    cfgEquipmentType=cfg.getValue<std::string>(kName + ".equipmentType");
-//
-//    theLog.log("Configuring equipment %s: %s",kName.c_str(),cfgEquipmentType.c_str());
-//
-//    CReadout *newDevice=nullptr;
-//    try {
-//      if (!cfgEquipmentType.compare("dummy")) {
-//      // todo: how to pass extra params: rate, size, etc. Handle to config subsection?
-//        newDevice=new CReadoutDummy(&cfg,kName);
-//      } else if (!cfgEquipmentType.compare("rorc")) {
-//        newDevice=new CReadoutRORC(&cfg,kName);
-//      } else {
-//        theLog.log("Unknown equipment type '%s' for [%s]",cfgEquipmentType.c_str(),kName.c_str());
-//      }
-//    }
-//    catch (...) {
-//        theLog.log("Failed to configure equipment %s",kName.c_str());
-//        continue;
-//    }
-//
-//    if (newDevice!=nullptr) {
-//      readoutDevices.push_back(newDevice);
-//    }
-//  }
 
   AliceO2::Common::Fifo<std::vector<DataBlockContainer *>> agg_output(1000);  
   CAggregator agg(&agg_output,"Aggregator");
