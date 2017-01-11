@@ -239,16 +239,16 @@ Thread::CallbackResult  CReadoutDummy::populateFifoOut() {
 
 class DataBlockContainerFromRORC : public DataBlockContainer {
   private:
-  AliceO2::Rorc::ChannelMasterInterface::PageSharedPtr pagePtr;
+  AliceO2::ReadoutCard::ChannelMasterInterface::PageSharedPtr pagePtr;
    
   public:
-  DataBlockContainerFromRORC(AliceO2::Rorc::ChannelFactory::MasterSharedPtr v_channel) {
+  DataBlockContainerFromRORC(AliceO2::ReadoutCard::ChannelFactory::MasterSharedPtr v_channel) {
     data=nullptr;
     
 
     
     
-    pagePtr=AliceO2::Rorc::ChannelMasterInterface::popPage(v_channel);
+    pagePtr=AliceO2::ReadoutCard::ChannelMasterInterface::popPage(v_channel);
     
     if (pagePtr!=nullptr) {
     
@@ -327,7 +327,7 @@ class CReadoutRORC : public CReadout {
   private:
     Thread::CallbackResult  populateFifoOut();
     DataBlockId currentId;
-    AliceO2::Rorc::ChannelFactory::MasterSharedPtr channel;
+    AliceO2::ReadoutCard::ChannelFactory::MasterSharedPtr channel;
     int pageCount=0;
     int isInitialized=0;
 };
@@ -343,17 +343,17 @@ CReadoutRORC::CReadoutRORC(ConfigFile *cfg, std::string name) : CReadout(cfg, na
   
     theLog.log("Opening RORC %d:%d",serialNumber,channelNumber);
 
-    //AliceO2::Rorc::ChannelFactory::DUMMY_SERIAL_NUMBER; //pcaldref23: 33333
+    //AliceO2::ReadoutCard::ChannelFactory::DUMMY_SERIAL_NUMBER; //pcaldref23: 33333
 
-    AliceO2::Rorc::Parameters params = AliceO2::Rorc::Parameters::makeParameters(serialNumber,channelNumber)
+    AliceO2::ReadoutCard::Parameters params = AliceO2::ReadoutCard::Parameters::makeParameters(serialNumber,channelNumber)
         .setDmaBufferSize(32*1024*1024)
         .setDmaPageSize(8*1024)
         .setGeneratorDataSize(8*1024)
         .setGeneratorEnabled(true);
 
-    channel = AliceO2::Rorc::ChannelFactory().getMaster(params);
+    channel = AliceO2::ReadoutCard::ChannelFactory().getMaster(params);
 
-    //channel->resetCard(AliceO2::Rorc::ResetLevel::Rorc);
+    //channel->resetCard(AliceO2::ReadoutCard::ResetLevel::Rorc);
     channel->startDma();
 
 
@@ -376,8 +376,8 @@ CReadoutRORC::~CReadoutRORC() {
 //  printf("count: %d\n",(int)channel.use_count());
 }
 /*
-void processChannel(AliceO2::Rorc::ChannelFactory::MasterSharedPtr channel) {
-  if (boost::optional<AliceO2::Rorc::ChannelMasterInterface::Page> page = channel->getPage()) {    
+void processChannel(AliceO2::ReadoutCard::ChannelFactory::MasterSharedPtr channel) {
+  if (boost::optional<AliceO2::ReadoutCard::ChannelMasterInterface::Page> page = channel->getPage()) {    
    int eventId=0;
    eventId=*((*page).getAddressU32());
     printf("ev=%d\n",eventId);
@@ -398,7 +398,7 @@ Thread::CallbackResult  CReadoutRORC::populateFifoOut() {
 //  processChannel(channel);
 //  return Thread::CallbackResult::Idle;
   
-/*  if (boost::optional<AliceO2::Rorc::ChannelMasterInterface::Page> page = channel->getPage()) {    
+/*  if (boost::optional<AliceO2::ReadoutCard::ChannelMasterInterface::Page> page = channel->getPage()) {    
    int eventId=0;
    eventId=*((*page).getAddressU32());
     printf("%s : ev=%d\n",name.c_str(),eventId);
