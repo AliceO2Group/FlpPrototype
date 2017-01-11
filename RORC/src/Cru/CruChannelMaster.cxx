@@ -19,7 +19,7 @@
 using namespace std::literals;
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 namespace Register = CruRegisterIndex;
 
@@ -252,5 +252,5 @@ int CruChannelMaster::utilityGetFirmwareVersion()
   return getBarUserspace()[CruRegisterIndex::FIRMWARE_COMPILE_INFO];
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

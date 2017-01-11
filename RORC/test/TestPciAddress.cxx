@@ -12,7 +12,7 @@
 #include "RORC/Exception.h"
 #include "RORC/PciAddress.h"
 
-using namespace ::AliceO2::Rorc;
+using namespace ::AliceO2::ReadoutCard;
 
 namespace {
 

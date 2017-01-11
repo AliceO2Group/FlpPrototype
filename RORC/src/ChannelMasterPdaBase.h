@@ -18,7 +18,7 @@
 #include "TypedMemoryMappedFile.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Partially implements the ChannelMasterInterface. It takes care of PDA-based functionality that is common to the
 /// C-RORC and CRU implementations.
@@ -167,5 +167,5 @@ class ChannelMasterPdaBase: public ChannelMasterBase
     void* mFifoAddressBus;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

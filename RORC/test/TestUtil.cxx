@@ -11,7 +11,7 @@
 #include <vector>
 #include "Utilities/ConvertAssign.h"
 
-using namespace ::AliceO2::Rorc;
+using namespace ::AliceO2::ReadoutCard;
 
 namespace {
 

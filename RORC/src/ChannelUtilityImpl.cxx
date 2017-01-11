@@ -13,7 +13,7 @@
 #include "Cru/CruRegisterIndex.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace ChannelUtility {
 
 using std::endl;
@@ -200,6 +200,6 @@ void cruCleanupState(const ChannelPaths& paths)
 
 
 } // namespace ChannelUtility
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 

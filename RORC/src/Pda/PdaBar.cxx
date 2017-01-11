@@ -12,7 +12,7 @@
 #include "RORC/Exception.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Pda {
 
 PdaBar::PdaBar() : mPdaBar(nullptr), mBarLength(-1), mBarNumber(-1), mUserspaceAddress(nullptr)
@@ -45,5 +45,5 @@ PdaBar::PdaBar(PdaDevice::PdaPciDevice pciDevice, int barNumberInt) : mBarNumber
 }
 
 } // namespace Pda
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

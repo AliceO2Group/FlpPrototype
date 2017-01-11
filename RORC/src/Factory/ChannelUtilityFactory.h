@@ -10,7 +10,7 @@
 #include "RORC/Parameters.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Factory class for creating objects to access RORC channel's utility functions
 class ChannelUtilityFactory
@@ -28,6 +28,6 @@ class ChannelUtilityFactory
     UtilitySharedPtr getUtility(const Parameters& params);
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 

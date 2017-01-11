@@ -9,7 +9,7 @@
 #include "RORC/CardType.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Namespace for functions to generate paths for filesystem object used by the Channel classes
 class ChannelPaths
@@ -49,5 +49,5 @@ class ChannelPaths
     const int mChannel;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

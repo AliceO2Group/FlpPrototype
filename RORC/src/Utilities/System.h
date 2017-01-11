@@ -10,7 +10,7 @@
 #include <boost/filesystem/path.hpp>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 /// Sets the given function as the SIGINT handler
@@ -39,5 +39,5 @@ std::pair<bool, std::string> isFileSystemTypeAnyOf(const boost::filesystem::path
     const std::set<std::string>& types);
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

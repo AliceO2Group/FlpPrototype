@@ -12,7 +12,7 @@
 #include "Utilities/System.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace CommandLineUtilities {
 
 using std::cout;
@@ -89,7 +89,7 @@ int Program::execute(int argc, char** argv)
     run(variablesMap);
   }
   catch (const ProgramOptionException& e) {
-    auto message = boost::get_error_info<AliceO2::Rorc::ErrorInfo::Message>(e);
+    auto message = boost::get_error_info<AliceO2::ReadoutCard::ErrorInfo::Message>(e);
     std::cout << "Program options invalid: " << *message << "\n\n";
     prnHelp();
   }
@@ -106,5 +106,5 @@ int Program::execute(int argc, char** argv)
 }
 
 } // namespace CommandLineUtilities
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

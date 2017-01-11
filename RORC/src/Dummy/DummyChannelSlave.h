@@ -9,7 +9,7 @@
 #include <array>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// A dummy implementation of the ChannelSlaveInterface.
 /// This exists so that the RORC module may be built even if the all the dependencies of the 'real' card
@@ -27,5 +27,5 @@ class DummyChannelSlave : public ChannelSlaveInterface
     virtual CardType::type getCardType() override;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

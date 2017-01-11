@@ -16,7 +16,7 @@
 #include "Factory/ChannelFactoryUtils.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 using namespace FactoryHelper;
 using namespace CardTypeTag;
@@ -40,5 +40,5 @@ auto ChannelUtilityFactory::getUtility(const Parameters& params) -> UtilityShare
     );
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

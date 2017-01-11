@@ -134,7 +134,7 @@ class PublishRpc: public DimRpcInfo
       auto returnValue = std::string(getString());
 //      printf("Publish got return: %s\n", returnValue.c_str());
       if (isFail(returnValue)) {
-        BOOST_THROW_EXCEPTION(AliceO2::Rorc::Exception() << AliceO2::Rorc::ErrorInfo::Message(returnValue));
+        BOOST_THROW_EXCEPTION(AliceO2::ReadoutCard::Exception() << AliceO2::ReadoutCard::ErrorInfo::Message(returnValue));
       }
     }
 };
@@ -153,7 +153,7 @@ class RegisterReadRpc: public DimRpcInfo
       auto returnValue = std::string(getString());
 //      printf("Read got return: %s\n", returnValue.c_str());
       if (isFail(returnValue)) {
-        BOOST_THROW_EXCEPTION(AliceO2::Rorc::Exception() << AliceO2::Rorc::ErrorInfo::Message(returnValue));
+        BOOST_THROW_EXCEPTION(AliceO2::ReadoutCard::Exception() << AliceO2::ReadoutCard::ErrorInfo::Message(returnValue));
       }
       return boost::lexical_cast<uint32_t>(stripPrefix(returnValue));
     }
@@ -174,7 +174,7 @@ class RegisterWriteRpc: public DimRpcInfo
       auto returnValue = std::string(getString());
 //      printf("Write got return: %s\n", returnValue.c_str());
       if (isFail(returnValue)) {
-        BOOST_THROW_EXCEPTION(AliceO2::Rorc::Exception() << AliceO2::Rorc::ErrorInfo::Message(returnValue));
+        BOOST_THROW_EXCEPTION(AliceO2::ReadoutCard::Exception() << AliceO2::ReadoutCard::ErrorInfo::Message(returnValue));
       }
     }
 };
@@ -194,7 +194,7 @@ class RegisterWriteBlockRpc: public DimRpcInfo
       auto returnValue = std::string(getString());
       printf("Write got return: %s\n", returnValue.c_str());
       if (isFail(returnValue)) {
-        BOOST_THROW_EXCEPTION(AliceO2::Rorc::Exception() << AliceO2::Rorc::ErrorInfo::Message(returnValue));
+        BOOST_THROW_EXCEPTION(AliceO2::ReadoutCard::Exception() << AliceO2::ReadoutCard::ErrorInfo::Message(returnValue));
       }
     }
 };

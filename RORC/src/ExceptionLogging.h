@@ -10,7 +10,7 @@
 #include "RORC/Exception.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 /// Log an exception to the InfoLogger
@@ -38,15 +38,15 @@ inline void _logStdException(const std::exception& e, InfoLogger::InfoLogger& lo
     BOOST_THROW_EXCEPTION(_exception);\
   }\
   catch(boost::exception& e) {\
-    ::AliceO2::Rorc::Util::_logBoostException(e, _logger, _severity);\
+    ::AliceO2::ReadoutCard::Util::_logBoostException(e, _logger, _severity);\
     throw;\
   }\
   catch(std::exception& e) {\
-    ::AliceO2::Rorc::Util::_logStdException(e, _logger, _severity);\
+    ::AliceO2::ReadoutCard::Util::_logStdException(e, _logger, _severity);\
     throw;\
   }
 #endif
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

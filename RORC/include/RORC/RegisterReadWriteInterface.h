@@ -9,7 +9,7 @@
 #include <cstdint>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// A simple interface for reading and writing 32-bit registers.
 class RegisterReadWriteInterface
@@ -29,7 +29,7 @@ class RegisterReadWriteInterface
     virtual void writeRegister(int index, uint32_t value) = 0;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_REGISTERREADWRITEINTERFACE_H_

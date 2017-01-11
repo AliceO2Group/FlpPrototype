@@ -10,7 +10,7 @@
 #include <boost/exception/exception.hpp>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 // RORC exception definitions
 struct Exception : virtual boost::exception, virtual std::exception
@@ -57,7 +57,7 @@ struct ProgramOptionException : virtual UtilException {};
 struct InvalidOptionValueException : virtual ProgramOptionException {};
 struct OptionRequiredException : virtual ProgramOptionException {};
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_EXCEPTION_H_

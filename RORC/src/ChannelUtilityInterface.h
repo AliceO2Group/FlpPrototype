@@ -10,7 +10,7 @@
 #include <ostream>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// This is a library-private interface that ChannelMasters also implement
 /// They provide the functions used in the utility programs, essentially delegating the implementation.
@@ -34,5 +34,5 @@ class ChannelUtilityInterface
     virtual int utilityGetFirmwareVersion() = 0;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

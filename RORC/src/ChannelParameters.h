@@ -12,7 +12,7 @@
 #include "RORC/GeneratorPattern.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// DMA related parameters
 struct DmaParameters
@@ -112,5 +112,5 @@ struct ChannelParameters
     }
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

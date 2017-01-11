@@ -14,7 +14,7 @@
 #include "RORC/Exception.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace CommandLineUtilities {
 
 /// Helper class for making a RORC utility program. It handles:
@@ -84,5 +84,5 @@ class Program
 };
 
 } // namespace CommandLineUtilities
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -25,7 +25,7 @@ using std::endl;
 using namespace std::literals;
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Throws the given exception if the given status code is not equal to RORC_STATUS_OK
 #define THROW_IF_BAD_STATUS(_status_code, _exception) \
@@ -436,6 +436,6 @@ int CrorcChannelMaster::utilityGetFirmwareVersion()
   return rorcRevision;
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 

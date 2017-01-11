@@ -13,7 +13,7 @@
 #endif
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 namespace FactoryHelper {
 
@@ -197,5 +197,5 @@ std::shared_ptr<Interface> makeChannel(const Parameters& params, int dummySerial
 }
 } // namespace FactoryHelper
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

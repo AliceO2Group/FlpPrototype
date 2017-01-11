@@ -27,8 +27,8 @@
 #include "Utilities/SmartPointer.h"
 #include "Utilities/Thread.h"
 
-using namespace AliceO2::Rorc::CommandLineUtilities;
-using namespace AliceO2::Rorc;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard;
 using namespace AliceO2::InfoLogger;
 using std::cout;
 using std::endl;

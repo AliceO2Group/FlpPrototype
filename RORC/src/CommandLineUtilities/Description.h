@@ -6,7 +6,7 @@
 #pragma once
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace CommandLineUtilities {
 
 /// Contains some descriptive text about a RORC utility executable
@@ -28,5 +28,5 @@ struct Description
 };
 
 } // namespace CommandLineUtilities
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

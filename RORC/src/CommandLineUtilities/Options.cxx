@@ -15,7 +15,7 @@
 #include "ExceptionInternal.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace CommandLineUtilities {
 namespace Options {
 
@@ -339,5 +339,5 @@ Parameters getOptionsParameterMap(const boost::program_options::variables_map& v
 
 } // namespace Options
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

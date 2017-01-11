@@ -44,9 +44,9 @@
 
 namespace b = boost;
 namespace bfs = boost::filesystem;
-//namespace Register = AliceO2::Rorc::CruRegisterIndex;
-using namespace AliceO2::Rorc::CommandLineUtilities;
-using namespace AliceO2::Rorc;
+//namespace Register = AliceO2::ReadoutCard::CruRegisterIndex;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard;
 using namespace std::literals;
 using namespace std::chrono_literals;
 using std::cout;
@@ -281,13 +281,13 @@ class ProgramCruExperimentalDma: public Program
           ("log-idle",
               po::bool_switch(&mOptions.logIdle),
               "Log idle counter");
-        AliceO2::Rorc::CommandLineUtilities::Options::addOptionCardId(options);
+        AliceO2::ReadoutCard::CommandLineUtilities::Options::addOptionCardId(options);
 
     }
 
     virtual void run(const boost::program_options::variables_map& variablesMap) override
     {
-      using namespace AliceO2::Rorc;
+      using namespace AliceO2::ReadoutCard;
 
       if (!mOptions.generatorPatternString.empty()) {
         mOptions.checkError = true;
@@ -296,7 +296,7 @@ class ProgramCruExperimentalDma: public Program
         mOptions.checkError = false;
       }
 
-      mOptions.cardId = AliceO2::Rorc::CommandLineUtilities::Options::getOptionCardId(variablesMap);
+      mOptions.cardId = AliceO2::ReadoutCard::CommandLineUtilities::Options::getOptionCardId(variablesMap);
 
       if (mOptions.fileOutputAscii && mOptions.fileOutputBin) {
         BOOST_THROW_EXCEPTION(CruException()
@@ -996,7 +996,7 @@ class ProgramCruExperimentalDma: public Program
 
     /// Program options
     struct Options {
-        AliceO2::Rorc::Parameters::CardIdType cardId;
+        AliceO2::ReadoutCard::Parameters::CardIdType cardId;
         int64_t maxPages = 0; ///< Limit of pages to push
         bool fileOutputAscii;
         bool fileOutputBin;

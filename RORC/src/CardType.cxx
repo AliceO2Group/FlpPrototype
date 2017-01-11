@@ -7,7 +7,7 @@
 #include "Utilities/Enum.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace {
 
 static const auto converter = Utilities::makeEnumConverter<CardType::type>({
@@ -29,5 +29,5 @@ CardType::type CardType::fromString(const std::string& string)
   return converter.fromString(string);
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -17,7 +17,7 @@
 #include "Utilities/System.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Interprocess {
 
 /// This lock uses two mutexes internally to help detect inconsistent state.
@@ -89,7 +89,7 @@ class Lock
 };
 
 } // namespace Interprocess
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif /* ALICEO2_RORC_INTERPROCESSMUTEX_H_ */

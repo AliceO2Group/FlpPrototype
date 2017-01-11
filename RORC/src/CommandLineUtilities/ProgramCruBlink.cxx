@@ -11,7 +11,7 @@
 #include "RORC/ChannelFactory.h"
 #include "RORC/Exception.h"
 
-using namespace AliceO2::Rorc::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
 using std::cout;
 using std::endl;
 
@@ -32,12 +32,12 @@ class ProgramCruBlink: public Program
 
     virtual void run(const boost::program_options::variables_map& map)
     {
-      using namespace AliceO2::Rorc;
+      using namespace AliceO2::ReadoutCard;
 
       auto cardId = Options::getOptionCardId(map);
       auto channelNumber = 0;
-      auto params = AliceO2::Rorc::Parameters::makeParameters(cardId, channelNumber);
-      auto channel = AliceO2::Rorc::ChannelUtilityFactory().getUtility(params);
+      auto params = AliceO2::ReadoutCard::Parameters::makeParameters(cardId, channelNumber);
+      auto channel = AliceO2::ReadoutCard::ChannelUtilityFactory().getUtility(params);
 
       const auto cycle = std::chrono::milliseconds(250);
       bool nextLedState = true;

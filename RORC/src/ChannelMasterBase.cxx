@@ -11,7 +11,7 @@
 #include "Utilities/System.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 namespace b = boost;
 namespace bfs = boost::filesystem;
@@ -130,5 +130,5 @@ void ChannelMasterBase::setLogLevel(InfoLogger::InfoLogger::Severity severity)
   mLogLevel = severity;
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

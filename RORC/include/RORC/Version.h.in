@@ -10,7 +10,7 @@
 #include <sstream>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Core {
 /// The current major version.
 #define RORC_VERSION_MAJOR @VERSION_MAJOR@
@@ -93,7 +93,7 @@ class Version {
 };
 
 } // namespace Core
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_RORC_VERSION_H

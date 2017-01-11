@@ -9,7 +9,7 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Simple data holder class for a PCI ID, consisting of a device ID and vendor ID.
 struct PciId
@@ -28,7 +28,7 @@ struct PciId
     std::string vendor;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_PCIID_H_

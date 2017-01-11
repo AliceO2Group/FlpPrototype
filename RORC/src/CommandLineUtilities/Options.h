@@ -14,7 +14,7 @@
 #include "ChannelParameters.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace CommandLineUtilities {
 namespace Options {
 
@@ -48,5 +48,5 @@ Parameters getOptionsParameterMap(const boost::program_options::variables_map& v
 
 } // namespace Options
 } // namespace CommandLineUtilities
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

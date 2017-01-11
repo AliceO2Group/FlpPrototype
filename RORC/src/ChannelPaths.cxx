@@ -11,7 +11,7 @@ static const std::string DIR_HUGEPAGES("/mnt/hugetlbfs/alice_o2");
 static const std::string FORMAT("%s/card_%s/serial_%i/channel_%i/%s");
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 namespace b = boost;
 namespace bfs = boost::filesystem;
@@ -46,5 +46,5 @@ std::string ChannelPaths::namedMutex() const
   return b::str(b::format("card%s_serial_%i_channel_%i_mutex") % mCardType % mSerial % mChannel);
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

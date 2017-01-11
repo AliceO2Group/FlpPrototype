@@ -16,7 +16,7 @@
 /// Test handling of program options in the utilities
 BOOST_AUTO_TEST_CASE(UtilOptions)
 {
-  using namespace AliceO2::Rorc::CommandLineUtilities::Options;
+  using namespace AliceO2::ReadoutCard::CommandLineUtilities::Options;
   namespace po = boost::program_options;
 
   // Our mock options
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(UtilOptions)
   BOOST_CHECK_MESSAGE(cps.dma.pageSize == 300l * 1024l, "dma page size");
   BOOST_CHECK_MESSAGE(cps.dma.bufferSize == (400l * 1024l * 1024l), "dma buffer size");
   BOOST_CHECK_MESSAGE(cps.generator.useDataGenerator == true, "generator enable");
-  BOOST_CHECK_MESSAGE(cps.generator.loopbackMode == AliceO2::Rorc::LoopbackMode::Rorc, "generator loopback mode");
+  BOOST_CHECK_MESSAGE(cps.generator.loopbackMode == AliceO2::ReadoutCard::LoopbackMode::Rorc, "generator loopback mode");
   BOOST_CHECK_MESSAGE(getOptionSerialNumber(vm) == 500, "serial number");
 }
 

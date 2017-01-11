@@ -14,7 +14,7 @@
 #include "RORC/ChannelSlaveInterface.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Factory class for creating objects to access and control card channels
 class ChannelFactory
@@ -39,7 +39,7 @@ class ChannelFactory
     SlaveSharedPtr getSlave(const Parameters& parameters);
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_CHANNELFACTORY_H_

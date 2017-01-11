@@ -16,7 +16,7 @@
 
 namespace {
 
-using namespace ::AliceO2::Rorc;
+using namespace ::AliceO2::ReadoutCard;
 
 const std::string filePath("/tmp/AliceO2_MemoryMappedFile_Test");
 const std::string badFilePath("/tmp/AliceO2_MemoryMappedFile_Test/12345abcdf/xyz/bad/path/");

@@ -17,7 +17,7 @@
 #include "RORC/RegisterReadWriteInterface.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Pure abstract interface for objects that obtain a master lock on a channel and provides an interface to control
 /// and use that channel.
@@ -119,7 +119,7 @@ class ChannelMasterInterface: public virtual RegisterReadWriteInterface
     virtual PageSharedPtr popPageInternal(const MasterSharedPtr& channel) = 0;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_CHANNELMASTERINTERFACE_H_

@@ -6,7 +6,7 @@
 #include "ChannelParameters.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 DmaParameters::DmaParameters()
 {
@@ -19,7 +19,7 @@ GeneratorParameters::GeneratorParameters()
 {
   initialValue = 1;
   initialWord = 0;
-  loopbackMode = Rorc::LoopbackMode::Rorc;
+  loopbackMode = ReadoutCard::LoopbackMode::Rorc;
   pattern = GeneratorPattern::Incremental;
   seed = 0;
   useDataGenerator = false;
@@ -31,9 +31,9 @@ ChannelParameters::ChannelParameters()
   ddlHeader = 0;
   useFeeAddress = false;
   noRDYRX = true;
-  initialResetLevel = Rorc::ResetLevel::Nothing;
+  initialResetLevel = ReadoutCard::ResetLevel::Nothing;
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 

@@ -10,7 +10,7 @@
 #include "Pda/PdaDevice.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Pda {
 
 /// Handles the creation and cleanup of a PDA DMABuffer object, registering a user-allocated buffer and converting
@@ -47,5 +47,5 @@ class PdaDmaBuffer
 };
 
 } // namespace Pda
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -22,7 +22,7 @@ using namespace AliceO2;
 namespace {
 
 // The serial number of the card to use
-// For dummy implementation, use Rorc::ChannelMasterFactory::DUMMY_SERIAL_NUMBER
+// For dummy implementation, use ReadoutCard::ChannelMasterFactory::DUMMY_SERIAL_NUMBER
 const int serialNumber = 33333;
 
 // The DMA channel to use
@@ -44,7 +44,7 @@ const size_t pageSize = 4*1024;
 const size_t bufferSize = 4*1024*1024;
 
 /// Prints the first 10 integers of a page
-void printPage(Rorc::ChannelMasterInterface::Page& page, int index, std::ostream& ios)
+void printPage(ReadoutCard::ChannelMasterInterface::Page& page, int index, std::ostream& ios)
 {
     ios << std::setw(4) << index << " (0x" << std::hex << (uint64_t) page.getAddress() << std::dec << ") -> ";
     for (int j = 0; j < 10; ++j) {
@@ -55,9 +55,9 @@ void printPage(Rorc::ChannelMasterInterface::Page& page, int index, std::ostream
 
 } // Anonymous namespace
 
-Rorc::Parameters makeParams()
+ReadoutCard::Parameters makeParams()
 {
-  using namespace Rorc;
+  using namespace ReadoutCard;
   return Parameters::makeParameters(serialNumber, channelNumber)
       .setDmaPageSize(pageSize)
       .setDmaBufferSize(bufferSize)
@@ -74,7 +74,7 @@ int main(int, char**)
   try {
     // Get the channel master object
     cout << "\n### Acquiring channel master object" << endl;
-    std::shared_ptr<Rorc::ChannelMasterInterface> channel = Rorc::ChannelFactory().getMaster(makeParams());
+    std::shared_ptr<ReadoutCard::ChannelMasterInterface> channel = ReadoutCard::ChannelFactory().getMaster(makeParams());
 
     // Start the DMA
     cout << "\n### Starting DMA" << endl;
@@ -113,7 +113,7 @@ int main(int, char**)
       // Wait for page to arrive
       // Uses a busy wait, because the wait time is (or should be) extremely short
       while (!timeExceeded()) {
-        if (std::shared_ptr<Rorc::ChannelMasterInterface::Page> page = Rorc::ChannelMasterInterface::popPage(channel)) {
+        if (std::shared_ptr<ReadoutCard::ChannelMasterInterface::Page> page = ReadoutCard::ChannelMasterInterface::popPage(channel)) {
           // Get page (contains userspace address)
           uint32_t eventNumber = page->getAddressU32()[0];
           eventNumbers.push_back(eventNumber);

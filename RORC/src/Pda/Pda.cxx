@@ -9,7 +9,7 @@
 #include "Utilities/Util.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Pda {
 
 std::tuple<PageAddress, std::vector<PageAddress>> partitionScatterGatherList(
@@ -62,5 +62,5 @@ std::tuple<PageAddress, std::vector<PageAddress>> partitionScatterGatherList(
 }
 
 } // namespace Pda
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

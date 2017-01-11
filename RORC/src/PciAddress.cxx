@@ -10,7 +10,7 @@
 #include "ExceptionInternal.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 namespace {
   bool parseLspciFormat(const std::string& string, int& bus, int& slot, int& function)
@@ -64,5 +64,5 @@ std::string PciAddress::toString() const
   return oss.str();
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

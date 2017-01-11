@@ -14,7 +14,7 @@
 #include "Utilities/GuardFunction.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Extends ChannelMaster object, and provides device-specific functionality
 class CruChannelMaster final : public ChannelMasterPdaBase
@@ -84,5 +84,5 @@ class CruChannelMaster final : public ChannelMasterPdaBase
     }
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

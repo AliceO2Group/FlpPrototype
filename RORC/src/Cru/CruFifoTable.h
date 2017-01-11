@@ -10,7 +10,7 @@
 #include "Utilities/Util.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 static constexpr size_t CRU_DESCRIPTOR_ENTRIES = 128l;
 
@@ -155,5 +155,5 @@ static_assert(sizeof(CruFifoTable)
      + (CRU_DESCRIPTOR_ENTRIES * sizeof(CruFifoTable::DescriptorEntry)),
      "Size of CruFifoTable invalid");
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

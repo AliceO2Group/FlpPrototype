@@ -9,7 +9,7 @@
 #include "ExceptionInternal.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 namespace b = boost;
 namespace bip = boost::interprocess;
@@ -73,5 +73,5 @@ void MemoryMappedFile::map(const std::string& fileName, size_t fileSize)
   }
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

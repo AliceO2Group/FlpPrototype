@@ -13,7 +13,7 @@
 #include "Utilities/GuardFunction.h"
 
 namespace {
-using namespace AliceO2::Rorc::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
 namespace bpy = boost::python;
 
 /// Simple example script
@@ -33,7 +33,7 @@ rorc_channel.register_write_32(0x40, 123)
 )";
 
 /// Pointer for Python interface
-AliceO2::Rorc::ChannelFactory::SlaveSharedPtr sChannel = nullptr;
+AliceO2::ReadoutCard::ChannelFactory::SlaveSharedPtr sChannel = nullptr;
 
 struct PythonWrapper
 {
@@ -113,14 +113,14 @@ class ProgramRunScript : public Program
       }
 
       if (mScriptFilename.empty()) {
-        BOOST_THROW_EXCEPTION(AliceO2::Rorc::ProgramOptionException()
-            << AliceO2::Rorc::ErrorInfo::Message("Empty script path"));
+        BOOST_THROW_EXCEPTION(AliceO2::ReadoutCard::ProgramOptionException()
+            << AliceO2::ReadoutCard::ErrorInfo::Message("Empty script path"));
       }
 
       auto cardId = Options::getOptionCardId(map);
       int channelNumber = Options::getOptionChannel(map);
-      auto params = AliceO2::Rorc::Parameters::makeParameters(cardId, channelNumber);
-      auto channel = AliceO2::Rorc::ChannelFactory().getSlave(params);
+      auto params = AliceO2::ReadoutCard::Parameters::makeParameters(cardId, channelNumber);
+      auto channel = AliceO2::ReadoutCard::ChannelFactory().getSlave(params);
 
       try {
         // Initialize Python environment
@@ -132,7 +132,7 @@ class ProgramRunScript : public Program
         PythonWrapper::putClass(mainNamespace);
 
         // Set channel object for PythonWrapper
-        AliceO2::Rorc::Utilities::GuardFunction guard = {
+        AliceO2::ReadoutCard::Utilities::GuardFunction guard = {
             [&]{ sChannel = channel; },
             [&]{ sChannel.reset(); }};
 

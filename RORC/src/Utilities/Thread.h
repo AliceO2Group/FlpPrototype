@@ -21,7 +21,7 @@
 
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 class Thread
@@ -70,5 +70,5 @@ class Thread
 };
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -20,7 +20,7 @@
 #include "Utilities/SmartPointer.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 int32_t crorcGetSerial(Pda::PdaDevice::PdaPciDevice pciDevice);
 int32_t cruGetSerial(Pda::PdaDevice::PdaPciDevice pciDevice);
@@ -222,5 +222,5 @@ int32_t crorcGetSerial(Pda::PdaDevice::PdaPciDevice pciDevice)
   return serial;
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

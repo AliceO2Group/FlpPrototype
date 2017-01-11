@@ -9,7 +9,7 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Namespace for the RORC loopback mode enum, and supporting functions
 struct LoopbackMode
@@ -30,7 +30,7 @@ struct LoopbackMode
     static bool isExternal(const LoopbackMode::type& mode);
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_LOOPBACKMODE_H_

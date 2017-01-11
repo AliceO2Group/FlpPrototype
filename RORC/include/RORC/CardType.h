@@ -9,7 +9,7 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Namespace for enum describing a RORC card type, and supporting functions
 struct CardType
@@ -84,7 +84,7 @@ static_assert(!isValidTag<int>(), "");
 
 } // namespace CardTypeTag
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_CARDTYPE_H_

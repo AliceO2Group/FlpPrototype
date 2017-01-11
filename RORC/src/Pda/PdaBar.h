@@ -10,7 +10,7 @@
 #include "ExceptionInternal.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Pda {
 
 /// A simple wrapper around the PDA BAR object, providing some convenience functions
@@ -117,5 +117,5 @@ class PdaBar
 };
 
 } // namespace Pda
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

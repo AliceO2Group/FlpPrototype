@@ -24,7 +24,7 @@
 #endif
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 using namespace FactoryHelper;
 using namespace CardTypeTag;
@@ -59,5 +59,5 @@ auto ChannelFactory::getSlave(const Parameters& params) -> SlaveSharedPtr
     );
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -8,11 +8,11 @@
 #include <boost/exception/all.hpp>
 #include "ExceptionInternal.h"
 
-using namespace AliceO2::Rorc;
+using namespace AliceO2::ReadoutCard;
 namespace b = boost;
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 const char* Exception::what() const noexcept
 {
@@ -20,13 +20,13 @@ const char* Exception::what() const noexcept
     if (auto info = boost::get_error_info<ErrorInfo::Message>(*this)) {
       return info->data();
     } else {
-      return "AliceO2::Rorc::Exception";
+      return "AliceO2::ReadoutCard::Exception";
     }
   }
   catch (const std::exception& e) {
-    return "AliceO2::Rorc::Exception";
+    return "AliceO2::ReadoutCard::Exception";
   }
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

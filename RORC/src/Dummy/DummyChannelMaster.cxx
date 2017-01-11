@@ -16,7 +16,7 @@ using std::cout;
 using std::endl;
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 constexpr auto endm = InfoLogger::InfoLogger::StreamOps::endm;
 
@@ -134,5 +134,5 @@ int DummyChannelMaster::utilityGetFirmwareVersion()
   return 0;
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

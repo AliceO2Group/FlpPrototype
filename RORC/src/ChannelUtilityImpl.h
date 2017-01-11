@@ -15,7 +15,7 @@
 #include "ChannelPaths.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace ChannelUtility {
 
 void printCrorcFifo(ReadyFifo* fifo, std::ostream& os);
@@ -28,5 +28,5 @@ void crorcCleanupState(const ChannelPaths& paths);
 void cruCleanupState(const ChannelPaths& paths);
 
 } // namespace ChannelUtility
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

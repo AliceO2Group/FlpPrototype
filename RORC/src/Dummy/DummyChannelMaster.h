@@ -12,7 +12,7 @@
 #include "ChannelMasterBase.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// A dummy implementation of the ChannelMasterInterface.
 /// This exists so that the RORC module may be built even if the all the dependencies of the 'real' card
@@ -58,5 +58,5 @@ class DummyChannelMaster final : public ChannelMasterBase
     std::vector<char> mPageBuffer;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

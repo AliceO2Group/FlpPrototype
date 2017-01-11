@@ -6,7 +6,7 @@
 #pragma once
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Crorc {
 
 /// Retrieve the serial number from the C-RORC's flash memory.
@@ -14,5 +14,5 @@ namespace Crorc {
 int getSerial(volatile void* barAddress);
 
 } // namespace Crorc
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

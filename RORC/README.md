@@ -1,4 +1,4 @@
-# RORC module
+# ReadoutCard module
 
 
 Authors
@@ -11,9 +11,9 @@ Authors
 Description
 ===================
 
-The RORC module is the software that directly interfaces with the RORC (ReadOut and Receiver Card) PCIe cards.
-RORCs can have multiple DMA channels, and each channel is treated separately by the program.
-  (Note: the old C-RORC card has 6 channels, the upcoming CRU 1.)
+The ReadoutCard module is the software that directly interfaces with the readout PCIe cards.
+Cards can have multiple DMA channels, and each channel is treated separately by the program.
+
 
 Channel ownership lock
 -------------------
@@ -35,7 +35,6 @@ The shared files are located in the directories:
 * `/mnt/hugetlbfs/alice_o2/card_[card type]/serial_[serial number]/channel_[channel number]/`
 
 If things crash and the state can not be recovered, these files should be deleted.
-They should also be deleted with new releases of the RORC module, since their internal memory arrangement might change.
 
 Once a ChannelMaster has acquired the lock, clients can:
 * Read and write registers
@@ -56,12 +55,12 @@ functions. If PDA is not available (see 'Dependencies') the factory will **alway
 
 Utility programs
 -------------------
-The RORC module contains some utility programs to assist with RORC debugging and administration.
+The ReadoutCard module contains some utility programs to assist with debugging and administration.
 Currently, only utilities for reading and writing registers are available, but more are planned.
 
 Exceptions
 -------------------
-The RORC module makes use of exceptions. Nearly all of these are derived from `boost::exception`.
+The ReadoutCard module makes use of exceptions. Nearly all of these are derived from `boost::exception`.
 They are defined in the header 'RORC/Exception.h'. These exceptions may contain extensive information about the cause
 of the issue in the form of `boost::error_info` structs which can aid in debugging. 
 To generate a diagnostic report, you may use `boost::diagnostic_information(exception)`.      
@@ -121,7 +120,7 @@ Also, the PDA kernel module must be inserted as root in any case.
 Dependencies
 ===================
 
-The RORC module depends on the PDA (Portable Driver Architecture) library. 
+The ReadoutCard module depends on the PDA (Portable Driver Architecture) library. 
 If PDA is not detected on the system, only a dummy implementation of the interface will be compiled.
 
 PDA installation

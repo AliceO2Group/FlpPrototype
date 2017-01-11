@@ -21,8 +21,8 @@
 #include "Utilities/Thread.h"
 
 namespace {
-using namespace AliceO2::Rorc::CommandLineUtilities;
-using namespace AliceO2::Rorc;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard;
 using std::cout;
 using std::endl;
 
@@ -180,8 +180,8 @@ class ProgramAliceLowlevelFrontendServer: public Program
       // Get card channel for register access
       int serialNumber = Options::getOptionSerialNumber(map);
       int channelNumber = Options::getOptionChannel(map);
-      auto params = AliceO2::Rorc::Parameters::makeParameters(serialNumber, channelNumber);
-      auto channel = AliceO2::Rorc::ChannelFactory().getSlave(params);
+      auto params = AliceO2::ReadoutCard::Parameters::makeParameters(serialNumber, channelNumber);
+      auto channel = AliceO2::ReadoutCard::ChannelFactory().getSlave(params);
 
       // Object that starts the DIM service on construction, and stops it when destroyed
       Utilities::GuardFunction dimStartStopper([] {DimServer::start("ALF");}, [] {DimServer::stop();});

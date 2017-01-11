@@ -14,7 +14,7 @@
 #include "RORC/PciId.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Represents a single RORC PCI device
 class RorcDevice
@@ -77,5 +77,5 @@ class RorcDevice
     CardDescriptor mDescriptor;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

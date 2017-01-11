@@ -91,7 +91,7 @@ int ddlSendCommand(volatile void *buff,
                    long long int   time) 
  
 /* ddlSendCommand sends one command to the given link. 
- * Parameters: dev      pointer to Rorc device. It defines the link 
+ * Parameters: dev      pointer to ReadoutCard device. It defines the link
  *                      where the command will be sent 
  *             dest     command destination: 0 RORC, 1 DIU, 2 SIU, 4 FEE. 
  *                      if -1 then the full command is in the 

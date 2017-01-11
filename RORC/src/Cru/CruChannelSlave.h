@@ -8,7 +8,7 @@
 #include "ChannelSlave.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// TODO Currently a placeholder
 class CruChannelSlave: public ChannelSlave
@@ -20,5 +20,5 @@ class CruChannelSlave: public ChannelSlave
     virtual CardType::type getCardType();
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

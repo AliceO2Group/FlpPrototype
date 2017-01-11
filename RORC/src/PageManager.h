@@ -15,7 +15,7 @@
 #include "ExceptionInternal.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// CRTP base class for PageManager implementations
 template <class Derived>
@@ -265,7 +265,7 @@ class PageManager : public PageManagerBase<PageManager<FIRMWARE_QUEUE_CAPACITY>>
     size_t mMaxPages = 0;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_RORC_SRC_PAGEMANAGER_H_

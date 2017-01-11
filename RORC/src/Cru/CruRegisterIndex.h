@@ -9,7 +9,7 @@
 #include "Pda/PdaBar.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Namespace containing definitions of indexes for CRU BAR registers
 /// They are based on the current best-guess understanding of both the CRU firmware and the code in here:
@@ -149,5 +149,5 @@ constexpr inline size_t toByteAddress(size_t address32)
 }
 
 } // namespace CruRegisterIndex
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -13,7 +13,7 @@
 #include "Utilities/System.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 namespace b = boost;
@@ -89,5 +89,5 @@ std::pair<bool, std::string> isFileSystemTypeAnyOf(const boost::filesystem::path
 }
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -12,8 +12,8 @@
 #include "Factory/ChannelUtilityFactory.h"
 #include <boost/format.hpp>
 
-using namespace AliceO2::Rorc::CommandLineUtilities;
-using namespace AliceO2::Rorc;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard;
 using std::cout;
 using std::endl;
 
@@ -33,7 +33,7 @@ class ProgramListCards: public Program
 
     virtual void run(const boost::program_options::variables_map&)
     {
-      auto cardsFound = AliceO2::Rorc::RorcDevice::findSystemDevices();
+      auto cardsFound = AliceO2::ReadoutCard::RorcDevice::findSystemDevices();
 
       std::ostringstream table;
 

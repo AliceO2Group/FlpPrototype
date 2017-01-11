@@ -11,7 +11,7 @@
 #include "Utilities/Util.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// A simple wrapper object for accessing the CRU BAR
 class CruBarAccessor
@@ -169,5 +169,5 @@ class CruBarAccessor
     const Pda::PdaBar* mPdaBar;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -7,7 +7,7 @@
 #define SRC_PAGEADDRESS_H_
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// A simple struct that holds the userspace and bus address of a page
 struct PageAddress
@@ -16,7 +16,7 @@ struct PageAddress
     volatile void* bus;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // SRC_PAGEADDRESS_H_

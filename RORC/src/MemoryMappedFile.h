@@ -9,7 +9,7 @@
 #include <boost/interprocess/mapped_region.hpp>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Handles the creation and cleanup of a memory mapping of a file
 class MemoryMappedFile
@@ -35,5 +35,5 @@ class MemoryMappedFile
     void map(const std::string& fileName, size_t fileSize);
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

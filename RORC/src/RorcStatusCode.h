@@ -1,5 +1,5 @@
 /// \file RorcStatusCode.h
-/// \brief Definition of the Rorc::StatusCode functions.
+/// \brief Definition of the ReadoutCard::StatusCode functions.
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
@@ -8,12 +8,12 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace StatusCode {
 
 /// Get a string representing a RORC C API status code
 std::string getString(int statusCode);
 
 } // namespace StatusCode
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

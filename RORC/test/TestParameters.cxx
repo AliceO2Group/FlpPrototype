@@ -12,7 +12,7 @@
 #include <assert.h>
 #include "RORC/Exception.h"
 
-using namespace AliceO2::Rorc;
+using namespace AliceO2::ReadoutCard;
 
 constexpr auto SERIAL_NUMBER = 1;
 constexpr auto CHANNEL_NUMBER = 2;

@@ -15,8 +15,8 @@
 #include <assert.h>
 #include <string>
 
-using namespace ::AliceO2::Rorc;
-using namespace ::AliceO2::Rorc::CardTypeTag;
+using namespace ::AliceO2::ReadoutCard;
+using namespace ::AliceO2::ReadoutCard::CardTypeTag;
 
 namespace {
 

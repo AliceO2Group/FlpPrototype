@@ -9,7 +9,7 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Namespace for the RORC generator pattern enum
 struct GeneratorPattern
@@ -33,7 +33,7 @@ struct GeneratorPattern
   static auto fromString(const std::string& string) -> GeneratorPattern::type;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_GENERATORPATTERN_H_

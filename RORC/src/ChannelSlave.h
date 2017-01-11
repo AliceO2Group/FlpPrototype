@@ -12,7 +12,7 @@
 #include "RORC/Parameters.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Partially implements the ChannelSlaveInterface. It takes care of:
 /// - Interprocess synchronization
@@ -42,5 +42,5 @@ class ChannelSlave: public ChannelSlaveInterface
     boost::scoped_ptr<Pda::PdaBar> mPdaBar;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

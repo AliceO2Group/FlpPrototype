@@ -8,7 +8,7 @@
 #include "Utilities/SmartPointer.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 int ChannelMasterPdaBase::getSerialFromRorcDevice(const Parameters& parameters)
 {
@@ -112,5 +112,5 @@ void ChannelMasterPdaBase::partitionDmaBuffer(size_t fifoSize, size_t pageSize)
 }
 
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

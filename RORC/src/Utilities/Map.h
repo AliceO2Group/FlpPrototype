@@ -9,7 +9,7 @@
 #include <boost/throw_exception.hpp>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 /// Flips a map around. Note that it will lead to data loss if multiple values of the original map are equal.
@@ -34,5 +34,5 @@ typename Map::mapped_type getValueFromMap(const Map& map, const typename Map::ke
 }
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

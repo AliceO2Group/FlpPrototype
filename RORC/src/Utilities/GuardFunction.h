@@ -8,7 +8,7 @@
 #include <functional>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 class GuardFunction
@@ -36,5 +36,5 @@ class GuardFunction
 };
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

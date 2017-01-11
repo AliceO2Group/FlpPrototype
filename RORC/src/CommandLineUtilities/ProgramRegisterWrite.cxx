@@ -6,7 +6,7 @@
 #include "CommandLineUtilities/Program.h"
 #include "RORC/ChannelFactory.h"
 
-using namespace AliceO2::Rorc::CommandLineUtilities;
+using namespace AliceO2::ReadoutCard::CommandLineUtilities;
 
 namespace {
 
@@ -38,8 +38,8 @@ class ProgramRegisterWrite: public Program
       int channelNumber = Options::getOptionChannel(map);
       int registerValue = Options::getOptionRegisterValue(map);
       auto readback = !bool(map.count(NOREAD_SWITCH));
-      auto params = AliceO2::Rorc::Parameters::makeParameters(cardId, channelNumber);
-      auto channel = AliceO2::Rorc::ChannelFactory().getSlave(params);
+      auto params = AliceO2::ReadoutCard::Parameters::makeParameters(cardId, channelNumber);
+      auto channel = AliceO2::ReadoutCard::ChannelFactory().getSlave(params);
 
       // Registers are indexed by 32 bits (4 bytes)
       channel->writeRegister(address / 4, registerValue);

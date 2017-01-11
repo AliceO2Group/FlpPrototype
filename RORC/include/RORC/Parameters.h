@@ -14,7 +14,7 @@
 #include "RORC/PciAddress.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Class that holds parameters for channels
 /// Per parameter, it has three functions:
@@ -28,7 +28,7 @@ class Parameters
     // Types for parameter values
 
     /// Type for the CardId parameter. It can hold either a serial number or PciAddress.
-    using CardIdType = boost::variant<int, ::AliceO2::Rorc::PciAddress>;
+    using CardIdType = boost::variant<int, ::AliceO2::ReadoutCard::PciAddress>;
 
     /// Type for the ChannelNumber parameter
     using ChannelNumberType = int32_t;
@@ -172,7 +172,7 @@ class Parameters
     Map mMap;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_PARAMETERS_H_

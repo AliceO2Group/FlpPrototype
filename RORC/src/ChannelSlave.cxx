@@ -7,7 +7,7 @@
 #include "Utilities/SmartPointer.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 ChannelSlave::ChannelSlave(const Parameters& parameters)
  : mChannelNumber(parameters.getChannelNumberRequired())
@@ -40,5 +40,5 @@ void ChannelSlave::writeRegister(int index, uint32_t value)
   mPdaBar->setRegister<uint32_t>(index * sizeof(uint32_t), value);
 }
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

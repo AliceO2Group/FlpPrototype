@@ -23,7 +23,7 @@
 
 namespace {
 
-using namespace ::AliceO2::Rorc;
+using namespace ::AliceO2::ReadoutCard;
 namespace b = boost;
 namespace bip = boost::interprocess;
 namespace bfs = boost::filesystem;

@@ -14,7 +14,7 @@
 
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 namespace _convertAssignImpl {
@@ -72,5 +72,5 @@ void convertAssign(const Container& strings, Args&... args)
 }
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

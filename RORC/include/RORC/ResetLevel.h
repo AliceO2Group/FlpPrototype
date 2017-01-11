@@ -9,7 +9,7 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Namespace for the RORC reset level enum, and supporting functions
 struct ResetLevel
@@ -29,7 +29,7 @@ struct ResetLevel
     static bool includesExternal(const ResetLevel::type& level);
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_RESETLEVEL_H_

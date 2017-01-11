@@ -14,7 +14,7 @@
 #include "RORC/PciAddress.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace {
   template <class T>
   void setParam(Parameters::Map& map, std::string key, const T& value)
@@ -84,5 +84,5 @@ _PARAMETER_FUNCTIONS(GeneratorDataSize, "generator_data_size")
 
 #undef _PARAMETER_FUNCTIONS
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

@@ -10,7 +10,7 @@
 #include <boost/lexical_cast.hpp>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 template <typename T1, typename T2>
@@ -63,5 +63,5 @@ inline bool checkAlignment(void* address, uint64_t alignment)
 }
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

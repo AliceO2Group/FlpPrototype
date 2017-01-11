@@ -11,7 +11,7 @@
 #include "c/rorc/rorc.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Crorc {
 
 // TODO Clean up, C++ificate
@@ -48,5 +48,5 @@ int getSerial(volatile void* barAddress)
 }
 
 } // namespace Crorc
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

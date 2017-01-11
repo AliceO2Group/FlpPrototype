@@ -13,7 +13,7 @@
 #include "ReadyFifo.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Extends ChannelMaster object, and provides device-specific functionality
 class CrorcChannelMaster final : public ChannelMasterPdaBase
@@ -161,5 +161,5 @@ class CrorcChannelMaster final : public ChannelMasterPdaBase
     PageManager<READYFIFO_ENTRIES> mPageManager;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

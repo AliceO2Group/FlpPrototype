@@ -27,7 +27,7 @@
 #endif
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Partially implements the ChannelMasterInterface. It provides:
 /// - Interprocess synchronization
@@ -150,5 +150,5 @@ class ChannelMasterBase: public ChannelMasterInterface, public ChannelUtilityInt
     InfoLogger::InfoLogger::Severity mLogLevel;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

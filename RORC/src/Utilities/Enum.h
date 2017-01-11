@@ -12,7 +12,7 @@
 #include <boost/throw_exception.hpp>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 namespace Utilities {
 
 template <typename Enum>
@@ -50,5 +50,5 @@ EnumConverter<Enum> makeEnumConverter(std::vector<std::pair<Enum, std::string>> 
 
 
 } // namespace Util
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2

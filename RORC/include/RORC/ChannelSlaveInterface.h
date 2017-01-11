@@ -12,7 +12,7 @@
 #include "RORC/Parameters.h"
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Provides a limited-access interface to a RORC channel
 /// TODO
@@ -30,7 +30,7 @@ class ChannelSlaveInterface: public virtual RegisterReadWriteInterface
     virtual CardType::type getCardType() = 0;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_INCLUDE_RORC_CHANNELSLAVEINTERFACE_H_

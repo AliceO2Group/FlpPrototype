@@ -9,7 +9,7 @@
 #include <string>
 
 namespace AliceO2 {
-namespace Rorc {
+namespace ReadoutCard {
 
 /// Data holder class for a PCI address, consisting of a bus, slot and function number
 class PciAddress
@@ -62,7 +62,7 @@ class PciAddress
     int function;
 };
 
-} // namespace Rorc
+} // namespace ReadoutCard
 } // namespace AliceO2
 
 #endif // ALICEO2_RORC_INCLUDE_RORC_H_
