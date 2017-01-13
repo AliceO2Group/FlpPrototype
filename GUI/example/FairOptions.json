@@ -1,0 +1,39 @@
+{
+    "fairMQOptions":
+    {
+        "devices":
+        [{
+            "id": "gui",
+            "channel":
+            {
+                "name": "notification",
+                "socket":
+                {
+                    "type": "rep",
+                    "method": "bind",
+                    "address": "tcp://*:3001",
+                    "sndBufSize": "1000",
+                    "rcvBufSize": "1000",
+                    "rateLogging": "0"
+                }
+            }
+        },
+
+        {
+            "id": "sink1",
+            "channel":
+            {
+                "name": "data",
+                "socket":
+                {
+                    "type": "pull",
+                    "method": "connect",
+                    "address": "tcp://localhost:5555",
+                    "sndBufSize": "1000",
+                    "rcvBufSize": "1000",
+                    "rateLogging": "0"
+                }
+            }
+        }]
+    }
+}
