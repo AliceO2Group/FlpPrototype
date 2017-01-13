@@ -39,6 +39,9 @@ set(LIB_SOURCES_CORE
         ClientDataProvider.cxx
         )
 
+FIND_PACKAGE(ZeroMQ REQUIRED)
+include_directories(${ZEROMQ_INCLUDE_DIR})
+
 if (FAIRROOT_FOUND)
     set(LIB_HEADERS_CORE ${LIB_HEADERS_CORE} ../include/QualityControl/AlfaPublisher.h)
     set(LIB_SOURCES_CORE ${LIB_SOURCES_CORE} AlfaPublisher.cxx)

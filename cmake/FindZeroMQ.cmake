@@ -48,13 +48,18 @@ if(ZEROMQ)
                 DOC "Path to ZeroMQ include header files."
             )       
 else(ZEROMQ)
-        # Check is the library is installed on the system
-    find_library(ZEROMQ_LIBRARIES NAMES zmq
+	# Check is the library is installed on the system
+    find_library(ZEROMQ_LIBRARIES zmq
+    PATHS ENV LD_LIBRARY_PATH
                 DOC "Path to libzmq)"
             )
 
+	    get_filename_component(PARENT_PATH ${ZEROMQ_LIBRARIES} DIRECTORY)
+	    get_filename_component(PARENT_PATH ${PARENT_PATH} DIRECTORY)
+
     find_path(ZEROMQ_INCLUDE_DIR NAMES zmq_utils.h
-                DOC "Path to ZeroMQ include header files."
+                   PATHS ${PARENT_PATH}/include
+ DOC "Path to ZeroMQ include header files."
             )
 endif(ZEROMQ)
 

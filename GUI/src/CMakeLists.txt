@@ -17,13 +17,9 @@ set(APP_HEADERS
 set(APP_SOURCES
 )
 
-FIND_PACKAGE(ZeroMQ)
-
 # Define two variables in order not to repeat ourselves.
 set(LIBRARY_NAME GUI)
 set(INCLUDE include/GUI)
-
-include_directories(${ZMQ_INCLUDE_DIR})
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
