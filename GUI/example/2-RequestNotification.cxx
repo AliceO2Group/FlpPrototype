@@ -15,7 +15,7 @@ void exampleCallback(std::unique_ptr<boost::property_tree::ptree> message) {
 // Example that shows how to recieve requests and get different callbacks executed based on message names
 int main() {
     // request socket url
-    std::string url = "tcp://127.0.0.1:3001";
+    std::string url = "tcp://128.141.175.158:3001";
 
     // create request notifier object
     std::unique_ptr<AliceO2::GUI::RequestNotifier> rep = std::make_unique<AliceO2::GUI::RequestNotifier>(url);
