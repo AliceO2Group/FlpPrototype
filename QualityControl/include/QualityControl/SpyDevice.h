@@ -43,7 +43,8 @@ class SpyDevice: public FairMQDevice
 
     void setFrame(SpyMainFrame *frame);
     /**
-     * \param address <url>:<port>
+     * \param address \<url\>:\<port\>
+     * \param type
      */
     void startChannel(std::string address, std::string type);
     void stopChannel();

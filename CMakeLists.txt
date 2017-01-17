@@ -13,7 +13,7 @@ enable_testing() # needed on top-level CMakeLists.txt
 # in the subdirs *when* we compile only a subproject.
 # We define as well a function AddDocTarget in cmake/DoxygenTarget.cmake
 add_custom_target(doc) # DEPENDS docProjA docProjB) Note: with CMake 3.X the DEPENDS would work
-ADD_DEPENDENCIES(doc docInfoLogger docProjA docDataFormat docDataSampling docControl
+ADD_DEPENDENCIES(doc docInfoLogger docProjA docDataFormat docDataSampling
         docMonitoring docQualityControl)
         
 # Target coverage

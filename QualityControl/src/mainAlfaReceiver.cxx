@@ -1,5 +1,5 @@
 ///
-/// @file    main.cxx
+/// @file    mainAlfaReceiver.cxx
 /// @author  Barthelemy von Haller
 ///
 

@@ -43,7 +43,7 @@ class SpyMainFrame: public TGMainFrame
     void menuHandler(Int_t id);
     void updateList(std::string name);
     /**
-     * \param listName The name as it appears in the list and that might be different from obj->GetName()
+     * \param obj
      */
     void displayObject(TObject *obj);
     void start(); // slot

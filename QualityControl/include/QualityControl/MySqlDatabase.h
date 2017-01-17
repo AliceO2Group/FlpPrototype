@@ -51,7 +51,7 @@ class MySqlDatabase: public DatabaseInterface
     bool execute(std::string sql);
 
     /**
-     * \brief Create a new index on table 'table'.
+     * \brief Create a new index on table "table".
      * The name of the index is <table>_i_<column>.
      */
     void addIndex(std::string table, std::string column);

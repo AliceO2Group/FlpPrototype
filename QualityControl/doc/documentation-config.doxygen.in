@@ -654,7 +654,7 @@ EXAMPLE_RECURSIVE      = NO
 # directories that contain image that are included in the documentation (see
 # the \image command).
 
-IMAGE_PATH             =
+IMAGE_PATH             = "@PROJECT_SOURCE_DIR@/doc"
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1403,7 +1403,7 @@ HAVE_DOT               = YES
 # DOTFONTPATH environment variable or by setting DOT_FONTPATH to the directory
 # containing the font.
 
-DOT_FONTNAME           = FreeSans
+DOT_FONTNAME           =
 
 # The DOT_FONTSIZE tag can be used to set the size of the font of dot graphs.
 # The default size is 10pt.

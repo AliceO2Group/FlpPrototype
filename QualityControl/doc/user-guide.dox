@@ -2,117 +2,127 @@
 /**
 @page User_Guide User Guide
 
-	@section TABLE_OF_CONTENTS TABLE OF CONTENTS
-	-# @ref GENERAL_INFORMATION
-		-# @ref Overview
-		-# @ref Acronyms_and_Abbreviations
-	-# @ref SETUP_AND_DATA_FLOWS
-		-# @ref Setup
-		-# @ref Data_Flows
-	-# @ref INSTALLATION_AND_UPGRADE
-		-# @ref Requirements
-		-# @ref Supported_Platforms
-		-# @ref Installation
-		-# @ref Upgrading
-		-# @ref Important_Files
-		-# @ref Tips_And_Tricks
-	-# @ref GETTING_STARTED
-		-# @ref Starting
-		-# @ref Running
-		-# @ref Exiting
-		-# @ref Exceptions
-		
-	@htmlonly
-	<hr>
-	@endhtmlonly		
-	@section GENERAL_INFORMATION GENERAL INFORMATION
-	
-		@subsection Overview Overview
-		
-			- Explain in general terms the tool and the purpose for which it is intended. The description shall include:
-				- Architecture of the tool in non-technical terms, (e.g., library, client/server, web-based, etc.)
-				- Major functions performed by the tool
-				- Status (Operational, Under Development, Undergoing a major modification, etc...)
-			
-		@subsection Acronyms_and_Abbreviations Acronyms and Abbreviations
-		
-			- Provide a list of the acronyms and abbreviations used in this document and the meaning of each.
+@section TABLE_OF_CONTENTS TABLE OF CONTENTS
+-# @ref GENERAL_INFORMATION
+    -# @ref Overview
+    -# @ref Acronyms_and_Abbreviations
+-# @ref INSTALLATION_AND_UPGRADE
+    -# @ref Requirements
+    -# @ref Supported_Platforms
+    -# @ref Installation
+-# @ref GETTING_STARTED
+    -# @ref Running_Simple_Chain
+    -# @ref Modif_task
+    -# @ref Writing_task
+    -# @ref Writing_checker
+    -# @ref Modif_client
 
-	@htmlonly
-	<hr>
-	@endhtmlonly
-	@section SETUP_AND_DATA_FLOWS SETUP AND DATA FLOWS
-	
-		@subsection Setup Setup
-		
-			- Briefly describe and depict graphically the setup (computers, servers, databases, etc...) used by the tool.
-			
-		@subsection Data_Flows Data Flows
-		
-			- Briefly describe the overall flow of data in the system (data inputs and outputs).
-							
-			@dot
-				digraph Data {
-					node [shape=box];
-					Input1 -> Process;
-					Input2 -> Process;
-					Process -> Output1;
-					Process -> Output2;
-			  }
-			@enddot
-				
-	@htmlonly
-	<hr>
-	@endhtmlonly
-	@section INSTALLATION_AND_UPGRADE INSTALLATION AND UPGRADE
-	
-		@subsection Requirements Requirements
-		
-			- List prerequisites (if any) here
-			
-		@subsection Supported_Platforms Supported Platforms
-		
-			- List supported platforms here
-		
-		@subsection Installation Installation
-		
-			- Linux
-			- Mac OS X
-			- Windows
-					
-		@subsection Upgrading Upgrading
-		
-			- Upgrading Manually
-			- Rolling Back an Upgrade
-			
-		@subsection Important_Files Important Directories and Files
-		
-			- List all important files and directories here
-		
-		@subsection  Tips_And_Tricks Tips, Tricks, and Best Practices
-		
-			- Add tips and tricks here (if any))
-	
-	@htmlonly
-	<hr>
-	@endhtmlonly
-	@section GETTING_STARTED GETTING STARTED
-		
-		- This section should provide a general walkthrough from tool initiation through exit. The logical arrangement of the information should enable others to understand the sequence and flow of the system.
-		
-		@subsection Starting Starting
-		
-			- Describe the procedures necessary to access the tool.
-		
-		@subsection Running Running
-		
-			- Describe the procedures necessary to run the tool.
-		
-		@subsection Exiting Exiting
-		
-			- Describe the actions necessary to properly exit the tool.
-		
-		@subsection Exceptions Caveats and Exceptions
-		
-				- If there are special actions the user must take to insure that data is properly saved or that some other function executes properly, describe those actions here.  
+@htmlonly
+<hr>
+@endhtmlonly
+
+@section GENERAL_INFORMATION GENERAL INFORMATION
+
+@subsection Overview Overview
+
+- Explain in general terms the tool and the purpose for which it is intended. The description shall include:
+  - Architecture of the tool in non-technical terms, (e.g., library, client/server, web-based, etc.)
+  - Major functions performed by the tool
+  - Status (Operational, Under Development, Undergoing a major modification, etc...)
+
+Given the integration of the online and offline computing systems into the common O2 project,
+the offline Quality Assurance (QA) and the online Data Quality Monitoring (DQM) are combined
+into a single system called “Data Quality Control and Assessment” (QC).
+
+The QC is critical to quickly identify and overcome problems during data taking and to provide
+good quality data for physics analyses. It is also necessary to ensure that the calibration and
+reconstruction behave as expected, especially when running synchronously with the data taking.
+
+The Quality Control is made of different pieces that take care of processing the data samples (\a Tasks),
+merging them (\a Mergers), checking the resulting objects which are usually histograms (\a Checkers),
+storing the objects and their quality in the \a repository,
+reprocessing them and visualizing them (\a Clients).
+
+At the moment the system has a limited set of features depicted in this figure :
+
+@image html Architecture-current.png
+
+The full general architecture of the system is described in the figure below.
+
+@image html Architecture.png
+
+The QC tasks can run on the FLPs, on the EPNs or on dedicated QC servers. In the last case,
+they can receive only a sample of the whole data flow. The input of the QC tasks varies depending
+on the stage but covers the whole range of data types in the system from raw to analysis-ready objects.
+Their output is usually an histogram but there are no technical limitations.
+
+Mergers are necessary as the tasks will mostly run in parallel, for example on all the FLPs of a detector.
+Checkers receive a merged object and evaluate its quality by running a user defined algorithm. Its output,
+the object and its quality, is stored in the QC repository. A post-processing loop gives the possibility to
+trend and correlate the output of the QC tasks.
+
+@subsection Acronyms_and_Abbreviations Acronyms and Abbreviations
+
+- Nothing here yet.
+
+@htmlonly
+<hr>
+@endhtmlonly
+
+@section INSTALLATION_AND_UPGRADE INSTALLATION
+
+@subsection Requirements Requirements
+
+- O2 and O2Configuration
+
+@subsection Supported_Platforms Supported Platforms
+
+- CC7
+- Mac OS X
+- Ubuntu
+
+@subsection Installation Installation
+
+TODO: install and setup (e.g. DB)
+
+@htmlonly
+<hr>
+@endhtmlonly
+
+@section GETTING_STARTED GETTING STARTED
+
+@subsection Running_Simple_Chain Running a simple chain
+
+We are going to run this simple chain :
+@image html Architecture-current.png
+
+-# Prepare the task in the configuration file :
+   \code
+   [Publisher]
+    className=AlfaPublisher
+
+    taskDefinition=taskDefinition_1
+address=tcp://*:5556
+   \endcode
+-# Launch a task called "asdf" with a configuration from file ../example.ini
+   \code{.sh} ./bin/qcTaskLauncher  -n asdf -c file:../example.ini \endcode
+
+
+@subsection Modif_task Modifying a task
+
+@subsection Writing_task Writing a new task
+
+@subsection Writing_checker Writing a new Checker
+
+@subsection Modif_client Modifying a client
+
+@htmlonly
+<hr>
+@endhtmlonly
+
+@section TECHNICAL_INFORMATION TECHNICAL INFORMATION
+
+More detailed and technical information is available in \ref Technical_Overview.
+Also the doc of each class is available through the menu on the left.
+
 */
