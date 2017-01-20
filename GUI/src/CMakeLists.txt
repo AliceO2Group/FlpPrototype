@@ -19,7 +19,6 @@ set(APP_SOURCES
 
 # Define two variables in order not to repeat ourselves.
 set(LIBRARY_NAME GUI)
-set(INCLUDE include/GUI)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})

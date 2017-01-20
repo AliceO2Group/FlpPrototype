@@ -49,6 +49,9 @@ if(FAIRROOT_FOUND)
     # See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
     link_directories(${FAIRROOT_LIBRARY_DIR})
     set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ fairmq_logger)
+    include_directories(
+            ${FAIRROOT_INCLUDE_DIR}
+    )
 else(FAIRROOT_FOUND)
     message(WARNING "FairRoot not found, module ControlFairMQ will not be compiled.")
 endif(FAIRROOT_FOUND)
