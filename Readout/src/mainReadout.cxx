@@ -14,8 +14,8 @@
 #include <chrono>
 #include <signal.h>
 
-#include <DataSampling/InjectSamples.h>
-  
+#include <DataSampling/InjectorFactory.h>
+
 #include <Common/Timer.h>
 #include <Common/Fifo.h>
 #include <Common/Thread.h>
@@ -828,9 +828,12 @@ int main(int argc, char* argv[])
 
   int dataSampling=0; 
   dataSampling=cfg.getValue<int>("sampling.enabled");
-  
+  std::string className = cfg.getValue<std::string>("sampling.class");
+  AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = nullptr;
   if (dataSampling) {
     theLog.log("Data sampling enabled");
+    // TODO here we should not pass a parameter but it should rather git it from the Configuration
+    dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create(className);
   } else {
     theLog.log("Data sampling disabled");
   }
@@ -901,8 +904,8 @@ int main(int argc, char* argv[])
     
     
       // push to data sampling, if configured
-      if (dataSampling) {
-        injectSamples(*bc);
+      if (dataSampling && dataSamplingInjector) {
+        dataSamplingInjector->injectSamples(*bc);
       }
     
     

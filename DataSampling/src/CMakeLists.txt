@@ -4,18 +4,32 @@ set(LIB_HEADERS
   ../include/DataSampling/DataBlockProducer.h
   ../include/DataSampling/FileSampler.h
   ../include/DataSampling/MockSampler.h
+  ../include/DataSampling/FairSampler.h
   ../include/DataSampling/SamplerInterface.h
+  ../include/DataSampling/SamplerFactory.h
+  ../include/DataSampling/InjectorInterface.h
+  ../include/DataSampling/FairInjector.h
+  ../include/DataSampling/MockInjector.h
+        ../include/DataSampling/InjectorFactory.h
+        ../include/DataSampling/DsInfoLogger.h
 )
 
 set(LIB_SOURCES
   DataBlockProducer.cxx
   FileSampler.cxx
   MockSampler.cxx
+  FairSampler.cxx
   SamplerInterface.cxx
-  InjectSamples.cxx
-)
+  SamplerFactory.cxx
+        MockInjector.cxx
+        FairInjector.cxx
+        InjectorFactory.cxx
+        )
 
-
+if (FAIRROOT_FOUND)
+    set(LIB_HEADERS ${LIB_HEADERS} ../include/DataSampling/InjectorDevice.h)
+    set(LIB_SOURCES ${LIB_SOURCES} InjectorDevice.cxx)
+endif (FAIRROOT_FOUND)
 
 # LIBRARY
 
@@ -24,6 +38,7 @@ set(LIBRARY_NAME DataSampling)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
+target_link_libraries(${LIBRARY_NAME} ${FAIRMQ_LIBRARIES} Common InfoLogger-shared)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 

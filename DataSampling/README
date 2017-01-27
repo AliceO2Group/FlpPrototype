@@ -1,4 +1,23 @@
-For any question, please contact: 
+Public interface :
+ - SamplerFactory
+ - SamplerInterface
+ - InjectorFactory
+ - InjectorInterface
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+For any question, please contact:
 Barthélémy von Haller (barthelemy.von.haller@cern.ch)
 
 0. Requirements
