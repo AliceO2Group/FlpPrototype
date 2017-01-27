@@ -16,9 +16,12 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE(simple)
 {
+//    AliceO2::DataSampling::InjectorInterface * dataSamplingInjector =
+//      AliceO2::DataSampling::InjectorFactory::create("FairInjector");
+
   AliceO2::DataSampling::FairInjector *dataSamplingInjector = new AliceO2::DataSampling::FairInjector();
 
-  std::vector<std::shared_ptr<DataBlockContainer>> dataBlocks;
+  std::vector<DataBlockContainer *> dataBlocks;
 
   for (int i = 0; i < 10; i++) {
     dataSamplingInjector->injectSamples(dataBlocks);

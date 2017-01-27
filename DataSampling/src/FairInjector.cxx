@@ -12,7 +12,7 @@ FairInjector::~FairInjector() {
   delete mDevice;
 }
 
-int FairInjector::injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks)
+int FairInjector::injectSamples(std::vector<DataBlockContainer *> &dataBlocks)
 {
   // copy the data and send it via FairMQ
   mDevice->sendData("asdf");
