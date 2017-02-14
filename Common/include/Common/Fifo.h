@@ -15,6 +15,8 @@ namespace AliceO2 {
 namespace Common {
 
 /// \brief   Class to implement a lock-free 1-to-1 FIFO (1 writer, 1 reader)
+/// Two threads can safely work concurrently on the two sides of the FIFO (one using push(), the other using pop()).
+/// External protection is needed for other types of concurrent access, functions are not re-entrant. (e.g. 2 threads calling push(), or 2 threads calling pop())
 /// \author   Sylvain Chapeland
 template <class T>
 class Fifo {
@@ -59,6 +61,18 @@ class Fifo {
     /// \return   number of pending items in FIFO
     int getNumberOfUsedSlots();
     
+    /// clears FIFO content
+    void clear();
+    
+
+    /// reset FIFO statistics
+    void resetStats();
+
+    /// \return   number of items written to FIFO
+    unsigned long long getNumberIn();
+    /// \return   number of items read from FIFO
+    unsigned long long getNumberOut();
+    
   private:
 
     int size; // size of FIFO (number of elements it can store)
@@ -78,8 +92,7 @@ Fifo<T>::Fifo(int s) {
   indexEnd=0;
   size=s;
   data.resize(size+1); // keep one extra slot to mark separation between begin/end of circular buffer
-  nIn=0;
-  nOut=0;
+  resetStats();
 }
 
 template <class T>
@@ -180,13 +193,29 @@ int Fifo<T>::getNumberOfFreeSlots() {
   }
   return i2-i1-1;
 }
+
 template <class T>
 int Fifo<T>::getNumberOfUsedSlots() {
   return size-getNumberOfFreeSlots();
 }
 
+template <class T>
+void Fifo<T>::clear() {
+  data.clear();
+  indexStart=0;
+  indexEnd=0;
+  return;
+}
 
+template <class T> void Fifo<T>::resetStats() {
+  nIn=0;
+  nOut=0;
+}
 
+template <class T> unsigned long long Fifo<T>::getNumberIn() {return nIn;}
+
+template <class T> unsigned long long Fifo<T>::getNumberOut()  {return nOut;}
+ 
 
 
 
