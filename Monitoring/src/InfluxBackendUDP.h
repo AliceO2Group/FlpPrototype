@@ -19,13 +19,11 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 
-/// Library backend that injects metrics to InfluxDB time-series databse over UDP
+/// Backend that injects metrics to InfluxDB time-series databse over UDP
 ///
-/// Metrics are sent over UDP via boost asio library
+/// Metrics are converted into Influx Line protocol and then sent 
+/// via UDP using  boost asio library
 class InfluxBackendUDP final : public Backend
 {
   public:
@@ -35,51 +33,20 @@ class InfluxBackendUDP final : public Backend
     /// Default destructor
     ~InfluxBackendUDP() = default;
 
-    /// Convert to InfluxDB Line Protocol and send via UDP (boost asio)
-    /// \param value 	value already converted to string
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp in nanoseconds
-    void sendUDP(std::string value, const std::string& name, const std::string& entity,
-      const unsigned long timestamp);
-
     /// Convert timestamp to unsigned long as required by InfluxDB
     /// \param 		chrono time_point timestamp
     /// \return  	timestamp in nanoseconds
     inline unsigned long convertTimestamp(const std::chrono::time_point<std::chrono::system_clock>& timestamp);
 
-        /// Pushes integer metric
-    /// \param value        metric value (integer)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point)
-    void send(int value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
+    /// Sends metric to InfluxDB
+    //    /// \param metric           reference to metric object
+    void send(const Metric& metric) override;
 
-    /// Pushes double metric
-    /// \param value        metric value (double)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point
-    void send(double value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
-
-    /// Pushes string metric
-    /// \param value        metric value (string)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point)
-    void send(std::string value, const std::string& name, const std::string& entity,
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
-
-    /// Pushes uint32_t metric
-    /// \param value        metric value (uint32_t)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point)
-    void send(uint32_t value, const std::string& name, const std::string& entity,
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
-
+    /// Adds tag
+    /// \param name         tag name
+    /// \param value        tag value
+    void addGlobalTag(std::string name, std::string value) override;
+  
   private:
     /// Boost Asio I/O functionality
     boost::asio::io_service mIoService;
@@ -89,9 +56,18 @@ class InfluxBackendUDP final : public Backend
 
     /// UDP endpoint
     boost::asio::ip::udp::endpoint mEndpoint;
+
+    std::string tagSet; ///< Global tagset (common for each metric)
+
+    /// Escapes " ", "," and "=" characters
+    /// \param escaped      string rerference to escape characters from
+    void escape(std::string& escaped);
+
+    /// Sends metric in InfluxDB Line Protocol format via UDP
+    /// \param lineMessage   metrc in Influx Line Protocol format
+    void sendUDP(std::string&& lineMessage);
 };
 
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
 

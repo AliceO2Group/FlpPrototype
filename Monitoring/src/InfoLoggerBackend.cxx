@@ -13,9 +13,6 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 
 inline unsigned long InfoLoggerBackend::convertTimestamp(const std::chrono::time_point<std::chrono::system_clock>& timestamp)
 {
@@ -26,42 +23,30 @@ inline unsigned long InfoLoggerBackend::convertTimestamp(const std::chrono::time
 
 InfoLoggerBackend::InfoLoggerBackend()
 {
-  MonInfoLogger::GetInstance() << "InfoLogger backend initialized" << AliceO2::InfoLogger::InfoLogger::endm;
+  MonInfoLogger::Info() << "InfoLogger backend initialized" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void InfoLoggerBackend::send(int value, const std::string& name, const std::string& entity, 
-                             const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfoLoggerBackend::addGlobalTag(std::string name, std::string value)
 {
-  MonInfoLogger::GetInstance() << "InfoLoggerMonitoring : " << name << ", " << value << " [int], "
-                               << convertTimestamp(timestamp) << ", " << entity
+  if (!tagString.empty()) {
+    tagString += " ";
+  }
+  tagString += name + "=" + value;
+}
+
+void InfoLoggerBackend::send(const Metric& metric)
+{
+  std::string metricTags{};
+  for (const auto& tag : metric.getTags()) {
+    if (!metricTags.empty()) {
+      metricTags += " ";
+    }
+    metricTags += tag.name + "=" + tag.value;
+  }
+  MonInfoLogger::Debug() << "InfoLoggerMonitoring : " << metric.getName() << ", " << metric.getValue() << " Type: " << metric.getType() << ", " 
+                               << convertTimestamp(metric.getTimestamp()) << ", " << tagString << " " << metricTags
                                << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void InfoLoggerBackend::send(double value, const std::string& name, const std::string& entity, 
-                             const std::chrono::time_point<std::chrono::system_clock>& timestamp)
-{
-  MonInfoLogger::GetInstance() << "InfoLoggerMonitoring : " << name << ", " << value << " [double], " 
-                               << convertTimestamp(timestamp) << ", " << entity
-                               << AliceO2::InfoLogger::InfoLogger::endm;
-}
-
-void InfoLoggerBackend::send(std::string value, const std::string& name, const std::string& entity, 
-                             const std::chrono::time_point<std::chrono::system_clock>& timestamp)
-{
-  MonInfoLogger::GetInstance() << "InfoLoggerMonitoring : " << name << ", " << value << " [string], "
-                               << convertTimestamp(timestamp) << ", " << entity
-                               << AliceO2::InfoLogger::InfoLogger::endm;
-}
-
-void InfoLoggerBackend::send(uint32_t value, const std::string& name, const std::string& entity,
-                             const std::chrono::time_point<std::chrono::system_clock>& timestamp)
-{
-  MonInfoLogger::GetInstance() << "InfoLoggerMonitoring : " << name << ", " << value << " [uint32_t], " 
-                               << convertTimestamp(timestamp) << ", " << entity
-                               << AliceO2::InfoLogger::InfoLogger::endm;
-}
-
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
-

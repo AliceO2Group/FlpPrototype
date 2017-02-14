@@ -11,9 +11,6 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 
 InfluxBackendUDP::InfluxBackendUDP(const std::string &hostname, int port) :
   mSocket(mIoService, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 0))
@@ -22,21 +19,12 @@ InfluxBackendUDP::InfluxBackendUDP(const std::string &hostname, int port) :
   boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(), hostname, std::to_string(port));
   boost::asio::ip::udp::resolver::iterator resolverInerator = resolver.resolve(query);
   mEndpoint = *resolverInerator;
-  MonInfoLogger::GetInstance() << "InfluxDB via UDP backend enabled" << AliceO2::InfoLogger::InfoLogger::endm;
+  MonInfoLogger::Info() << "InfluxDB via UDP backend enabled" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void InfluxBackendUDP::sendUDP(std::string value, const std::string& name, const std::string& entity,
-  const unsigned long timestamp)
+void InfluxBackendUDP::sendUDP(std::string&& lineMessage)
 {
-  std::string escapedName = name;
-  boost::replace_all(escapedName, " ", "\\ ");
-
-  std::stringstream convert;
-  convert << escapedName << ",entity=" << entity << " value=" << value << " " << timestamp;
-  std::string lineMessage = convert.str();
   mSocket.send_to(boost::asio::buffer(lineMessage, lineMessage.size()), mEndpoint);
-  //MonInfoLogger::GetInstance() << "InfluxDB via UDP : metric " <<  name << ", packet sent"
-  //                             << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
 inline unsigned long InfluxBackendUDP::convertTimestamp(const std::chrono::time_point<std::chrono::system_clock>& timestamp)
@@ -46,32 +34,35 @@ inline unsigned long InfluxBackendUDP::convertTimestamp(const std::chrono::time_
   ).count();
 }
 
-void InfluxBackendUDP::send(int value, const std::string& name, const std::string& entity,
-  const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfluxBackendUDP::escape(std::string& escaped)
 {
-  sendUDP(std::to_string(value), name, entity, convertTimestamp(timestamp));
+  boost::replace_all(escaped, ",", "\\,");
+  boost::replace_all(escaped, "=", "\\=");
+  boost::replace_all(escaped, " ", "\\ ");
 }
 
-void InfluxBackendUDP::send(double value, const std::string& name, const std::string& entity,
-  const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfluxBackendUDP::send(const Metric& metric)
 {
-  sendUDP(std::to_string(value), name, entity, convertTimestamp(timestamp));
+  std::string value = boost::lexical_cast<std::string>(metric.getValue());
+  if (metric.getType() == MetricType::STRING) {
+    escape(value);
+    value.insert(value.begin(), '"');
+    value.insert(value.end(), '"');
+  }
+  std::string name = metric.getName();
+  escape(name);
+
+  std::stringstream convert;
+  convert << name << "," << tagSet << " value=" << value << " " << convertTimestamp(metric.getTimestamp());
+  sendUDP(convert.str());
 }
 
-void InfluxBackendUDP::send(std::string value, const std::string& name, const std::string& entity,
-  const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfluxBackendUDP::addGlobalTag(std::string name, std::string value)
 {
-  value.insert(value.begin(), '"');
-  value.insert(value.end(), '"');
-  sendUDP(value, name, entity, convertTimestamp(timestamp));
+  escape(name); escape(value);
+  if (!tagSet.empty()) tagSet += ",";
+  tagSet += name + "=" + value;
 }
 
-void InfluxBackendUDP::send(uint32_t value, const std::string& name, const std::string& entity, 
-  const std::chrono::time_point<std::chrono::system_clock>& timestamp)
-{
-  sendUDP(std::to_string(value), name, entity, convertTimestamp(timestamp));
-}
-
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2

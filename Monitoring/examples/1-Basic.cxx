@@ -11,13 +11,17 @@ namespace Monitoring = AliceO2::Monitoring;
 int main() {
   
   // create monitoring object, pass confuguration path as parameter
-  std::unique_ptr<Monitoring::Core::Collector> collector(
-    new Monitoring::Core::Collector("file:///home/awegrzyn/hackathon/Monitoring/examples/SampleConfig.ini")
+  std::unique_ptr<Monitoring::Collector> collector(
+    new Monitoring::Collector("file:///home/awegrzyn/hackathon/Monitoring/examples/SampleConfig.ini")
   );
 
   // now send an application specific metric
   // 10 is the value
-  // myCrazyMetric is the name of the metric
-  collector->send(10, "myCrazyMetric");
-
+  // myMetric is the name of the metric
+  //  
+  // 1. by copying values
+  collector->send(10, "myMetric");
+  
+  // 2. by creating and moving metric object
+  collector->send({10, "myMetric"});
 }	

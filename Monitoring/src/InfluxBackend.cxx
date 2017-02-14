@@ -14,13 +14,10 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 
 InfluxBackend::InfluxBackend(std::string url) : curlHandle(initCurl(url), &InfluxBackend::deleteCurl)
 {
-  MonInfoLogger::GetInstance() << "InfluxDB backend enabled: " << url  << AliceO2::InfoLogger::InfoLogger::endm;
+  MonInfoLogger::Info() << "InfluxDB backend enabled: " << url  << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
 CURL* InfluxBackend::initCurl(std::string url)
@@ -49,45 +46,39 @@ void InfluxBackend::deleteCurl(CURL * curl)
   curl_global_cleanup();
 }
 
-void InfluxBackend::send(int value, const std::string& name, const std::string& entity, 
-                         const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfluxBackend::addGlobalTag(std::string name, std::string value)
 {
-  curlWrite(std::to_string(value), name, entity, convertTimestamp(timestamp));
+  escape(name); escape(value);
+  if (!tagSet.empty()) tagSet += ",";
+  tagSet += name + "=" + value;
 }
 
-void InfluxBackend::send(double value, const std::string& name, const std::string& entity, 
-                         const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfluxBackend::escape(std::string& escaped)
 {
-  curlWrite(std::to_string(value), name, entity, convertTimestamp(timestamp));
+  boost::replace_all(escaped, ",", "\\,");
+  boost::replace_all(escaped, "=", "\\=");
+  boost::replace_all(escaped, " ", "\\ ");
 }
 
-void InfluxBackend::send(std::string value, const std::string& name, const std::string& entity, 
-                         const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+void InfluxBackend::send(const Metric& metric)
 {
-  value.insert(value.begin(), '"');
-  value.insert(value.end(), '"');
-  curlWrite(value, name, entity, convertTimestamp(timestamp));
-}
-
-void InfluxBackend::send(uint32_t value, const std::string& name, const std::string& entity, 
-                         const std::chrono::time_point<std::chrono::system_clock>& timestamp)
-{
-  curlWrite(std::to_string(value), name, entity, convertTimestamp(timestamp));
-}
-
-void InfluxBackend::curlWrite(std::string value, const std::string& name, const std::string& entity, 
-                             const unsigned long timestamp)
-{
-  std::string escapedName = name;
-  // escape space in name for InluxDB
-  boost::replace_all(escapedName, " ", "\\ ");
+  std::string value = boost::lexical_cast<std::string>(metric.getValue());
+  if (metric.getType() == MetricType::STRING) {
+    escape(value);
+    value.insert(value.begin(), '"');
+    value.insert(value.end(), '"');
+  }
+  std::string name = metric.getName();
+  escape(name);  
 
   // preparing post data
   std::stringstream convert;
-  convert << escapedName << ",entity=" << entity << " value=" << value << " " << timestamp;
-  std::string post = convert.str();
+  convert << name << "," << tagSet << " value=" << value << " " << convertTimestamp(metric.getTimestamp());
+  curlWrite(convert.str());
+}
 
-  // send via curl
+void InfluxBackend::curlWrite(std::string&& post)
+{
   CURLcode response;	
   long responseCode;
   curl_easy_setopt(curlHandle.get(), CURLOPT_POSTFIELDS, post.c_str());
@@ -95,12 +86,12 @@ void InfluxBackend::curlWrite(std::string value, const std::string& name, const 
   response = curl_easy_perform(curlHandle.get());
   curl_easy_getinfo(curlHandle.get(), CURLINFO_RESPONSE_CODE, &responseCode);
   if (response != CURLE_OK) {
-    MonInfoLogger::GetInstance() << "!!! InfluxDB : cURL error : " << (curl_easy_strerror(response)) 
+    MonInfoLogger::Warning() << "!!! InfluxDB : cURL error : " << (curl_easy_strerror(response)) 
                                  << AliceO2::InfoLogger::InfoLogger::endm;
     return;
   }
   if (responseCode != 204) {
-    MonInfoLogger::GetInstance() << "!!! InfluxDB : cURL response code " + std::to_string(responseCode) 
+    MonInfoLogger::Warning() << "!!! InfluxDB : cURL response code " + std::to_string(responseCode) 
                                  << AliceO2::InfoLogger::InfoLogger::endm;
     return;
   }
@@ -114,7 +105,5 @@ inline unsigned long InfluxBackend::convertTimestamp(const std::chrono::time_poi
   ).count();
 }
 
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
-

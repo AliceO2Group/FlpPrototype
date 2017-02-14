@@ -8,21 +8,18 @@
 
 #include <chrono>
 #include <string>
+#include "Monitoring/Metric.h"
 
 namespace AliceO2
 {
 /// ALICE O2 Monitoring system
 namespace Monitoring 
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core 
-{
 
 /// Backend pure virtual interface
 ///
-/// Specifies overloaded send function that represents process of sending a metric to remote backend.
-/// Each metric consists of four parameters: value, name, entity (origin), timestamp.
-/// Supported types of "value" are: int, double, string and uint_32t
+/// Interface that allows to send a metric to remote backend.
+/// In addition, default tagset (for all handled metrics) can be created.
 class Backend
 {
   public:
@@ -32,40 +29,13 @@ class Backend
     /// Default destructor
     virtual ~Backend() = default;
 	
-    /// Sends integer metric
-    /// \param value        metric value (integer)
-    /// \param name         metric name
-    /// \param entity       metric entity
-    /// \param timestamp    metric timestamp
-    virtual void send(int value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) = 0;
+    /// Sends metric via backend
+    virtual void send(const Metric& metric) = 0;
 
-    /// Sends double metric
-    /// \param value        metric value (double)
-    /// \param name         metric name
-    /// \param entity       metric entity
-    /// \param timestamp    metric timestamp
-    virtual void send(double value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) = 0;
-
-    /// Sends string metric
-    /// \param value        metric value (string)
-    /// \param name         metric name
-    /// \param entity       metric entity
-    /// \param timestamp    metric timestamp
-    virtual void send(std::string value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) = 0;
-
-    /// Sends uint32_t metric
-    /// \param value        metric value (uint32_t)
-    /// \param name         metric name
-    /// \param entity       metric entity
-    /// \param timestamp    metric timestamp
-    virtual void send(uint32_t value, const std::string& name, const std::string& entity,
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) = 0;
+    /// Sets a tag
+    virtual void addGlobalTag(std::string name, std::string value) = 0;
 };
 
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
 

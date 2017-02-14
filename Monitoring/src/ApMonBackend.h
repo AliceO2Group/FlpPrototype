@@ -17,13 +17,10 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 
 /// \brief Backend that uses AppMon (MonALISA)
 ///
-/// Uses ApMon library to push values to MonALISA Service.
+/// Uses ApMon library to push metric to MonALISA Service.
 /// ApMon accepts timestamps as integers, therefore cast is needed (see method #convertTimestamp)
 ///
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
@@ -37,38 +34,15 @@ class ApMonBackend final : public Backend
     /// Default destructor
     ~ApMonBackend() = default;
 
-    /// Pushes integer metric
-    /// \param value 	metric value (integer)
-    /// \param name 	metric name
-    /// \param entity 	metric entity - origin
-    /// \param timestamp 	metric timestamp (std::chrono::time_point)
-    void send(int value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
+    /// Sends metric via MonALISA
+    /// ApMon's intances is type-aware therefore cast of metric value is needed
+    /// \param metric           reference to metric object:
+    void send(const Metric& metric) override;
 
-    /// Pushes double metric
-    /// \param value        metric value (double)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point)
-    void send(double value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
-
-    /// Pushes string metric
-    /// \param value        metric value (string)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point)
-    void send(std::string value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
-
-    /// Pushes uint32_t metric
-    /// \param value        metric value (uint32_t)
-    /// \param name         metric name
-    /// \param entity       metric entity - origin
-    /// \param timestamp    metric timestamp (std::chrono::time_point)
-    void send(uint32_t value, const std::string& name, const std::string& entity, 
-      const std::chrono::time_point<std::chrono::system_clock>& timestamp) override;
-
+    /// Extends entity value
+    /// \param name             tag name (unused)
+    /// \param value            tag value that is concatenated to entity string
+    void addGlobalTag(std::string name, std::string value) override;
   private:
     /// Converts timestamp to format supported by ApMon
     /// \param timestamp 	timestamp in std::chrono::time_point format
@@ -76,9 +50,9 @@ class ApMonBackend final : public Backend
     int convertTimestamp(const std::chrono::time_point<std::chrono::system_clock>& timestamp);
   
     std::unique_ptr<ApMon> mApMon; ///< ApMon object
+    std::string entity; ///< MonALISA entity, created out of global tags
 };
 
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
 

@@ -16,6 +16,7 @@
 #include "MonInfoLogger.h"
 #include "InfoLoggerBackend.h"
 #include "InfluxBackendUDP.h"
+#include "ProcessDetails.h"
 
 #ifdef _WITH_APPMON
 #include "ApMonBackend.h"
@@ -30,52 +31,50 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring 
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 
 Collector::Collector(const std::string& configPath)
 {
   std::unique_ptr<Configuration::ConfigurationInterface> configFile =
 		  Configuration::ConfigurationFactory::getConfiguration(configPath);
   std::cout << configPath << std::endl;
-  if (configFile->get<int>("InfoLoggerBackend/enable") == 1) {
+  if (configFile->get<int>("InfoLoggerBackend.enable") == 1) {
     mBackends.emplace_back(std::make_unique<InfoLoggerBackend>());
   }
 #ifdef _WITH_APPMON
-  if (configFile->get<int>("AppMon/enable") == 1) {
+  if (configFile->get<int>("AppMon.enable") == 1) {
     mBackends.emplace_back(std::make_unique<ApMonBackend>(
-      configFile->get<string>("AppMon/pathToConfig").value()
+      configFile->get<string>("AppMon.pathToConfig").value()
     ));
   }
 #endif
 
 #ifdef _WITH_INFLUX
-  if (configFile->get<int>("InfluxDB/enable") == 1) {
-    std::string url = configFile->get<std::string>("InfluxDB/hostname").value() + ":" 
-	            + configFile->get<std::string>("InfluxDB/port").value()
-                    + "/write?db=" + configFile->get<std::string>("InfluxDB/db").value();
+  if (configFile->get<int>("InfluxDB.enable") == 1) {
+    std::string url = configFile->get<std::string>("InfluxDB.hostname").value() + ":" 
+	            + configFile->get<std::string>("InfluxDB.port").value()
+                    + "/write?db=" + configFile->get<std::string>("InfluxDB.db").value();
     mBackends.emplace_back(std::make_unique<InfluxBackend>(url));
   }
 #endif
 
-  if (configFile->get<int>("InfluxDBUDP/enable") == 1) {
+  if (configFile->get<int>("InfluxDBUDP.enable") == 1) {
     mBackends.emplace_back(std::make_unique<InfluxBackendUDP>(
-      configFile->get<std::string>("InfluxDBUDP/hostname").value(), 
-      configFile->get<int>("InfluxDBUDP/port").value()
+      configFile->get<std::string>("InfluxDBUDP.hostname").value(), 
+      configFile->get<int>("InfluxDBUDP.port").value()
     ));
   }
-  setDefaultEntity();
   
   mProcessMonitor = std::make_unique<ProcessMonitor>();
-  if (configFile->get<int>("ProcessMonitor/enable") == 1) {
-    int interval = configFile->get<int>("ProcessMonitor/interval").value();
+  if (configFile->get<int>("ProcessMonitor.enable") == 1) {
+    int interval = configFile->get<int>("ProcessMonitor.interval").value();
     mMonitorRunning = true;
     mMonitorThread = std::thread(&Collector::processMonitorLoop, this, interval);  
-    MonInfoLogger::GetInstance() << "Process Monitor : Automatic updates enabled" << AliceO2::InfoLogger::InfoLogger::endm;
+    MonInfoLogger::Info() << "Process Monitor : Automatic updates enabled" << AliceO2::InfoLogger::InfoLogger::endm;
   }
 
-  mDerivedHandler = std::make_unique<DerivedMetrics>(configFile->get<int>("DerivedMetrics/maxCacheSize").value());
+  mDerivedHandler = std::make_unique<DerivedMetrics>(configFile->get<int>("DerivedMetrics.maxCacheSize").value());
+
+  setDefaultTags();
 }
 
 Collector::~Collector()
@@ -84,62 +83,29 @@ Collector::~Collector()
   if (mMonitorThread.joinable()) {
     mMonitorThread.join();
   }
-
 }
 
-void Collector::setDefaultEntity()
+void Collector::setDefaultTags()
 {
-  char hostname[255];
-  gethostname(hostname, 255);
-
-  std::ostringstream format;
-  format << hostname << "." << getpid();
-
-  mEntity = format.str();
-}
-void Collector::setEntity(std::string entity) {
-	mEntity = entity;
-}
-
-void Collector::sendProcessMonitorValues()
-{
-  ///                         type    name    value
-  /// std::tuple<ProcessMonitorType, string, string>
-  for (auto const pid : mProcessMonitor->getPidsDetails()) {
-    switch (std::get<0>(pid)) {
-      case ProcessMonitorType::INT : sendRawValue(boost::lexical_cast<int>(std::get<1>(pid)), std::get<2>(pid));
-               break;
-      case ProcessMonitorType::DOUBLE : sendRawValue(boost::lexical_cast<double>(std::get<1>(pid)), std::get<2>(pid));
-               break;
-      case ProcessMonitorType::STRING : sendRawValue(std::get<1>(pid), std::get<2>(pid));
-               break;
-    }
+  ProcessDetails details{};
+  for (auto& b: mBackends) {
+    b->addGlobalTag("pid", std::to_string(details.getPid()));
+    b->addGlobalTag("hostname", details.getHostname());
+    b->addGlobalTag("name", details.getProcessName());
   }
 }
 
 void Collector::processMonitorLoop(int interval)
 {
+  // loopCount - no need to wait full sleep time to terminame the thread
+  int loopCount = 0;
   while (mMonitorRunning) {
-    sendProcessMonitorValues();
-    std::this_thread::sleep_for (std::chrono::seconds(interval));
-  }
-}
-
-void Collector::addMonitoredPid(int pid)
-{
-  mProcessMonitor->addPid(pid);
-}
-
-auto Collector::getCurrentTimestamp() -> decltype(std::chrono::system_clock::now())
-{
-  return std::chrono::system_clock::now();
-}
-
-template<typename T>
-void Collector::sendMetric(std::unique_ptr<Metric> metric, T)
-{
-  for (auto& b: mBackends) {
-    b->send(boost::get<T>(metric->getValue()), metric->getName(), metric->getEntity(), metric->getTimestamp());
+    std::this_thread::sleep_for (std::chrono::milliseconds(interval*10));
+    if ((++loopCount % 100) != 0) continue;
+    for (auto&& metric : mProcessMonitor->getPidsDetails()) {
+      send(std::move(metric));
+    }
+    loopCount = 0;
   }
 }
 
@@ -147,34 +113,51 @@ void Collector::addDerivedMetric(std::string name, DerivedMetricMode mode) {
   mDerivedHandler->registerMetric(name, mode);
 }
 
-template<typename T> 
-inline void Collector::sendRawValue(T value, std::string name, metric_time timestamp) const
+void Collector::send(Metric&& metric)
 {
   for (auto& b: mBackends) {
-    b->send(value, name, mEntity, timestamp);
+    b->send(metric);
+    try {
+      b->send(mDerivedHandler->processMetric(metric));
+    } catch (std::logic_error&) { }
   }
 }
 
 template<typename T>
-void Collector::send(T value, std::string name, metric_time timestamp)
+void Collector::send(T value, std::string name)
 {
-  if (mDerivedHandler->isRegistered(name)) {
-    try {
-      std::unique_ptr<Metric> derived = mDerivedHandler->processMetric(value, name, mEntity, timestamp);
-      if (derived != nullptr) sendMetric(std::move(derived), value);
-    } 
-    catch (boost::bad_get& e) {
-      throw std::runtime_error("Derived metrics failed : metric " + name + " has incorrect type");
-    }
-  }
-  sendRawValue(value, name, timestamp);
+  send({value, name});
 }
 
-template void Collector::send(int, std::string, metric_time);
-template void Collector::send(double, std::string, metric_time);
-template void Collector::send(std::string, std::string, metric_time);
-template void Collector::send(uint32_t, std::string, metric_time);
+template<typename T>
+void Collector::sendTagged(T value, std::string name, std::vector<Tag>&& tags)
+{
+  Metric metric{value, name};
+  metric.addTags(std::move(tags));
+  send(std::move(metric));
+}
 
-} // namespace Core
+template<typename T>
+void Collector::sendTimed(T value, std::string name, std::chrono::time_point<std::chrono::system_clock>& timestamp)
+{
+  send({value, name, timestamp});
+}
+
+template void Collector::send(int, std::string);
+template void Collector::send(double, std::string);
+template void Collector::send(std::string, std::string);
+template void Collector::send(uint32_t, std::string);
+
+template void Collector::sendTagged(int, std::string, std::vector<Tag>&& tags);
+template void Collector::sendTagged(double, std::string, std::vector<Tag>&& tags);
+template void Collector::sendTagged(std::string, std::string, std::vector<Tag>&& tags);
+template void Collector::sendTagged(uint32_t, std::string, std::vector<Tag>&& tags);
+
+
+template void Collector::sendTimed(int, std::string, std::chrono::time_point<std::chrono::system_clock>& timestamp);
+template void Collector::sendTimed(double, std::string, std::chrono::time_point<std::chrono::system_clock>& timestamp);
+template void Collector::sendTimed(std::string, std::string, std::chrono::time_point<std::chrono::system_clock>& timestamp);
+template void Collector::sendTimed(uint32_t, std::string, std::chrono::time_point<std::chrono::system_clock>& timestamp);
+
 } // namespace Monitoring
 } // namespace AliceO2

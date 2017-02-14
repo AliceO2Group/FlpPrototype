@@ -8,22 +8,28 @@
 #include "Monitoring/Collector.h"
 
 namespace Monitoring = AliceO2::Monitoring;
+using Monitoring::Metric;
 
 int main() {
   // create monitoring object, pass configuration path as parameter
-  std::unique_ptr<Monitoring::Core::Collector> collector(
-    new Monitoring::Core::Collector("file:///home/awegrzyn/hackathon/Monitoring/examples/SampleConfig.ini")
+  std::unique_ptr<Monitoring::Collector> collector(
+    new Monitoring::Collector("file:///home/awegrzyn/hackathon/Monitoring/examples/SampleConfig.ini")
   );
 
-  // generate current timestamp
+  // current timestamp
   std::chrono::time_point<std::chrono::system_clock> timestamp = std::chrono::system_clock::now();
 	
   // now send an application specific metric
-  // 10 is the value 
+  // 10 is the value timestamp
   // myCrazyMetric is the name of the metric
-  collector->send(10, "myCrazyMetric", timestamp);
-  
-  // sleep 1 second, and send different metric with the same timestamp
+  //
+  // 1. by copying all parameters
+  collector->sendTimed(10, "myCrazyMetric", timestamp);
   std::this_thread::sleep_for(std::chrono::seconds(1));
-  collector->send(40, "myCrazyMetric", timestamp);
+  collector->sendTimed(40, "myCrazyMetric", timestamp);
+  
+  // 2. by moving
+  collector->send(Metric{10, "myCrazyMetric"}.setTimestamp(timestamp));
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+  collector->send(Metric{40, "myCrazyMetric"}.setTimestamp(timestamp));
 }

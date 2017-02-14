@@ -18,9 +18,6 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
 	
 /// Available derived metric modes : RATE and AVERAGE values
 enum class DerivedMetricMode { RATE, AVERAGE };
@@ -40,49 +37,43 @@ class DerivedMetrics
     ~DerivedMetrics() = default;
 
     /// States whether metric has been registered or not
-    /// \param name metric name
+    /// \param name     metric name
     /// \return 	true when metric is present in mRegistered, false otherwise
     bool isRegistered(std::string name);
 
     /// Registers metric to be processed (adds its name to mRegistered map)
     /// Processing modes are enumerated in DerivedMetricMode class
-    /// \param name 	name, metrics name
-    /// \param mode     mode, see DerivedMetricMode
+    /// \param name      name, metrics name
+    /// \param mode      mode, see DerivedMetricMode
     void registerMetric(std::string name, DerivedMetricMode mode);
 
     /// Handles actual metric processing; finds out whether metric needs to be processed or not
     /// If yes, passing it to one of methods that handles calculation of derived metric
-    /// \param value 		metric value
-    /// \param name 		metric name
-    /// \param entity 		metric entity
-    /// \param timestamp 	metric timestamp
-    /// \return Metric object with calculated derived metric in it
-    template<typename T> 
-    std::unique_ptr<Metric> processMetric(T value, std::string name, std::string entity, 
-                                        std::chrono::time_point<std::chrono::system_clock> timestamp);
+    /// \param metric    reference to metric instance
+    /// \return          metric object with calculated derived metric in it
+    Metric processMetric(Metric& metric);
   
   private:
     /// Calculates rate value based on metrics stored in mCache map
     /// \param name 	metric name
     /// \return 	metric with calculated rate value
-    template<typename T> std::unique_ptr<Metric> calculateRate(std::string name, T);
+    Metric calculateRate(std::string name);
 
     /// Calculates average value based on metrics stored in mCache map
     /// \param name 	metric name
     /// \return		metric with calculated average value
-    template<typename T> std::unique_ptr<Metric> calculateAverage(std::string name, T);
+    Metric calculateAverage(std::string name);
 
     /// maximum size of cache map
     const unsigned int mMaxVectorSize;
 
     /// Cache of registered metrics (metric name / vector of metric pointers).
-    std::map <std::string, std::vector<std::unique_ptr<Metric>>> mCache;
+    std::map <std::string, std::vector<Metric>> mCache;
 
     /// Registered metrics with their modes (metric name, registered mode).
     std::map <std::string, DerivedMetricMode> mRegistered;
 };
 
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
 
