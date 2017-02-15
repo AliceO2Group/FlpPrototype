@@ -21,7 +21,7 @@ class InjectorFactory
     /**
     * \brief Create a new instance of a SamplerInterface.
     * The SamplerInterface actual class is decided based on the parameter passed.
-    * @param name Either MockSampler, FileSampler or FairSampler
+    * @param name Either MockInjector or FairInjector
     * @todo add a version of this method to get a class based on the Configuration system
     * @return an instance of the class (the caller is the owner)
     */
