@@ -15,7 +15,6 @@
 #include <signal.h>
 #include <memory>
 
-#include <DataSampling/InjectSamples.h>
 #include <DataSampling/InjectorFactory.h>
 
 #include <Common/Timer.h>

@@ -8,6 +8,7 @@
 
 #include <DataFormat/DataBlockContainer.h>
 #include <vector>
+#include <memory>
 
 namespace AliceO2 {
 namespace DataSampling {
@@ -26,7 +27,7 @@ class InjectorInterface
 ///
 /// \param dataBlocks A reference to a vector of data blocks. All data blocks in the vector have the same event id.
 /// \return 0 on success, an error code otherwise
-    virtual int injectSamples(std::vector<DataBlockContainer *> &dataBlocks) = 0;
+    virtual int injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks) = 0;
 
 };
 }
