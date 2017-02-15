@@ -43,7 +43,7 @@ FairSampler::~FairSampler()
 
 DataBlock *FairSampler::getData(int timeout)
 {
-//  return nullptr;
+  return nullptr;
 
 }
 
