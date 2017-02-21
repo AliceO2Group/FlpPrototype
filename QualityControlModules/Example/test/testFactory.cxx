@@ -35,8 +35,7 @@ BOOST_AUTO_TEST_CASE(Task_Factory)
   config.publisherClassName = "MockPublisher";
   ObjectsManager manager(config);
   try {
-    std::string addition = "lib:../../lib:../../../lib:";
-    gSystem->Setenv("LD_LIBRARY_PATH", (addition + gSystem->Getenv("LD_LIBRARY_PATH")).c_str());
+    gSystem->AddDynamicPath("lib:../../lib:../../../lib:.:"); // add local paths for the test
     factory.create(config, &manager);
   } catch (...) {
     BOOST_TEST_FAIL(boost::current_exception_diagnostic_information());
