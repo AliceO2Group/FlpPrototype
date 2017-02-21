@@ -50,10 +50,12 @@ if(ZEROMQ)
 else(ZEROMQ)
         # Check is the library is installed on the system
     find_library(ZEROMQ_LIBRARIES NAMES zmq
+                HINTS ENV LD_LIBRARY_PATH
                 DOC "Path to libzmq)"
             )
-
+    string(REPLACE "lib/libzmq.so" "" INCLUDE_HINT ${ZEROMQ_LIBRARIES})
     find_path(ZEROMQ_INCLUDE_DIR NAMES zmq_utils.h
+              HINTS "${INCLUDE_HINT}include"
                 DOC "Path to ZeroMQ include header files."
             )
 endif(ZEROMQ)
