@@ -32,18 +32,27 @@ FairSampler::FairSampler()
   ChangeState(RUN);
 
   // register a handler for data arriving on "data" channel
-//  OnData("data-in", &FairSampler::HandleData);
+  OnData("data-in", &FairSampler::HandleData);
+
+  WaitForEndOfState(RUN);
 }
 
 /// Destructor
 FairSampler::~FairSampler()
 {
+  ChangeState(STOP);
+  ChangeState(RESET_TASK);
+  WaitForEndOfState(RESET_TASK);
 
+  ChangeState(RESET_DEVICE);
+  WaitForEndOfState(RESET_DEVICE);
+
+  ChangeState(END);
 }
 
 DataBlock *FairSampler::getData(int timeout)
 {
-//  return nullptr;
+  return nullptr;
 
 }
 
@@ -55,7 +64,7 @@ void FairSampler::Run()
 
     while (fChannels.at("data-in").at(0).ReceiveAsync(message) > 0) {
 
-DsInfoLogger::getInstance() << "data !" << infologger::endm;
+      DsInfoLogger::getInstance() << "data !" << infologger::endm;
 //      TestTMessage tm(message->GetData(), message->GetSize());
 //      TObject *tobj = tm.ReadObject(tm.GetClass());
 //      if (tobj) {
