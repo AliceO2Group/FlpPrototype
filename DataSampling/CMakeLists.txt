@@ -17,6 +17,7 @@ set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
 # Macros and variables for all O2 subprojects
 include(O2)
+#find_package(AliceO2)
 
 ## Git (and its revision)
 find_package(Git)
@@ -74,6 +75,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include   # add the binary tree to the search path so that we will find Version.h
     ${Boost_INCLUDE_DIRS}
+#    ${AliceO2_INCLUDE_DIRS}
 )
 
 # Mac needed variables (adapt according to your needs)

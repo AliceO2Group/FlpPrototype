@@ -56,6 +56,7 @@ class TaskInterface
     virtual void startOfActivity(Activity &activity) = 0;
     virtual void startOfCycle() = 0;
     virtual void monitorDataBlock(DataBlock &block) = 0;
+//    virtual void monitorDataBlock(vector<pair<DataHeader*, char*>>& datablock) = 0;
     virtual void endOfCycle() = 0;
     virtual void endOfActivity(Activity &activity) = 0;
     virtual void Reset() = 0;
