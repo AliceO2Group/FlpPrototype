@@ -235,7 +235,7 @@ function(ROOT_GENERATE_DICTIONARY dictionary)
     endif()
   else()
     set(library_name ${libprefix}${deduced_arg_module}${libsuffix})
-    set(pcm_name ${library_output_dir}/${dictionary}_rdict.pcm)
+    set(pcm_name ${dictionary}_rdict.pcm)
     set(rootmap_name ${library_output_dir}/${libprefix}${deduced_arg_module}.rootmap)
   endif()
 
@@ -268,7 +268,7 @@ function(ROOT_GENERATE_DICTIONARY dictionary)
 
   #---call rootcint------------------------------------------
   add_custom_command(OUTPUT ${dictionary}.cxx ${pcm_name} ${rootmap_name}
-                     COMMAND ${command} -f  ${dictionary}.cxx ${newargs} ${rootmapargs}
+                     COMMAND ${command} -f ${dictionary}.cxx ${newargs} ${rootmapargs}
                                         ${ARG_OPTIONS} ${definitions} ${includedirs} ${rheaderfiles} ${_linkdef}
                      DEPENDS ${headerfiles} ${_linkdef} ${ROOTCINTDEP})
   get_filename_component(dictname ${dictionary} NAME)
