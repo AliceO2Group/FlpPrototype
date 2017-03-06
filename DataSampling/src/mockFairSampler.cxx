@@ -46,23 +46,26 @@ int main(int argc, char *argv[])
 
   unsigned int i = 0;
   AliceO2::DataSampling::FairSampler sampler;
+  cout << "\n\n\n\n\n" << endl; // prepare output
 
-  while (keepRunning /*&& i < 100*/) {
-
+  signal(SIGINT, handler_interruption);
+  while (keepRunning) {
     std::vector<std::shared_ptr<DataBlockContainer>> *blocks = sampler.getData();
 
     if (blocks == nullptr) {
       continue;
     }
-    cout << "--> block received : " << endl;
+    cout << "\033[6A"; // up 6 lines
+    cout << "Blocks received so far : \033[K" << i << endl;
+    cout << "--> last block received : " << endl;
     if (blocks->size() > 0) {
       if (blocks->at(0) != nullptr) {
-        cout << "    id : " << blocks->at(0)->getData()->header.id << endl;
-        cout << "    blockType : " << std::hex << blocks->at(0)->getData()->header.blockType << endl;
-        cout << "    headerSize : " << std::dec << blocks->at(0)->getData()->header.headerSize << endl;
-        cout << "    payload size : " << std::dec << blocks->at(0)->getData()->header.dataSize << endl;
+        cout << "    id : \033[K" << blocks->at(0)->getData()->header.id << endl;
+        cout << "    blockType : \033[K" << std::hex << blocks->at(0)->getData()->header.blockType << endl;
+        cout << "    headerSize : \033[K" << std::dec << blocks->at(0)->getData()->header.headerSize << endl;
+        cout << "    payload size : \033[K" << std::dec << blocks->at(0)->getData()->header.dataSize << endl;
       } else {
-        cout << "     Container pointer invalid" << endl;
+        cout << "    Container pointer invalid" << endl;
       }
     } else {
       cout << "    Empty vector!" << endl;

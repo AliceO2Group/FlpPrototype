@@ -13,6 +13,7 @@
 #define COMMON_SIGNALUTILITIES_H
 
 #include <execinfo.h>
+#include <csignal>
 
 /// \brief Print all the entries of the stack on stderr
 /// \author Barthelemy von Haller

@@ -6,6 +6,10 @@ Public interface :
 
 
 
+To test it you can run
+Terminal1> mockFairInjector
+Terminal2> mockFairSampler
+
 
 
 

@@ -48,19 +48,25 @@ int main(int argc, char *argv[])
   }
 
 //  AliceO2::DataSampling::InjectorInterface *device = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
-  AliceO2::DataSampling::FairInjector device;
+  AliceO2::DataSampling::FairInjector *device = new AliceO2::DataSampling::FairInjector();
 
   unsigned int i = 0;
   DataBlockProducer producer(true, 1024);
+  signal(SIGINT, handler_interruption);
   while (keepRunning) {
     std::vector<std::shared_ptr<DataBlockContainer>> blocks;
     DataBlock *block = producer.get();
     std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
     blocks.push_back(containerPtr);
-    device.injectSamples(blocks);
+    device->injectSamples(blocks);
     producer.regenerate();
-//    this_thread::sleep_for(std::chrono::milliseconds(500)); // TODO remove
+    if(i%1000) {
+      std::cout << "\rNumber of blocks produced so far : " << i;
+    }
+    i++;
   }
+  cout << "\nexiting" << endl;
+  delete device;
 
   return EXIT_SUCCESS;
 }

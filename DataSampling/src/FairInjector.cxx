@@ -8,6 +8,8 @@
 #include <FairMQTransportFactoryZMQ.h>
 #include "DataSampling/DsInfoLogger.h"
 
+using namespace std;
+
 namespace AliceO2 {
 namespace DataSampling {
 
@@ -50,18 +52,11 @@ int FairInjector::injectSamples(std::vector<std::shared_ptr<DataBlockContainer>>
   // todo add a mutex somewhere here to protect the data in datablocks --> is that a problem performance wise ?
   // todo should we have 2 members so that we can always write quickly if the other one is being read ?
   // todo actually it might not be necessary because we call Run() ourselvees. Is it ever called by fairroot ?
-  mDataBlocks = dataBlocks; // tODO verify with Sylvain whether we should copy the content
+  mDataBlocks = dataBlocks;
 
   mAvailableData = true;
-
-  DsInfoLogger::getInstance() << "sendData() : \n" <<
-                              " id: " << mDataBlocks[0]->getData()->header.id <<
-                              infologger::endm;
-
   Run();
-
   return 0;
-
 }
 
 void FairInjector::Run()
@@ -83,7 +78,7 @@ void FairInjector::Run()
       NewMessage((void *) data,  (header.dataSize),
                  [](void * /*data*/, void *object) { /*todo*/ }/*, (void *) (bCopy)*/));
 
-    DsInfoLogger::getInstance() << "Sending block with id \"" << header.id << "\"" << infologger::endm;
+//    DsInfoLogger::getInstance() << "Sending block with id \"" << header.id << "\"" << infologger::endm;
 
     parts.AddPart(std::move(msgHeader));
     parts.AddPart(std::move(msgBody));
