@@ -88,7 +88,7 @@ if(ZEROMQ_INCLUDE_DIR AND ZEROMQ_LIBRARIES)
   if(ZEROMQ_VERSION VERSION_GREATER "${ZEROMQ_VERSION_MIN}")
     # Version OK.
     set(ZEROMQ_FOUND TRUE)
-    add_definitions(-DZMQ)
+    add_definitions(-DZMQ_FOUND)
     message(STATUS "ZeroMQ version ${ZEROMQ_VERSION} (> ${ZEROMQ_VERSION_MIN}) found")
   elseif(ZEROMQ)
     # Version not OK and explicitly requested: fatal.

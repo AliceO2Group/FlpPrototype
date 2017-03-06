@@ -6,6 +6,7 @@
 // std
 #include <iostream>
 #include <algorithm>
+#include <vector>
 // boost
 #include <boost/program_options.hpp>
 // o2
@@ -13,18 +14,21 @@
 // datasampling
 #include "DataSampling/Version.h"
 #include "DataSampling/InjectorFactory.h"
-#include "DataSampling/InjectorDevice.h"
+//#include "DataSampling/InjectorDevice.h"
+#include "DataSampling/DataBlockProducer.h"
+#include "DataSampling/FairInjector.h"
 
 using namespace std;
 namespace po = boost::program_options;
+using namespace AliceO2::DataSampling;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   // Arguments parsing
   po::variables_map vm;
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "Produce help message.")("version,v", "Show program name/version banner and exit.")(
-      "rev", "Print the SVN revision number");
+    "rev", "Print the SVN revision number");
   po::store(parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
   // help
@@ -44,13 +48,17 @@ int main(int argc, char* argv[])
   }
 
 //  AliceO2::DataSampling::InjectorInterface *device = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
-  AliceO2::DataSampling::InjectorDevice device;
+  AliceO2::DataSampling::FairInjector device;
 
   unsigned int i = 0;
+  DataBlockProducer producer(false, 1024);
   while (keepRunning) {
-    string s = "hello" + std::to_string(i++);
-//    device->injectSamples(s);
-    device.sendData(s);
+    std::vector<std::shared_ptr<DataBlockContainer>> blocks;
+    DataBlock *block = producer.get();
+    std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
+    blocks.push_back(containerPtr);
+    device.injectSamples(blocks);
+    producer.regenerate();
   }
 
   return EXIT_SUCCESS;

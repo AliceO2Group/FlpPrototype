@@ -32,4 +32,4 @@ class InjectorInterface
 };
 }
 }
-#endif //DATA_SAMPLING_DATABLOCKPRODUCER_H
+#endif //DATA_SAMPLING_INJECTOR_INTERFACE_H

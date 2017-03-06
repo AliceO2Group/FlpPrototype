@@ -7,7 +7,9 @@
 #define PROJECT_FAIRSAMPLER_H
 
 #include <FairMQDevice.h>
+#include <DataFormat/DataBlockContainer.h>
 #include "SamplerInterface.h"
+#include <mutex>
 
 namespace AliceO2 {
 namespace DataSampling {
@@ -21,13 +23,17 @@ class FairSampler : public SamplerInterface, public FairMQDevice
     /// Destructor
     virtual ~FairSampler();
 
-    DataBlock *getData(int timeout = 0);
+    std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout = 0);
 
     void releaseData();
 
   protected:
-    bool HandleData(FairMQMessagePtr &, int);
+    bool HandleData(FairMQParts& parts, int /*index*/);
     virtual void Run() override;
+
+  private:
+    std::vector<std::shared_ptr<DataBlockContainer>>* mBlock;
+    std::timed_mutex mBlockMutex;
 
 };
 

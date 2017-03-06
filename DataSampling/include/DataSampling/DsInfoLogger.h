@@ -1,6 +1,8 @@
-//
-// Created by flpprotodev on 7/10/15.
-//
+///
+/// \file    DsInfoLogger.h
+/// \author  Barthelemy von Haller
+///
+
 
 #ifndef QUALITY_CONTROL_DSINFOLOGGER_H
 #define QUALITY_CONTROL_DSINFOLOGGER_H
@@ -44,7 +46,6 @@ class DsInfoLogger : public AliceO2::InfoLogger::InfoLogger
 
     virtual ~DsInfoLogger()
     {
-
     }
 
     // Disallow copying
@@ -56,4 +57,4 @@ class DsInfoLogger : public AliceO2::InfoLogger::InfoLogger
 }
 }
 
-#endif //QUALITY_CONTROL_BASICTASK_H
+#endif //QUALITY_CONTROL_DSINFOLOGGER_H

@@ -26,7 +26,6 @@ class SamplerFactory
     * @return an instance of the class (the caller is the owner)
     */
     SamplerInterface *create(std::string name);
-
 };
 
 }

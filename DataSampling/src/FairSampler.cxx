@@ -3,6 +3,7 @@
 /// \author Barthelemy von Haller
 ///
 
+#include <DataFormat/DataBlock.h>
 #include "DataSampling/FairSampler.h"
 #include "DataSampling/DsInfoLogger.h"
 
@@ -12,7 +13,7 @@ namespace AliceO2 {
 namespace DataSampling {
 
 /// Standard Constructor
-FairSampler::FairSampler()
+FairSampler::FairSampler() : mBlock(nullptr)
 {
   FairMQChannel histoChannel;
   histoChannel.UpdateType("sub");
@@ -33,8 +34,6 @@ FairSampler::FairSampler()
 
   // register a handler for data arriving on "data" channel
   OnData("data-in", &FairSampler::HandleData);
-
-  WaitForEndOfState(RUN);
 }
 
 /// Destructor
@@ -50,51 +49,61 @@ FairSampler::~FairSampler()
   ChangeState(END);
 }
 
-DataBlock *FairSampler::getData(int timeout)
+vector<shared_ptr<DataBlockContainer>> *FairSampler::getData(int timeout)
 {
-  return nullptr;
+  bool gotLock = mBlockMutex.try_lock_for(chrono::milliseconds(10)); // todo use timeout
+  if (gotLock) {
 
+    if (mBlock == nullptr) {
+      mBlockMutex.unlock();
+    }
+    return mBlock;
+  }
+  return nullptr;
 }
 
 void FairSampler::Run()
 {
-
-  while (CheckCurrentState(RUNNING)) {
-    unique_ptr<FairMQMessage> message(fTransportFactory->CreateMessage());
-
-    while (fChannels.at("data-in").at(0).ReceiveAsync(message) > 0) {
-
-      DsInfoLogger::getInstance() << "data !" << infologger::endm;
-//      TestTMessage tm(message->GetData(), message->GetSize());
-//      TObject *tobj = tm.ReadObject(tm.GetClass());
-//      if (tobj) {
-//        // TODO once the bug in ROOt that removes spaces in strings passed in signal slot is fixed we can use the normal name.
-//        string objectName = tobj->GetName();
-//        boost::erase_all(objectName, " ");
-//        if (mCache.count(objectName) && mCache[objectName]) {
-//          delete mCache[objectName];
-//        }
-//        mCache[objectName] = tobj;
-//        mFrame->updateList(objectName);
-//      } else {
-//        cerr << "not a tobject !" << endl;
-//      }
-    }
-//    this_thread::sleep_for(chrono::milliseconds(1000));
-  }
-
-
-
 }
 
 void FairSampler::releaseData()
 {
 
+  if (mBlock) {
+    // TODO delete elements?
+    delete mBlock;
+    mBlock = nullptr;
+  }
+
+  mBlockMutex.unlock();
 }
 
-bool FairSampler::HandleData(FairMQMessagePtr & msg, int)
+bool FairSampler::HandleData(FairMQParts &parts, int /*index*/)
 {
-  LOG(INFO) << "Received: \"" << *static_cast<string*>(msg->GetData()) << "\"";
+//  cout << "HandleData()" << endl;
+//  cout << "   number of parts : " << parts.Size() << endl;
+
+  // store the data
+  if (!mBlockMutex.try_lock()) {
+    return true;
+  }
+
+  // TODO delete elements?
+  if (mBlock) {
+    delete mBlock;
+  }
+  mBlock = new std::vector<std::shared_ptr<DataBlockContainer>>();
+
+  DataBlock *block = new DataBlock();
+  // TODO loop over parts
+  block->header = *static_cast<DataBlockHeaderBase *>(parts.At(0)->GetData());
+  block->data = static_cast<char *>(parts.At(1)->GetData()); // TODO should I copy ?
+  std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
+  mBlock->push_back(containerPtr);
+  mBlockMutex.unlock();
+  // TODO we continuously receive data and trash it. This is stupid.
+  // tODO we should rather get one sample, store it, wait only get another one when getData() is called.
+  // TODO we should also have an expiration and update the data sample if it has been waiting for too long.
 
   // return true if want to be called again (otherwise go to IDLE state)
   return true;

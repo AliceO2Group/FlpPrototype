@@ -20,20 +20,20 @@ BOOST_AUTO_TEST_CASE(big_file_test)
   AliceO2::DataSampling::MockSampler sampler;
   DataBlock *block;
 
-  for (int i = 0; i < 100; i++) {
-    block = sampler.getData();
-
-    if (!block) {
-      BOOST_ERROR("pointer is null");
-      return;
-    }
-    cout << "blockType : " << std::hex << block->header.blockType << endl;
-    cout << "headerSize : " << std::hex << block->header.headerSize << endl;
-    cout << "payload size : " << std::dec << block->header.dataSize << endl;
-    int dataSizeBytes = block->header.dataSize / 8;
-    BOOST_CHECK_GT(dataSizeBytes, 0);
-
-    sampler.releaseData();
-  }
+//  for (int i = 0; i < 100; i++) {
+//    block = sampler.getData();
+//
+//    if (!block) {
+//      BOOST_ERROR("pointer is null");
+//      return;
+//    }
+//    cout << "blockType : " << std::hex << block->header.blockType << endl;
+//    cout << "headerSize : " << std::hex << block->header.headerSize << endl;
+//    cout << "payload size : " << std::dec << block->header.dataSize << endl;
+//    int dataSizeBytes = block->header.dataSize / 8;
+//    BOOST_CHECK_GT(dataSizeBytes, 0);
+//
+//    sampler.releaseData();
+//  }
 }
 

@@ -32,4 +32,4 @@ class MockInjector: public InjectorInterface
 }
 }
 
-#endif //DATA_SAMPLING_DATABLOCKPRODUCER_H
+#endif //DATA_SAMPLING_MOCK_INJECTOR_H

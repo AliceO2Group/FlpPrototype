@@ -9,17 +9,22 @@
 #include <DataFormat/DataBlockContainer.h>
 #include <vector>
 #include "InjectorInterface.h"
-#include "InjectorDevice.h"
+//#include "InjectorDevice.h"
+#include <FairMQDevice.h>
+#include <vector>
+#include <DataFormat/DataBlockContainer.h>
 
 namespace AliceO2 {
 namespace DataSampling {
 
-class FairInjector : public InjectorInterface
+class FairInjector : public InjectorInterface, public FairMQDevice
 {
   public:
 
     FairInjector();
     virtual ~FairInjector();
+
+    void sendData(std::vector<std::shared_ptr<DataBlockContainer>> data);
 
     /// \brief Example interface to inject data into data sampling system.
     ///
@@ -30,11 +35,17 @@ class FairInjector : public InjectorInterface
     /// \return 0 on success, an error code otherwise
     int injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks);
 
-  private:
-    InjectorDevice* mDevice;
+  protected:
+    virtual void Run();
+
+    std::vector<std::shared_ptr<DataBlockContainer>> mDataBlocks;
+    bool mAvailableData; // to make sure that we don't try to send something that is not there
+
+//  private:
+//    InjectorDevice* mDevice;
 };
 
 }
 }
 
-#endif //DATA_SAMPLING_DATABLOCKPRODUCER_H
+#endif //DATA_SAMPLING_FAIRINJECTOR_H

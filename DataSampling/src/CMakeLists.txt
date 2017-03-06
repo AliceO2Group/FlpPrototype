@@ -8,7 +8,7 @@ set(LIB_HEADERS
         ../include/DataSampling/SamplerInterface.h
         ../include/DataSampling/SamplerFactory.h
         ../include/DataSampling/InjectorInterface.h
-        ../include/DataSampling/FairInjector.h
+#        ../include/DataSampling/FairInjector.h
         ../include/DataSampling/MockInjector.h
         ../include/DataSampling/InjectorFactory.h
         ../include/DataSampling/DsInfoLogger.h
@@ -22,13 +22,13 @@ set(LIB_SOURCES
         SamplerInterface.cxx
         SamplerFactory.cxx
         MockInjector.cxx
-        FairInjector.cxx
+#        FairInjector.cxx
         InjectorFactory.cxx
         )
 
 if (FAIRROOT_FOUND)
-    set(LIB_HEADERS ${LIB_HEADERS} ../include/DataSampling/InjectorDevice.h)
-    set(LIB_SOURCES ${LIB_SOURCES} InjectorDevice.cxx)
+    set(LIB_HEADERS ${LIB_HEADERS} ../include/DataSampling/FairInjector.h)
+    set(LIB_SOURCES ${LIB_SOURCES} FairInjector.cxx)
 endif (FAIRROOT_FOUND)
 
 # LIBRARY

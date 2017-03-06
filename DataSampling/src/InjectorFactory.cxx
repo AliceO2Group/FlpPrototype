@@ -24,7 +24,6 @@ InjectorInterface *InjectorFactory::create(std::string name)
   } else {
     BOOST_THROW_EXCEPTION(FatalException() << errinfo_details("No injector named " + name));
   }
-  return nullptr;
 }
 
 }

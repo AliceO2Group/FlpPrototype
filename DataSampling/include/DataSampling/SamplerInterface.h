@@ -3,8 +3,8 @@
 /// \author Barthelemy von Haller
 ///
 
-#ifndef DATASAMPLING_LIBS_DATASAMPLING_SAMPLER_H_
-#define DATASAMPLING_LIBS_DATASAMPLING_SAMPLER_H_
+#ifndef DATASAMPLING_LIBS_DATASAMPLING_SAMPLERINTERFACE_H_
+#define DATASAMPLING_LIBS_DATASAMPLING_SAMPLERINTERFACE_H_
 
 #include <string>
 #include <iostream>
@@ -17,7 +17,9 @@
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
 
-#include <DataFormat/DataBlock.h>
+#include <DataFormat/DataBlockContainer.h>
+#include <memory>
+#include <vector>
 
 namespace AliceO2 {
 namespace DataSampling {
@@ -64,7 +66,8 @@ class SamplerInterface
     /// Destructor
     virtual ~SamplerInterface();
 
-    virtual DataBlock* getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
+    virtual std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
+
     virtual void releaseData() = 0;
     void setLocation(std::string Uri);
     std::string getLocation() const;
@@ -84,4 +87,4 @@ class SamplerInterface
 } /* namespace DataSampling */
 } /* namespace AliceO2 */
 
-#endif /* DATASAMPLING_LIBS_DATASAMPLING_SAMPLER_H_ */
+#endif /* DATASAMPLING_LIBS_DATASAMPLING_SAMPLERINTERFACE_H_ */

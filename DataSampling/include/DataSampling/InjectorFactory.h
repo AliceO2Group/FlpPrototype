@@ -1,5 +1,5 @@
 ///
-/// \file   TaskFactory.cxx
+/// \file   InjectorFactor.h
 /// \author Barthelemy von Haller
 ///
 
@@ -14,8 +14,8 @@ namespace DataSampling {
 class InjectorFactory
 {
   private:
-    InjectorFactory();
-    virtual ~InjectorFactory();
+    InjectorFactory(){};
+    virtual ~InjectorFactory(){};
 
   public:
     /**
@@ -31,4 +31,4 @@ class InjectorFactory
 }
 }
 
-#endif //PROJECT_SAMPLERFACTORY_H
+#endif //PROJECT_INJECTORFACTORY_H

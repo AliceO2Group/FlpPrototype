@@ -8,6 +8,7 @@
 #include <algorithm>
 // boost
 #include <boost/program_options.hpp>
+#include <DataFormat/DataBlock.h>
 // o2
 #include "Common/signalUtilities.h"
 // datasampling
@@ -18,13 +19,13 @@
 using namespace std;
 namespace po = boost::program_options;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   // Arguments parsing
   po::variables_map vm;
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "Produce help message.")("version,v", "Show program name/version banner and exit.")(
-      "rev", "Print the SVN revision number");
+    "rev", "Print the SVN revision number");
   po::store(parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
   // help
@@ -46,27 +47,30 @@ int main(int argc, char* argv[])
   unsigned int i = 0;
   AliceO2::DataSampling::FairSampler sampler;
 
-  cout << "asdf" << endl;
-//  DataBlock *block;
-//std::string s;
-//
-//  while (keepRunning) {
-//    s = sampler.getData();
-////    block = sampler.getData();
-//
-//    if (!block) {
-//      BOOST_ERROR("pointer is null");
-//      return;
-//    }
-//    cout << "blockType : " << std::hex << block->header.blockType << endl;
-//    cout << "headerSize : " << std::hex << block->header.headerSize << endl;
-//    cout << "payload size : " << std::dec << block->header.dataSize << endl;
-//    int dataSizeBytes = block->header.dataSize / 8;
-//    BOOST_CHECK_GT(dataSizeBytes, 0);
-//
-//    sampler.releaseData();
-//  }
+  while (keepRunning /*&& i < 100*/) {
 
+    std::vector<std::shared_ptr<DataBlockContainer>> *blocks = sampler.getData();
+
+    if (blocks == nullptr) {
+      continue;
+    }
+    cout << "--> block received : " << endl;
+    if (blocks->size() > 0) {
+      if (blocks->at(0) != nullptr) {
+        cout << "    id : " << blocks->at(0)->getData()->header.id << endl;
+        cout << "    blockType : " << std::hex << blocks->at(0)->getData()->header.blockType << endl;
+        cout << "    headerSize : " << std::dec << blocks->at(0)->getData()->header.headerSize << endl;
+        cout << "    payload size : " << std::dec << blocks->at(0)->getData()->header.dataSize << endl;
+      } else {
+        cout << "     Container pointer invalid" << endl;
+      }
+    } else {
+      cout << "    Empty vector!" << endl;
+    }
+
+    sampler.releaseData();
+    i++;
+  }
 
   return EXIT_SUCCESS;
 }
