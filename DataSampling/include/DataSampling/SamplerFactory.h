@@ -13,10 +13,11 @@ namespace DataSampling {
 
 class SamplerFactory
 {
-  public:
-    SamplerFactory();
+  private:
+    SamplerFactory(){};
+    virtual ~SamplerFactory(){};
 
-    virtual ~SamplerFactory();
+  public:
 
     /**
     * \brief Create a new instance of a SamplerInterface.
@@ -25,7 +26,7 @@ class SamplerFactory
     * @todo add a version of this method to get a class based on the Configuration system
     * @return an instance of the class (the caller is the owner)
     */
-    SamplerInterface *create(std::string name);
+    static SamplerInterface *create(std::string name);
 };
 
 }

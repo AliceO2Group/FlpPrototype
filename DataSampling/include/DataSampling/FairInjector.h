@@ -24,8 +24,6 @@ class FairInjector : public InjectorInterface, public FairMQDevice
     FairInjector();
     virtual ~FairInjector();
 
-    void sendData(std::vector<std::shared_ptr<DataBlockContainer>> data);
-
     /// \brief Example interface to inject data into data sampling system.
     ///
     /// Function to be called from relevant data producers to inject data to data monitoring system
@@ -40,9 +38,6 @@ class FairInjector : public InjectorInterface, public FairMQDevice
 
     std::vector<std::shared_ptr<DataBlockContainer>> mDataBlocks;
     bool mAvailableData; // to make sure that we don't try to send something that is not there
-
-//  private:
-//    InjectorDevice* mDevice;
 };
 
 }

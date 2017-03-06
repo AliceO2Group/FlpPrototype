@@ -47,17 +47,9 @@ FairInjector::~FairInjector() {
 
 int FairInjector::injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks)
 {
-  // copy the data and send it via FairMQ
-//  mDevice->sendData(dataBlocks);
-//  sendData(dataBlocks);
-
-//void InjectorDevice::sendData(/*std::string*/ std::vector<std::shared_ptr<DataBlockContainer>> data)
-//void FairInjector::sendData(std::vector<std::shared_ptr<DataBlockContainer>> data)
-//{
   // todo add a mutex somewhere here to protect the data in datablocks --> is that a problem performance wise ?
   // todo should we have 2 members so that we can always write quickly if the other one is being read ?
   // todo actually it might not be necessary because we call Run() ourselvees. Is it ever called by fairroot ?
-//  mData = new string(data);
   mDataBlocks = dataBlocks; // tODO verify with Sylvain whether we should copy the content
 
   mAvailableData = true;
@@ -77,6 +69,7 @@ void FairInjector::Run()
   if (!mAvailableData) {
     return;
   }
+  mAvailableData = false;
 
   for (std::shared_ptr<DataBlockContainer> block : mDataBlocks) {
     DataBlockHeaderBase &header = block->getData()->header;

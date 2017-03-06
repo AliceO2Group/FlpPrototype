@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
   AliceO2::DataSampling::FairInjector device;
 
   unsigned int i = 0;
-  DataBlockProducer producer(false, 1024);
+  DataBlockProducer producer(true, 1024);
   while (keepRunning) {
     std::vector<std::shared_ptr<DataBlockContainer>> blocks;
     DataBlock *block = producer.get();
@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     blocks.push_back(containerPtr);
     device.injectSamples(blocks);
     producer.regenerate();
+//    this_thread::sleep_for(std::chrono::milliseconds(500)); // TODO remove
   }
 
   return EXIT_SUCCESS;

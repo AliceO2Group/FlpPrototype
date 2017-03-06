@@ -16,16 +16,6 @@ using namespace AliceO2::Common;
 namespace AliceO2 {
 namespace DataSampling {
 
-SamplerFactory::SamplerFactory()
-{
-
-}
-
-SamplerFactory::~SamplerFactory()
-{
-
-}
-
 SamplerInterface *SamplerFactory::create(std::string name)
 {
   if (name == "MockSampler") {

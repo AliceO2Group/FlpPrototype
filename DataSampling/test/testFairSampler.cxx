@@ -20,7 +20,9 @@ BOOST_AUTO_TEST_CASE(simple_fair_sampler)
   AliceO2::DataSampling::FairSampler sampler;
   this_thread::sleep_for(chrono::seconds(10));
 
-  DataBlock *block;
+  
+
+//  DataBlock *block;
 
 //  for (int i = 0; i < 100; i++) {
 //    block = sampler.getData();

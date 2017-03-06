@@ -51,11 +51,11 @@ FairSampler::~FairSampler()
 
 vector<shared_ptr<DataBlockContainer>> *FairSampler::getData(int timeout)
 {
-  bool gotLock = mBlockMutex.try_lock_for(chrono::milliseconds(10)); // todo use timeout
+  bool gotLock = mBlockMutex.try_lock_for(chrono::milliseconds(timeout));
   if (gotLock) {
-
     if (mBlock == nullptr) {
       mBlockMutex.unlock();
+      return nullptr;
     }
     return mBlock;
   }
@@ -68,7 +68,6 @@ void FairSampler::Run()
 
 void FairSampler::releaseData()
 {
-
   if (mBlock) {
     // TODO delete elements?
     delete mBlock;

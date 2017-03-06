@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(insantiate_task)
   Activity activity;
   task.startOfActivity(activity);
   task.startOfCycle();
-  DataBlock block;
+std::vector<std::shared_ptr<DataBlockContainer>> block;
   task.monitorDataBlock(block);
 
   BOOST_CHECK(task.getHisto1()->GetEntries() > 0);
