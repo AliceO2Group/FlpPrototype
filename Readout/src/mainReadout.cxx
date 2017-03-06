@@ -13,10 +13,11 @@
 #include <boost/format.hpp>
 #include <chrono>
 #include <signal.h>
+
 #include <memory>
 
-#include <DataSampling/InjectorFactory.h>
-
+#include <DataSampling/InjectSamples.h>
+  
 #include <Common/Timer.h>
 #include <Common/Fifo.h>
 #include <Common/Thread.h>
@@ -40,7 +41,7 @@ using namespace AliceO2::Common;
 
 // global entry point to log system
 InfoLogger theLog;
-
+  
 
 static int ShutdownRequest=0;      // set to 1 to request termination, e.g. on SIGTERM/SIGQUIT signals
 static void signalHandler(int){
@@ -175,7 +176,7 @@ class CReadoutDummy : public CReadout {
     Thread::CallbackResult  populateFifoOut();
     DataBlockId currentId;
     int eventMaxSize;
-    int eventMinSize;
+    int eventMinSize;    
 };
 
 
@@ -189,7 +190,7 @@ CReadoutDummy::CReadoutDummy(ConfigFile &cfg, std::string cfgEntryPoint) : CRead
 
   mp=new MemPool(memPoolNumberOfElements,memPoolElementSize);
   currentId=0;
-
+  
   cfg.getOptionalValue<int>(cfgEntryPoint + ".eventMaxSize", eventMaxSize, (int)1024);
   cfg.getOptionalValue<int>(cfgEntryPoint + ".eventMinSize", eventMinSize, (int)1024);
 }
@@ -220,8 +221,8 @@ Thread::CallbackResult  CReadoutDummy::populateFifoOut() {
   DataBlock *b=d->getData();
   
   int dSize=(int)(eventMinSize+(int)((eventMaxSize-eventMinSize)*(rand()*1.0/RAND_MAX)));
-
-
+  
+  
   //dSize=100;
   //printf("%d\n",dSize);
 
@@ -568,7 +569,7 @@ Thread::CallbackResult CAggregator::threadCallback(void *arg) {
   
   
   for (unsigned int i=0; i<dPtr->inputs.size(); i++) {
-    if (!dPtr->inputs[i]->isEmpty()) {
+    if (!dPtr->inputs[i]->isEmpty()) {    
       std::shared_ptr<DataBlockContainer>b=nullptr;
       dPtr->inputs[i]->front(b);
       DataBlockId newId=b->getData()->header.id;
@@ -722,7 +723,7 @@ class Consumer {
 };
 
 class ConsumerStats: public Consumer {
-  public:
+  public: 
   ConsumerStats(ConfigFile &cfg, std::string cfgEntryPoint):Consumer(cfg,cfgEntryPoint) {
     counterBytesTotal=0;
     counterBytesHeader=0;
@@ -748,11 +749,11 @@ class ConsumerStats: public Consumer {
 
 
 class ConsumerFileRecorder: public Consumer {
-  public:
+  public: 
   ConsumerFileRecorder(ConfigFile &cfg, std::string cfgEntryPoint):Consumer(cfg,cfgEntryPoint) {
     counterBytesTotal=0;
     fp=NULL;
-
+    
     fileName=cfg.getValue<std::string>(cfgEntryPoint + ".fileName");
     if (fileName.length()>0) {
       theLog.log("Recording to %s",fileName.c_str());
@@ -765,15 +766,15 @@ class ConsumerFileRecorder: public Consumer {
       theLog.log("Recording disabled");
     } else {
       theLog.log("Recording enabled");
-    }
-  }
+    }   
+  }  
   ~ConsumerFileRecorder() {
     closeRecordingFile();
   }
   int pushData(std::shared_ptr<DataBlockContainer>b) {
 
     int success=0;
-
+    
     for(;;) {
       if (fp!=NULL) {
         void *ptr;
@@ -783,10 +784,10 @@ class ConsumerFileRecorder: public Consumer {
         size=b->getData()->header.headerSize;
         if (fwrite(ptr,size, 1, fp)!=1) {
           break;
-        }
+        }     
         counterBytesTotal+=size;
         ptr=&b->getData()->data;
-        size=b->getData()->header.dataSize;
+        size=b->getData()->header.dataSize;          
         if (fwrite(ptr,size, 1, fp)!=1) {
           break;
         }
@@ -794,7 +795,7 @@ class ConsumerFileRecorder: public Consumer {
         success=1;
       }
       return 0;
-    }
+    }    
     closeRecordingFile();
     return -1;
   }
@@ -818,12 +819,12 @@ class ConsumerFileRecorder: public Consumer {
 
 
 class ConsumerDataSampling: public Consumer {
-  public:
+  public: 
   ConsumerDataSampling(ConfigFile &cfg, std::string cfgEntryPoint):Consumer(cfg,cfgEntryPoint) {
-
-  }
+ 
+  }  
   ~ConsumerDataSampling() {
-
+ 
   }
   int pushData(std::shared_ptr<DataBlockContainer>b) {
     return 0;
@@ -854,8 +855,8 @@ class FMQSender : public FairMQDevice
     FMQSender() { }
     ~FMQSender() { }
 
-  protected:
-
+  protected:   
+    
     void Run() override {
        while (CheckCurrentState(RUNNING)) {
          //printf("loop Run()\n");
@@ -875,13 +876,13 @@ class ConsumerFMQ: public Consumer {
     FMQSender sender;
 
 
- // todo: check why this type is not public in FMQ interface?
-    typedef std::unordered_map<std::string, std::vector<FairMQChannel>> FairMQMap;
+ // todo: check why this type is not public in FMQ interface?  
+    typedef std::unordered_map<std::string, std::vector<FairMQChannel>> FairMQMap;   
     FairMQMap m;
-
+    
     FairMQTransportFactory *transportFactory;
-
-  public:
+        
+  public: 
 
   static void CustomCleanup(void *data, void *object) {
     if ((object!=nullptr)&&(data!=nullptr)) {
@@ -892,12 +893,12 @@ class ConsumerFMQ: public Consumer {
   }
 
   ConsumerFMQ(ConfigFile &cfg, std::string cfgEntryPoint) : Consumer(cfg,cfgEntryPoint), channels(1) {
-
+       
     channels[0].UpdateType("pub");  // pub or push?
     channels[0].UpdateMethod("bind");
     channels[0].UpdateAddress("tcp://*:5555");
-    channels[0].UpdateRateLogging(0);
-    channels[0].UpdateSndBufSize(10);
+    channels[0].UpdateRateLogging(0);    
+    channels[0].UpdateSndBufSize(10);    
     if (!channels[0].ValidateChannel()) {
       throw "ConsumerFMQ: channel validation failed";
     }
@@ -905,14 +906,14 @@ class ConsumerFMQ: public Consumer {
 
     // todo: def "data-out" as const string to name output channel to which we will push
     m.emplace(std::string("data-out"),channels);
-
+    
     for (auto it : m) {
       std::cout << it.first << " = " << it.second.size() << " channels  " << std::endl;
       for (auto ch : it.second) {
         std::cout << ch.GetAddress() <<std::endl;
       }
     }
-
+      
     sender.fChannels = m;
     transportFactory=new FairMQTransportFactoryZMQ();
     sender.SetTransport(transportFactory); // FairMQTransportFactory will be deleted when destroying sender
@@ -924,7 +925,7 @@ class ConsumerFMQ: public Consumer {
 
 //    sender.InteractiveStateLoop();
   }
-
+  
   ~ConsumerFMQ() {
     sender.ChangeState(FairMQStateMachine::Event::STOP);
     sender.ChangeState(FairMQStateMachine::Event::RESET_TASK);
@@ -933,7 +934,7 @@ class ConsumerFMQ: public Consumer {
     sender.WaitForEndOfState(FairMQStateMachine::Event::RESET_DEVICE);
     sender.ChangeState(FairMQStateMachine::Event::END);
   }
-
+  
   int pushData(std::shared_ptr<DataBlockContainer>b) {
 
     DataRef *bCopy;
@@ -943,11 +944,11 @@ class ConsumerFMQ: public Consumer {
     /*void *p;
     p=malloc(b->getData()->header.dataSize);
     memcpy(p,b->getData()->data,b->getData()->header.dataSize);
-    printf("sending %d @ %p\n",b->getData()->header.dataSize,p);
+    printf("sending %d @ %p\n",b->getData()->header.dataSize,p);    
     std::unique_ptr<FairMQMessage> msgBody(transportFactory->CreateMessage(p, (size_t)(b->getData()->header.dataSize), ConsumerFMQ::CustomCleanup, (void *)(p)));
      sender.fChannels.at("data-out").at(0).Send(msgBody);
  */
-
+ 
     std::unique_ptr<FairMQMessage> msgHeader(transportFactory->CreateMessage((void *)&(b->getData()->header), (size_t)(b->getData()->header.headerSize), ConsumerFMQ::CustomCleanup, (void *)nullptr));
     std::unique_ptr<FairMQMessage> msgBody(transportFactory->CreateMessage((void *)(b->getData()->data), (size_t)(b->getData()->header.dataSize), ConsumerFMQ::CustomCleanup, (void *)(bCopy)));
 
@@ -955,7 +956,7 @@ class ConsumerFMQ: public Consumer {
 
     sender.fChannels.at("data-out").at(0).Send(msgHeader);
     sender.fChannels.at("data-out").at(0).Send(msgBody);
-
+    
     // how to know if it was a success?
 
     // every time we do a push there is a string compare ???
@@ -963,7 +964,7 @@ class ConsumerFMQ: public Consumer {
     //channels[0].Send(msgBody);
 
 //    channels.at("data-out").at(0).SendPart(msgBody);
-
+    
     return 0;
   }
   private:
@@ -991,7 +992,7 @@ int main(int argc, char* argv[])
   sigaction(SIGINT,&signalSettings,NULL);
 
   // log startup and options
-  theLog.log("Readout process starting");
+  theLog.log("Readout process starting");   
   theLog.log("Optional built features enabled:");
   #ifdef WITH_FAIRMQ
    theLog.log("FAIRMQ : yes");
@@ -1000,7 +1001,7 @@ int main(int argc, char* argv[])
   #endif
 
   // load configuration file
-  theLog.log("Reading configuration from %s",cfgFileURI);
+  theLog.log("Reading configuration from %s",cfgFileURI);  
   try {
     cfg.load(cfgFileURI);
   }
@@ -1008,7 +1009,7 @@ int main(int argc, char* argv[])
     theLog.log("Error : %s",err.c_str());
     return -1;
   }
-
+  
   // extract optional configuration parameters
   double cfgExitTimeout=-1;
   cfg.getOptionalValue<double>("readout.exitTimeout",cfgExitTimeout);
@@ -1046,11 +1047,11 @@ int main(int argc, char* argv[])
         theLog.log("Failed to configure equipment %s",kName.c_str());
         continue;
     }
-
+    
     // add to list of equipments
     if (newDevice!=nullptr) {
       readoutDevices.push_back(newDevice);
-    }
+    }   
   }
 
 
@@ -1070,12 +1071,8 @@ int main(int argc, char* argv[])
   // configuration of data sampling
   int dataSampling=0; 
   dataSampling=cfg.getValue<int>("sampling.enabled");
-  std::string className = cfg.getValue<std::string>("sampling.class");
-  AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = nullptr;
   if (dataSampling) {
     theLog.log("Data sampling enabled");
-    // TODO here we should not pass a parameter but it should rather git it from the Configuration
-    dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create(className);
   } else {
     theLog.log("Data sampling disabled");
   }
@@ -1095,13 +1092,13 @@ int main(int argc, char* argv[])
     }
     if (!enabled) {continue;}
 
-    // instanciate consumer of appropriate type
+    // instanciate consumer of appropriate type         
     std::shared_ptr<Consumer> newConsumer=nullptr;
     try {
       std::string cfgType="";
       cfgType=cfg.getValue<std::string>(kName + ".consumerType");
       theLog.log("Configuring consumer %s: %s",kName.c_str(),cfgType.c_str());
-
+    
       if (!cfgType.compare("stats")) {
         newConsumer=std::make_shared<ConsumerStats>(cfg, kName);
       } else if (!cfgType.compare("FairMQDevice")) {
@@ -1120,11 +1117,11 @@ int main(int argc, char* argv[])
         theLog.log("Failed to configure consumer %s",kName.c_str());
         continue;
     }
-
+        
     if (newConsumer!=nullptr) {
       dataConsumers.push_back(newConsumer);
     }
-
+    
   }
 
 
@@ -1147,7 +1144,7 @@ int main(int argc, char* argv[])
   int isRunning=1;
   AliceO2::Common::Timer t0;
   t0.reset();
-
+  
   // reset stats
   unsigned long long nBlocks=0;
   unsigned long long nBytes=0;
@@ -1183,8 +1180,8 @@ int main(int argc, char* argv[])
     
     
       // push to data sampling, if configured
-      if (dataSampling && dataSamplingInjector) {
-        dataSamplingInjector->injectSamples(*bc);
+      if (dataSampling) {
+        injectSamples(*bc);
       }
     
     
@@ -1200,7 +1197,7 @@ int main(int argc, char* argv[])
         nBlocks++;
         nBytes+=b->getData()->header.dataSize;
         //printf("%p : %d use count\n",(void *)b.get(), b.use_count());
-
+        
         
 //        printf("pushed\n");
         for (auto c : dataConsumers) {
@@ -1208,7 +1205,7 @@ int main(int argc, char* argv[])
         }
 
        // todo: temporary - for the time being, delete done in FMQ. Replace by shared_ptr
-//       delete b;
+//       delete b;    
 //       b.reset();
        //printf("%p : %d use count\n",(void *)b.get(), b.use_count());
         //printf("pop %p\n",(void *)b);
@@ -1227,17 +1224,17 @@ int main(int argc, char* argv[])
   theLog.log("Wait a bit");
   sleep(1);
   theLog.log("Stop consumers");
-
+  
   // close consumers before closing readout equipments (owner of data blocks)
   dataConsumers.clear();
 
   return 0;
-
-
+  
+  
   // todo: check nothing in the input pipeline
   // flush & stop equipments
-
-  theLog.log("Closing readout devices");
+  
+  theLog.log("Closing readout devices");  
   for (auto readoutDevice : readoutDevices) {
       delete readoutDevice;
   }
