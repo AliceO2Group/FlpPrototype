@@ -1075,7 +1075,6 @@ int main(int argc, char* argv[])
   AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = nullptr;
   if (dataSampling) {
     theLog.log("Data sampling enabled");
-    // TODO here we should not pass a parameter but it should rather git it from the Configuration
     dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create(className);
   } else {
     theLog.log("Data sampling disabled");
