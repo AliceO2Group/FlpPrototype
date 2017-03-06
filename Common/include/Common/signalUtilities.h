@@ -43,7 +43,8 @@ bool keepRunning = true; /// Indicates whether we should continue the execution 
 /// received before the end of the clean up we exit immediately (return value 0).
 /// Usage :
 /// \code
-///    signal(SIGINT, handler_int);
+///    #include <csignal>
+///    signal(SIGINT, handler_interruption);
 ///    while (keepRunning) {
 ///      // do something
 ///    }
