@@ -12,7 +12,8 @@ namespace DataSampling {
 
 DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurrent(0),
                                                                           mCurrentPayloadSize(payloadSize),
-                                                                          mIsRandom(random)
+                                                                          mIsRandom(random),
+                                                                          mCurrentId(0)
 {
   regenerate();
 }
@@ -63,8 +64,9 @@ void DataBlockProducer::regenerate()
   mCurrent->header.blockType = 0xba; // whatever
   mCurrent->header.headerSize = 0x60; // just the header base -> 96 bits
   mCurrent->header.dataSize = mCurrentPayloadSize * 8;
+  mCurrent->header.id = mCurrentId++;
   char *buffer = new char[mCurrentPayloadSize];
-  for (int i = 0; i < mCurrentPayloadSize; i++) {
+  for (unsigned int i = 0; i < mCurrentPayloadSize; i++) {
     if (mIsRandom) {
       buffer[i] = (char) ((rand() % 26) + 'a');
     } else {

@@ -1,3 +1,26 @@
+Public interface :
+ - SamplerFactory
+ - SamplerInterface
+ - InjectorFactory
+ - InjectorInterface
+
+
+
+To test it you can run
+Terminal1> mockFairInjector
+Terminal2> mockFairSampler
+
+
+
+
+
+
+
+
+
+
+
+
 For any question, please contact: 
 Barthélémy von Haller (barthelemy.von.haller@cern.ch)
 

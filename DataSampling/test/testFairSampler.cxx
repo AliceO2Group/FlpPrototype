@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include "../include/DataSampling/MockSampler.h"
+#include "../include/DataSampling/FairSampler.h"
 
 #define BOOST_TEST_MODULE Test of DataSampling
 #define BOOST_TEST_MAIN
@@ -15,10 +15,14 @@
 
 using namespace std;
 
-BOOST_AUTO_TEST_CASE(big_file_test)
+BOOST_AUTO_TEST_CASE(simple_fair_sampler)
 {
-  AliceO2::DataSampling::MockSampler sampler;
-  DataBlock *block;
+  AliceO2::DataSampling::FairSampler sampler;
+  this_thread::sleep_for(chrono::seconds(10));
+
+  
+
+//  DataBlock *block;
 
 //  for (int i = 0; i < 100; i++) {
 //    block = sampler.getData();

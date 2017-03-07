@@ -64,7 +64,7 @@ void BenchmarkTask::startOfCycle()
   QcInfoLogger::GetInstance() << "startOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void BenchmarkTask::monitorDataBlock(DataBlock &block)
+void BenchmarkTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block)
 {
   std::this_thread::sleep_for(std::chrono::milliseconds(100)/*100ms*/);
 }

@@ -24,12 +24,11 @@ class FileSampler: public SamplerInterface
     /// Destructor
     virtual ~FileSampler();
 
-    virtual DataBlock* getData(int timeout = 0);
+    virtual std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0);
     virtual void releaseData();
 
   private:
     std::string getFilePath();
-
 };
 
 } /* namespace Utilities */
