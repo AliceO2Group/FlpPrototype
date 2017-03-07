@@ -6,18 +6,18 @@
 #ifndef DATA_SAMPLING_INJECTSAMPLES_H
 #define DATA_SAMPLING_INJECTSAMPLES_H
 
-#include <DataFormat/DataBlockContainer.h>
+#include <DataFormat/DataSet.h>
+
 #include <vector>
 #include <memory>
 
 // Example interface to inject data into data sampling system.
 //
 // Function to be called from relevant data producers to inject data to data monitoring system.
-// Data provided should not be used any more once function returns (if necessary, should be copied).
-// Argument is a reference to a vector of data blocks. All data blocks in the vector have the same event id.
+// Sample can be kept (but not modified) after function returns if necessary. Will be deleted automatically when not used (referenced) any more.
 // Returns 0 on success, an error code otherwise
 
-int injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks);
+int injectSamples(const DataSetReference sample);
 
 
 #endif //DATA_SAMPLING_DATABLOCKPRODUCER_H
