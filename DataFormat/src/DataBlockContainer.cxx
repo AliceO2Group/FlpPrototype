@@ -16,9 +16,9 @@ DataBlock * DataBlockContainer::getData() {
 
 // container for data pages coming fom MemPool class
 
-DataBlockContainerFromMemPool::DataBlockContainerFromMemPool(MemPool *pool,DataBlock *v_data) {
+DataBlockContainerFromMemPool::DataBlockContainerFromMemPool(std::shared_ptr<MemPool> pool, DataBlock *v_data) {
   mp=pool;
-  if (mp==NULL) {
+  if (mp==nullptr) {
     throw std::string("NULL argument");
   }
   data=v_data;
@@ -32,8 +32,8 @@ DataBlockContainerFromMemPool::DataBlockContainerFromMemPool(MemPool *pool,DataB
 
 
 DataBlockContainerFromMemPool::~DataBlockContainerFromMemPool() {
-  if (mp!=NULL) {
-    if (data!=NULL) {
+  if (mp!=nullptr) {
+    if (data!=nullptr) {
       mp->releasePage(data);
     }
   }
