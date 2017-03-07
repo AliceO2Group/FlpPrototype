@@ -62,7 +62,7 @@ else(FAIRROOT_FOUND)
     message(WARNING "FairRoot not found, module ControlFairMQ will not be compiled.")
 endif(FAIRROOT_FOUND)
 
-find_package(ZeroMQ REQUIRED)
+#find_package(ZeroMQ REQUIRED)
 
 # Dependency on another subproject (InfoLogger)
 link_o2_subproject(Common)
