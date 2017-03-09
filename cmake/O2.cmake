@@ -73,3 +73,9 @@ get_directory_property(hasParent PARENT_DIRECTORY)
 if(hasParent)
     set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
 endif()
+
+function(set_test_name file result_var_name)
+    string(REGEX REPLACE "[/]" "_" result ${file}) # create exe name
+    string(REGEX REPLACE ".cxx" "" result ${result})
+    set(${result_var_name} ${PROJECT_NAME}_${result} PARENT_SCOPE)
+endfunction()
