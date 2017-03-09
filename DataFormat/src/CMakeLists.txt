@@ -1,7 +1,10 @@
 # @author  Barthélémy von Haller
 set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/DataFormat/Version.h" # Generated header
-  ../include/DataFormat/DataBlock.h # Normal header
+  ../include/DataFormat/DataBlock.h
+  ../include/DataFormat/DataBlockContainer.h
+  ../include/DataFormat/DataSet.h
+  ../include/DataFormat/MemPool.h
 )
 
 set(LIB_SOURCES
