@@ -13,7 +13,10 @@ Terminal2> mockFairSampler
 
 
 
-
+To test the full chain :
+Terminal1> readout.exe file:../Readout/src/configDummy.cfg
+Terminal2> qcTaskLauncher -n myTask_1 -c file:../QualityControl/example.ini
+Terminal3> qcSpy
 
 
 
