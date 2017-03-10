@@ -41,16 +41,17 @@ void ExampleTask::initialize()
   QcInfoLogger::GetInstance() << "initialize ExampleTask" << AliceO2::InfoLogger::InfoLogger::endm;
   mHisto1 = new TH1F("payloadsize", "Payload size of blocks", 2048, 0, 2047);
   mHisto2 = new TH1F("second", "second", 100, -10, 10);
-  getObjectsManager()->startPublishing("my object", mHisto1);
-  getObjectsManager()->addCheck("my object", "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty", "QcCommon");
-  getObjectsManager()->addCheck("my object", "checkMeanIsAbove", "AliceO2::QualityControlModules::Common::MeanIsAbove", "QcCommon");
-  getObjectsManager()->startPublishing("my second object", mHisto2);
+  getObjectsManager()->startPublishing(mHisto1);
+  getObjectsManager()->addCheck(mHisto1, "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty", "QcCommon");
+  getObjectsManager()->addCheck(mHisto1, "checkMeanIsAbove", "AliceO2::QualityControlModules::Common::MeanIsAbove", "QcCommon");
+  getObjectsManager()->startPublishing(mHisto2, "my second object"); // explicit name, different from the TObject's name
+  getObjectsManager()->addCheck("my second object", "checkMeanIsAbove", "AliceO2::QualityControlModules::Common::MeanIsAbove", "QcCommon");
 
   for(int i = 0 ; i < 25 ; i++) {
     stringstream name;
     name << "array-" << i;
     mHistos[i]  = new TH1F(name.str().c_str(), name.str().c_str(), 100, 0, 99);
-    getObjectsManager()->startPublishing(name.str(), mHistos[i]);
+    getObjectsManager()->startPublishing(mHistos[i], name.str());
   }
 }
 
