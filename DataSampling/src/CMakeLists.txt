@@ -64,7 +64,6 @@ target_link_libraries(${APPLICATION_mockFairInjector} ${LIBRARY_NAME} ${Boost_PR
 
 set(APPLICATION_mockFairSampler mockFairSampler)
 add_executable(${APPLICATION_mockFairSampler} mockFairSampler.cxx)
-message("Boost_SYSTEM_LIBRARY_DEBUG : ${Boost_SYSTEM_LIBRARY_DEBUG}")
 target_link_libraries(${APPLICATION_mockFairSampler} ${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY_DEBUG} DataFormat)
 
 # Says how and where to install software
