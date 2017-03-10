@@ -67,7 +67,7 @@ add_executable(${APPLICATION_mockFairSampler} mockFairSampler.cxx)
 target_link_libraries(${APPLICATION_mockFairSampler} ${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY_DEBUG} DataFormat)
 
 # Says how and where to install software
-install(TARGETS ${LIBRARY_NAME} ${APPLICATION_dataDump} ${APPLICATION_fileProducer} ${APPLICATION_mockFairInjector}
+install(TARGETS ${LIBRARY_NAME} ${APPLICATION_dataDump} ${APPLICATION_fileProducer} ${APPLICATION_mockFairInjector} ${APPLICATION_mockFairSampler}
   EXPORT ${PROJECT_NAME}Targets            # for downstream dependencies
   ARCHIVE DESTINATION lib COMPONENT libs   # static lib
   RUNTIME DESTINATION bin COMPONENT libs   # binaries
