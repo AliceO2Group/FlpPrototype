@@ -30,7 +30,6 @@ class Fifo {
     ~Fifo();
 
     /// Push an element in FIFO.
-
     /// \param[in]  data   Element to be added to FIFO.
     /// \return   0 on success
     int push(const T &data);    // push an element in FIFO. Returns 0 on success.
