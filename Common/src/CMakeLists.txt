@@ -11,6 +11,7 @@ set(LIB_HEADERS
   ../include/Common/SimpleLog.h # Normal header
   ../include/Common/Thread.h # Normal header
   ../include/Common/Timer.h # Normal header
+  ../include/Common/LineBuffer.h # Normal header
 )
 
 set(LIB_SOURCES
@@ -19,6 +20,7 @@ set(LIB_SOURCES
   Configuration.cxx
   Daemon.cxx
   SimpleLog.cxx
+  LineBuffer.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
