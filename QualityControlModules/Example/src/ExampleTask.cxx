@@ -38,7 +38,7 @@ ExampleTask::~ExampleTask()
 
 void ExampleTask::initialize()
 {
-  QcInfoLogger::GetInstance() << "initialize" << AliceO2::InfoLogger::InfoLogger::endm;
+  QcInfoLogger::GetInstance() << "initialize ExampleTask" << AliceO2::InfoLogger::InfoLogger::endm;
   mHisto1 = new TH1F("payloadsize", "Payload size of blocks", 2048, 0, 2047);
   mHisto2 = new TH1F("second", "second", 100, -10, 10);
   getObjectsManager()->startPublishing("my object", mHisto1);
@@ -65,9 +65,25 @@ void ExampleTask::startOfCycle()
   QcInfoLogger::GetInstance() << "startOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void ExampleTask::monitorDataBlock(DataBlock &block)
+void ExampleTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block)
 {
-  uint32_t payloadSizeBytes = block.header.dataSize / 8;
+  uint32_t payloadSizeBytes = 0;
+
+    cout << "--> block received : " << endl;
+    if (block.size() > 0) {
+      if (block.at(0) != nullptr) {
+        cout << "    id : " << block.at(0)->getData()->header.id << endl;
+        cout << "    blockType : " << std::hex << block.at(0)->getData()->header.blockType << endl;
+        cout << "    headerSize : " << std::dec << block.at(0)->getData()->header.headerSize << endl;
+        cout << "    payload size : " << std::dec << block.at(0)->getData()->header.dataSize << endl;
+        payloadSizeBytes = block.at(0)->getData()->header.dataSize / 8;
+      } else {
+        cout << "     Container pointer invalid" << endl;
+      }
+    } else {
+      cout << "    Empty vector!" << endl;
+    }
+
 //  QcInfoLogger::GetInstance() << "Payload size " << payloadSizeBytes << AliceO2::InfoLogger::InfoLogger::endm;
   mHisto1->Fill(payloadSizeBytes);
   mHisto2->FillRandom("gaus", 10);

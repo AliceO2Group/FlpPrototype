@@ -5,6 +5,7 @@
 #include <DataFormat/DataBlock.h>
 
 #include <stdlib.h>
+#include <memory>
 
 // A container class for data blocks.
 // In particular, allows to take care of the block release after use.
@@ -26,11 +27,11 @@ class DataBlockContainer {
 class DataBlockContainerFromMemPool : public DataBlockContainer {
 
   public:
-  DataBlockContainerFromMemPool(MemPool *pool,DataBlock *v_data=NULL);
+  DataBlockContainerFromMemPool(std::shared_ptr<MemPool> pool, DataBlock *v_data=NULL);
   ~DataBlockContainerFromMemPool();
 
   private:
-  MemPool *mp;
+  std::shared_ptr<MemPool> mp;
 };
 
 

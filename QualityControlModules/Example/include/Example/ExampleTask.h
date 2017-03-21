@@ -31,7 +31,7 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
     void initialize() override;
     void startOfActivity(Activity &activity) override;
     void startOfCycle() override;
-    void monitorDataBlock(DataBlock &block) override;
+    void monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
     void Reset() override;

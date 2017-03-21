@@ -18,10 +18,22 @@ MockSampler::~MockSampler()
   delete producer;
 }
 
-DataBlock *MockSampler::getData(int timeout)
+std::vector<std::shared_ptr<DataBlockContainer>> * MockSampler::getData(int timeout)
 {
   // we keep a copy because here we have const and we want to return a non-const
-  return producer->get();
+//  return producer->get();
+
+  unsigned int i = 0;
+//  DataBlockProducer producer(false, 1024);
+//  while (keepRunning) {
+    std::vector<std::shared_ptr<DataBlockContainer>> *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
+    DataBlock *block = producer->get();
+    std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
+    blocks->push_back(containerPtr);
+//    producer.regenerate();
+//  }
+//  std::vector<std::shared_ptr<DataBlockContainer>> *v = nullptr;
+  return blocks;
 }
 
 void MockSampler::releaseData()

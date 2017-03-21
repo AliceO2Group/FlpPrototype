@@ -22,7 +22,7 @@ namespace DataSampling {
 /// around 1024 bytes with a standard deviation of 256.
 /// Usage :
 /// \code
-///  DataBlockProducer producer(size); // creates a first block
+///  DataBlockProducer producer(false, payloadSize); // creates a first block
 ///  producer.get(); // get a the block but it is const. Copy if needed.
 ///  producer.regenerate(); // generate a new block
 ///  producer.saveToFile(path); // save the current block to a file
@@ -50,6 +50,7 @@ class DataBlockProducer
     uint32_t mCurrentPayloadSize;
     bool mIsRandom;
     std::default_random_engine mGenerator;
+    uint32_t mCurrentId;
 };
 
 }

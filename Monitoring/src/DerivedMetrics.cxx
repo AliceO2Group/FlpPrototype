@@ -4,6 +4,7 @@
 ///
 
 #include "Monitoring/DerivedMetrics.h"
+#include "Exceptions/MonitoringInternalException.h"
 
 #include <chrono>
 #include <iostream>
@@ -11,16 +12,12 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "InfoLoggerBackend.h"
 #include "MonInfoLogger.h"
 
 namespace AliceO2
 {
 /// ALICE O2 Monitoring system
 namespace Monitoring 
-{
-/// Core features of ALICE O2 Monitoring system
-namespace Core 
 {
 
 DerivedMetrics::DerivedMetrics(const unsigned int cacheSize) : mMaxVectorSize(cacheSize) 
@@ -29,9 +26,9 @@ DerivedMetrics::DerivedMetrics(const unsigned int cacheSize) : mMaxVectorSize(ca
 
 void DerivedMetrics::registerMetric(std::string name, DerivedMetricMode mode)
 {
-  mRegistered.insert(std::pair<std::string, DerivedMetricMode>(name, mode));
-  MonInfoLogger::GetInstance() << "Monitoring : Metric " << name << " added to derived metrics" 
-                               << AliceO2::InfoLogger::InfoLogger::endm;
+  mRegistered.emplace(std::pair<std::string, DerivedMetricMode>(name, mode));
+  MonInfoLogger::Get() << "Monitoring : Metric " << name << " added to derived metrics" 
+                       << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
 bool DerivedMetrics::isRegistered(std::string name)
@@ -40,90 +37,64 @@ bool DerivedMetrics::isRegistered(std::string name)
   return (search != mRegistered.end());
 }
 
-template<typename T>
-std::unique_ptr<Metric> DerivedMetrics::calculateRate(std::string name, T)
+Metric DerivedMetrics::calculateRate(std::string name)
 {
   auto search = mCache.find(name);
-  if (search != mCache.end()) {
-    int size = search->second.size();
-    if (size >= 2) {
-      std::chrono::duration<float> timestampDifference = (search->second.at(size - 1)->getTimestamp() 
-                                                        - search->second.at(size - 2)->getTimestamp());
-      T last = boost::get<T>(search->second.at(size - 1)->getValue());
-      T beforelast = boost::get<T>(search->second.at(size - 2)->getValue());
-      // disallow dividing by 0
-      if (timestampDifference.count() == 0) return nullptr;
-      T rate = (last - beforelast ) / timestampDifference.count();
-      return std::unique_ptr<Metric>(new Metric(rate, name + "Rate", 
-                                     mCache.at(name).back()->getEntity(), mCache.at(name).back()->getTimestamp()));
-    } 
+  int size = search->second.size();
+  if (search == mCache.end() || size < 2) {
+    throw MonitoringInternalException("DerivedMetrics/Calculate rate", "Not enough values");
   }
-  return nullptr;
+  std::chrono::duration<float> timestampDifference = (search->second.at(size - 1).getTimestamp() 
+                                                   - search->second.at(size - 2).getTimestamp());
+  
+
+  double last = boost::lexical_cast<double>(search->second.at(size - 1).getValue());
+  double beforelast = boost::lexical_cast<double>(search->second.at(size - 2).getValue());
+  // disallow dividing by 0
+  if (timestampDifference.count() == 0) {
+    throw MonitoringInternalException("DerivedMetrics/Calculate rate", "Division by 0");
+  }
+  double rate = (last - beforelast ) / timestampDifference.count();
+  return Metric{rate, name + "Rate"};
 }
 
-template <>
-std::unique_ptr<Metric> DerivedMetrics::calculateRate(std::string, std::string)
+Metric DerivedMetrics::calculateAverage(std::string name)
 {
-  return nullptr;
-}
-
-template<typename T>
-std::unique_ptr<Metric> DerivedMetrics::calculateAverage(std::string name, T)
-{
-  T total = 0;
+  double total = 0;
   for (auto& m : mCache.at(name)) {
-    total += boost::get<T>(m->getValue());
+    total += boost::lexical_cast<double>(m.getValue());
   }
-  T average = (T) total / mCache.at(name).size();
-  return std::unique_ptr<Metric>(new Metric(average, name + "Average",
-                                 mCache.at(name).back()->getEntity(), mCache.at(name).back()->getTimestamp()));
+  double average = total / mCache.at(name).size();
+  return Metric{average, name + "Average"};
 }
 
-template <>
-std::unique_ptr<Metric> DerivedMetrics::calculateAverage(std::string, std::string)
+Metric DerivedMetrics::processMetric(Metric& metric)
 {
-  return nullptr;
-}
-
-template<typename T>
-std::unique_ptr<Metric> DerivedMetrics::processMetric(T value, std::string name, std::string entity, 
-                                                      std::chrono::time_point<std::chrono::system_clock> timestamp)
-{
+  std::string name = metric.getName();
+  if (metric.getType() == MetricType::STRING) {
+    throw MonitoringInternalException("DerivedMetrics/ProcessMetric", "Not able to process string values");
+  }
   auto search = mCache.find(name);
   // create vector if this is first metric of this kind
   if (search == mCache.end()) {
-    mCache.emplace(std::make_pair(name, std::vector<std::unique_ptr<Metric>>()));
+    mCache.emplace(std::make_pair(name, std::vector<Metric>()));
   }
   // remove first value if vector too large
   if (mCache.at(name).size() > mMaxVectorSize) {
     mCache.at(name).erase( mCache.at(name).begin() );
   }
-  mCache[name].emplace_back(std::unique_ptr<Metric>(new Metric(value, name, entity, timestamp)));
+  mCache[name].push_back(metric);
 
   auto derived = mRegistered.find(name);
   if (derived->second == DerivedMetricMode::RATE) {
-    return calculateRate(name, value);
+    return calculateRate(name);
   }
   else if (derived->second == DerivedMetricMode::AVERAGE)  {
-        return calculateAverage(name, value);
+    return calculateAverage(name);
   } else {
-    MonInfoLogger::GetInstance() << "Monitoring : Processing mode incorrect for metric " << name << AliceO2::InfoLogger::InfoLogger::endm;
-    return nullptr;
+    throw MonitoringInternalException("DerivedMetrics/ProcessMetric", "Processing mode not supported");
   }
 }
 
-template std::unique_ptr<Metric> DerivedMetrics::processMetric(int value, std::string name, std::string entity, 
-  std::chrono::time_point<std::chrono::system_clock> timestamp);
-
-template std::unique_ptr<Metric> DerivedMetrics::processMetric(double value, std::string name, std::string entity,
-  std::chrono::time_point<std::chrono::system_clock> timestamp);
-
-template std::unique_ptr<Metric> DerivedMetrics::processMetric(std::string value, std::string name, std::string entity,
-  std::chrono::time_point<std::chrono::system_clock> timestamp);
-
-template std::unique_ptr<Metric> DerivedMetrics::processMetric(uint32_t value, std::string name, std::string entity,
-  std::chrono::time_point<std::chrono::system_clock> timestamp);
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
-

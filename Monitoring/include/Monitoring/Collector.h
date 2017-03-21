@@ -19,23 +19,18 @@
 #include "Monitoring/DerivedMetrics.h"
 #include "Monitoring/ProcessMonitor.h"
 
-
 namespace AliceO2
 {
 /// ALICE O2 Monitoring system
 namespace Monitoring 
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core 
-{
 
-/// Collect metrics and dispatches them to selected backends for further processing.
+/// Collects metrics and dispatches them to selected backends. Monitors process itself.
 ///
-/// Collects metrics (see Metric class) and pushes them through all selected backends (see Backend)
+/// Collects user-defined metrics (see Metric class) and pushes them through all selected backends (see Backend).
 /// Supports feature of calculating derived metrics, such as rate and average value (see #addDerivedMetric method).
-/// Generates default entity as concatenated hostname and process ID.
-/// Interacts with ProcessMonitor that monitors allows to monitor current and other processes running
-/// at the same machine (see ProcessMonitor).
+/// Adds default tags to each metric: PID, proces name, hostname.
+/// Monitors the process itself - including memory, cpu usage and running time (see ProcessMonitor).
 class Collector
 {
   public:
@@ -47,50 +42,46 @@ class Collector
     /// Instantiates derived metrics processor (see DerivedMetrics class) and process monitor (see ProcessMonitor).
     /// \param configPath 	path to configuration
     Collector(const std::string& configPath);
-
+    
     /// Joins process monitor thread if possible
     ~Collector();
-
-    /// Generates current timestamp in milliseconds
-    /// \return 	timestamp as unsigned long
-    static std::chrono::time_point<std::chrono::system_clock> getCurrentTimestamp();
-
-    /// Overwrites default entity value
-    /// \param entity 	new entity value
-    void setEntity(std::string entity);
 
     /// Sends a metric to all avaliabes backends
     /// If metric has been added to DerivedMetric the derived metric is calculated (see addDerivedMetric method)
     /// \param value 		metric value
     /// \param name 		metric name
-    /// \param timestamp 	metric timestamp in miliseconds, if not provided getCurrentTimestamp provides current value
     template<typename T> 
-    void send(T value, std::string name, 
-            std::chrono::time_point<std::chrono::system_clock> timestamp = Collector::getCurrentTimestamp());
-  
+    void send(T value, std::string name);
+
+    /// Sends a metric to all avaliabes backends
+    /// If metric has been added to DerivedMetric the derived metric is calculated (see addDerivedMetric method)
+    /// \param metric            r-value to metric object
+    void send(Metric&& metric);
+
+    /// Sends a metric with tagset to all avaliabes backends
+    /// If metric has been added to DerivedMetric the derived metric is calculated (see addDerivedMetric method)
+    /// \param value            metric value
+    /// \param name             metric name
+    /// \param tags             vector of tags associated with metric
+    template<typename T>
+    void sendTagged(T value, std::string name, std::vector<Tag>&& tags);
+
+    /// Sends a timed-metric to all avaliabes backends
+    /// If metric has been added to DerivedMetric the derived metric is calculated (see addDerivedMetric method)
+    /// \param value            metric value
+    /// \param name             metric name
+    /// \param timestamp        metric timestamp in miliseconds, if not provided getCurrentTimestamp provides current value
+    template<typename T>
+    void sendTimed(T value, std::string name, std::chrono::time_point<std::chrono::system_clock>& timestamp);
+
     /// Adds metric to derived metric list - each time the metric arrives the derived metric is calculated and pushed to all backends
     /// Following processing modes are supported: DerivedMetricMode::RATE, DerivedMetricMode::AVERAGE
-    /// \param name
-    /// \param mode
+    /// \param name             metric name
+    /// \param mode             mode
     void addDerivedMetric(std::string name, DerivedMetricMode mode);
 
-    /// Sends metric object to a backend
-    /// \param metric	pointer to Metric
-    template<typename T> void sendMetric(std::unique_ptr<Metric> metric, T);
-	
-    /// Same as send but skips derived metrics logic
-    template<typename T>
-    void sendRawValue(T value, std::string name, 
-      std::chrono::time_point<std::chrono::system_clock> timestamp = Collector::getCurrentTimestamp()) const;
-
-    /// Forces updates of Process Monitor parameters
-    void sendProcessMonitorValues();
-
-    /// Adds PID to list of monitored processes
-    /// \param pid 	process PID
-    void addMonitoredPid(int pid);
-
   private:
+    static std::string configPath;
     /// Derived metrics handler
     /// \see class DerivedMetrics
     std::unique_ptr<DerivedMetrics> mDerivedHandler;
@@ -98,27 +89,23 @@ class Collector
     /// Vector of backends (where metrics are passed to)
     std::vector <std::unique_ptr<Backend>> mBackends;
 
-    /// Entity value
-    std::string mEntity;
-
     /// States whether Process Monitor thread is running
     std::atomic<bool> mMonitorRunning;
 
     /// Process Monitor thread  
     std::thread mMonitorThread;
 
-    /// Process Monitor object
-    /// If automatic updates are not enabled user can invoke #sendProcessMonitorValues method
+    /// Process Monitor object that sends updates about the process itself
     std::unique_ptr<ProcessMonitor> mProcessMonitor;
 
     /// Process Monitor thread loop
     /// \param interval 	sleep time in seconds
     void processMonitorLoop(int interval);
 
-    /// Generates entity value as concatenated hostname and process id
-    void setDefaultEntity();
+    /// Sets default tags that are applied to all metrics: PID, proces name, hostname
+    void setDefaultTags();
 };
-} // namespace Core
+
 } // namespace Monitoring
 } // namespace AliceO2
 

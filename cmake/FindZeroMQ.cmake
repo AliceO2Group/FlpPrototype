@@ -50,10 +50,12 @@ if(ZEROMQ)
 else(ZEROMQ)
         # Check is the library is installed on the system
     find_library(ZEROMQ_LIBRARIES NAMES zmq
+                HINTS ENV LD_LIBRARY_PATH
                 DOC "Path to libzmq)"
             )
-
+    string(REPLACE "lib/libzmq.so" "" INCLUDE_HINT ${ZEROMQ_LIBRARIES})
     find_path(ZEROMQ_INCLUDE_DIR NAMES zmq_utils.h
+              HINTS "${INCLUDE_HINT}include"
                 DOC "Path to ZeroMQ include header files."
             )
 endif(ZEROMQ)
@@ -86,7 +88,7 @@ if(ZEROMQ_INCLUDE_DIR AND ZEROMQ_LIBRARIES)
   if(ZEROMQ_VERSION VERSION_GREATER "${ZEROMQ_VERSION_MIN}")
     # Version OK.
     set(ZEROMQ_FOUND TRUE)
-    add_definitions(-DZMQ)
+    add_definitions(-DZMQ_FOUND)
     message(STATUS "ZeroMQ version ${ZEROMQ_VERSION} (> ${ZEROMQ_VERSION_MIN}) found")
   elseif(ZEROMQ)
     # Version not OK and explicitly requested: fatal.

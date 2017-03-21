@@ -17,6 +17,7 @@ set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
 # Macros and variables for all O2 subprojects
 include(O2)
+#find_package(AliceO2)
 
 ## Git (and its revision)
 find_package(Git)
@@ -44,11 +45,26 @@ endif()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost 1.41 COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost 1.41 COMPONENTS unit_test_framework program_options system REQUIRED)
+
+find_package(FairRoot)
+if(FAIRROOT_FOUND)
+    find_library(FAIRMQ_LIBRARIES_1 NAMES Base PATHS ${FAIRROOT_LIBRARY_DIR})
+    find_library(FAIRMQ_LIBRARIES_2 NAMES FairMQ PATHS ${FAIRROOT_LIBRARY_DIR})
+    find_library(FAIRMQ_LIBRARIES_3 NAMES BaseMQ PATHS ${FAIRROOT_LIBRARY_DIR})
+    set(FAIRMQ_LIBRARIES ${FAIRMQ_LIBRARIES_1} ${FAIRMQ_LIBRARIES_2} ${FAIRMQ_LIBRARIES_3})
+    message(INFO "FAIRMQ_LIBRARIES : ${FAIRMQ_LIBRARIES}")
+    include_directories(
+            ${FAIRROOT_INCLUDE_DIR}
+    )
+else(FAIRROOT_FOUND)
+    message(WARNING "FairRoot not found, corresponding classes will not be compiled.")
+endif(FAIRROOT_FOUND)
 
 # Find DataFormat
 link_o2_subproject(DataFormat)
-
+link_o2_subproject(Common)
+link_o2_subproject(InfoLogger)
 
 # This sets the include directory for the reference project. This is
 # the -I flag in gcc. All the includes should be in this variable To
@@ -59,6 +75,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include   # add the binary tree to the search path so that we will find Version.h
     ${Boost_INCLUDE_DIRS}
+#    ${AliceO2_INCLUDE_DIRS}
 )
 
 # Mac needed variables (adapt according to your needs)

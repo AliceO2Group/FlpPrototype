@@ -42,6 +42,7 @@ endif()
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
+
 # Dependency on another subproject (InfoLogger)
 #if(NOT TARGET InfoLogger) # target unknown because we build only this subproject, ProjA must have been built AND installed
 #    find_package(InfoLogger CONFIG REQUIRED)
@@ -54,8 +55,23 @@ link_o2_subproject(DataFormat)
 link_o2_subproject(Common)
 link_o2_subproject(RORC)
 link_o2_subproject(DataSampling)
+link_o2_subproject(Monitoring)
 
-find_package(Configuration REQUIRED)
+#find_package(Configuration REQUIRED)
+
+
+# Alfa
+find_package(FairRoot)
+if(FAIRROOT_FOUND)
+    link_directories(${FAIRROOT_LIBRARY_DIR})
+    find_package(ROOT REQUIRED)
+    find_package(Boost COMPONENTS unit_test_framework program_options log thread system REQUIRED)
+else(FAIRROOT_FOUND)
+    message(WARNING "FairRoot not found, corresponding classes will not be compiled.")
+endif(FAIRROOT_FOUND)
+
+
+
 
 # This sets the include directory for the reference project. This is the -I flag in gcc.
 # All the includes should be in this variable To add new directories to the include path,
@@ -65,7 +81,9 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include   # add the binary tree to the search path so that we will find Version.h
     ${Boost_INCLUDE_DIRS}
-    ${Configuration_INCLUDE_DIRS}
+    ${FAIRROOT_INCLUDE_DIR}
+    ${ZEROMQ_INCLUDE_DIR}
+#    ${Configuration_INCLUDE_DIRS}
 )
 
 # Mac needed variables (adapt according to your needs)

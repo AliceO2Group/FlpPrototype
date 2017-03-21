@@ -49,7 +49,7 @@ class ConfigFile
     void load(const std::string path);
 
 
-    /// Get the configuration value for given key path (by reference)
+    /// Get the configuration value for given key path (by reference), failure causes exception.
     /// \param key   Key name (possibly hierarchical)
     /// \param value Result value found (possible types: int, float, std::string), by reference (this variable is modified in case of success)
     /// \returns     Nothing
@@ -63,6 +63,44 @@ class ConfigFile
       catch (const boost::property_tree::ptree_error &e) {
         throw std::string(e.what());
       }
+    }
+
+
+    /// Get the configuration value for given key path (by reference), failure does not cause exception.
+    /// \param key   Key name (possibly hierarchical)
+    /// \param value Result value found (possible types: int, float, std::string), by reference (this variable is modified in case of success)
+    /// \returns     0 if value found, 1 if not found
+    /// \exception   Does not throw exception if value not found
+    template<typename T>
+    int getOptionalValue(const std::string key, T &value)
+    {
+      try {
+        value = dPtr->pt.get<T>(key);
+      }
+      catch (...) {
+        return 1;
+      }
+      return 0;
+    }
+
+
+    /// Get the configuration value for given key path (by reference), failure does not cause exception, and provided default value is assigned instead.
+    /// \param key   Key name (possibly hierarchical)
+    /// \param value Result value found (possible types: int, float, std::string), by reference (this variable is modified in case of success)
+    /// \param defaultValue Default value to be assigned in case of failure
+    /// \returns     0 if value found, 1 if not found
+    /// \exception   Does not throw exception if value not found
+    template<typename T>
+    int getOptionalValue(const std::string key, T &value, T defaultValue)
+    {
+      try {
+        value = dPtr->pt.get<T>(key);
+      }
+      catch (...) {
+        value = defaultValue;
+        return 1;
+      }
+      return 0;
     }
 
 
@@ -103,7 +141,7 @@ public:
   /// Constructor
   /// \param cfgPtr   Pointer to a ConfigFile object
   /// \param filter   Optional string to be matched with sub-tree name. Non-matching elements will be skipped. Only sub-tree names starting by this string will be returned.
-  ConfigFileBrowser(ConfigFile *cfgPtr, std::string filter="");
+  ConfigFileBrowser(ConfigFile *cfgPtr, std::string filter="", std::string startingNode="");
   ~ConfigFileBrowser();
   
   class Iterator;
@@ -113,6 +151,8 @@ public:
 private:
   ConfigFile *p;
   std::string filter;
+  std::string startingNode;
+  boost::property_tree::ptree *ptPtr;
 };
 
 

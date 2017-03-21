@@ -7,6 +7,7 @@
 #define DATA_SAMPLING_MOCKSAMPLER_H
 
 #include <DataFormat/DataBlock.h>
+#include <memory>
 #include "SamplerInterface.h"
 #include "DataBlockProducer.h"
 
@@ -27,7 +28,7 @@ class MockSampler : public SamplerInterface
     /// Destructor
     virtual ~MockSampler();
 
-    virtual DataBlock* getData(int timeout = 0);
+    virtual std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0);
     virtual void releaseData();
 
   private:

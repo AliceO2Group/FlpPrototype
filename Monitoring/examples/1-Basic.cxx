@@ -3,21 +3,23 @@
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
 ///
 
-#include <iostream>
-#include "Monitoring/Collector.h"
+#include "ExampleBoilerplate.cxx"
+#include "Monitoring/MonitoringFactory.h"
 
-namespace Monitoring = AliceO2::Monitoring;
+using Monitoring = AliceO2::Monitoring::MonitoringFactory;
 
-int main() {
-  
-  // create monitoring object, pass confuguration path as parameter
-  std::unique_ptr<Monitoring::Core::Collector> collector(
-    new Monitoring::Core::Collector("file:///home/awegrzyn/hackathon/Monitoring/examples/SampleConfig.ini")
-  );
+int main(int argc, char *argv[]) {
+
+  // configure monitoring (once per process), pass configuration path as parameter
+  Monitoring::Configure("file://" + GetConfigFromCmdLine(argc, argv));
 
   // now send an application specific metric
   // 10 is the value
-  // myCrazyMetric is the name of the metric
-  collector->send(10, "myCrazyMetric");
-
+  // myMetric is the name of the metric
+  //  
+  // 1. by copying values
+  Monitoring::Get().send(10, "myMetric");
+  
+  // 2. by creating and moving metric object
+  Monitoring::Get().send({10, "myMetric"});
 }	

@@ -3,23 +3,21 @@
 /// \author Adam Wegrzynek <adam.wegrzynek@cern.ch>
 ///
 
-#include <iostream>
-#include "Monitoring/Collector.h"
+#include "ExampleBoilerplate.cxx"
+#include "Monitoring/MonitoringFactory.h"
 
-namespace Monitoring = AliceO2::Monitoring;
+using Monitoring = AliceO2::Monitoring::MonitoringFactory;
 
-int main() {
-  // create monitoring object, pass configuration path as parameter
-  std::unique_ptr<Monitoring::Core::Collector> collector(
-    new Monitoring::Core::Collector("file:///home/awegrzyn/hackathon/Monitoring/examples/SampleConfig.ini")
-  );  
+int main(int argc, char *argv[]) {
+  // configure monitoring (once per process), pass configuration path as parameter
+  Monitoring::Configure("file://" + GetConfigFromCmdLine(argc, argv));
 
   // derived metric :  rate
-  collector->addDerivedMetric("myCrazyMetric1", Monitoring::Core::DerivedMetricMode::RATE);
+  Monitoring::Get().addDerivedMetric("myMetric", AliceO2::Monitoring::DerivedMetricMode::RATE);
 
   // now send at least two metrics to see the result
-  collector->send(10, "myCrazyMetric1");
-  collector->send(20, "myCrazyMetric1");
-  collector->send(30, "myCrazyMetric1");
-  collector->send(50, "myCrazyMetric1");
+  for (int i = 0; i < 101; i+=10) {
+    Monitoring::Get().send(i, "myMetric");
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+  }
 }

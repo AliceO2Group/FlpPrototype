@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   }
   unsigned int blocks = 10;
   if (vm.count("blocks")) {
-    blocks = vm["blocks"].as<int>();
+    blocks = vm["blocks"].as<unsigned int>();
   }
 
   AliceO2::DataSampling::DataBlockProducer producer;

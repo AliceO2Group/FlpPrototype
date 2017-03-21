@@ -14,17 +14,13 @@
 #include <thread>
 #include <vector>
 
+#include "Monitoring/Metric.h"
+
 namespace AliceO2
 {
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
-
-/// Types of ProcessMonitor parameters (eg. output of ps command)
-enum class ProcessMonitorType { INT, DOUBLE, STRING };
 
 /// Monitors current process and/or other processes running at the same machien
 class ProcessMonitor
@@ -38,17 +34,15 @@ class ProcessMonitor
     /// Default destructor
     ~ProcessMonitor() = default;
 
-    /// Generates vector of tuples; singile tuple contain a meric for one PIDs
-    /// \return	vactor of tuples; 3 values (type, name, value)
-    std::vector<std::tuple<ProcessMonitorType, std::string, std::string>> getPidsDetails();
+    /// Generates performance metrics (stored in mPsParams vecotr)
+    std::vector<Metric> getPidStatus();
 
-    /// Adds PID to list monitored processes
-    /// \param pid
-    void addPid(int pid);
+    /// Generates metrics per network interface: bytesReceived, bytesTransmitted
+    std::vector<Metric> getNetworkUsage();
 
   private:
     /// PIDs that are monitored
-    std::vector<int> mPids;
+    unsigned int mPid;
 
     /// options to be passed to PS
     std::string mPsCommand;
@@ -57,19 +51,14 @@ class ProcessMonitor
     std::mutex mVectorPidLock;
 
     /// List of PS params with their types
-    const std::vector<std::pair<std::string, ProcessMonitorType>> mPsParams { 
-      {"pid", ProcessMonitorType::INT},    {"etime", ProcessMonitorType::STRING}, {"time", ProcessMonitorType::STRING},
-      {"pcpu", ProcessMonitorType::DOUBLE}, {"pmem", ProcessMonitorType::DOUBLE},   {"rsz", ProcessMonitorType::INT},
-      {"vsz", ProcessMonitorType::INT},    {"comm", ProcessMonitorType::STRING} };
+    const std::vector<std::pair<std::string, MetricType>> mPsParams { 
+      {"etime", MetricType::STRING}, {"pcpu", MetricType::DOUBLE}, {"pmem", MetricType::DOUBLE}
+    };
 
     /// Executes terminal command
     std::string exec(const char* cmd);
-
-    /// Vector of PID's parameters and values
-    std::vector<std::string> getPidStatus(int pid);
 };
 
-} // namespace Core
 } // namespace Monitoring
 } // namespace AliceO2
 

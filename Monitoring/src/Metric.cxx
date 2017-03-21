@@ -8,22 +8,12 @@
 #include <iostream>
 #include <chrono>
 #include <memory>
-#include <vector>
-
 
 namespace AliceO2
 {
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
-
-std::string Metric::getEntity() const
-{
-  return mEntity;
-}
 
 std::chrono::time_point<std::chrono::system_clock> Metric::getTimestamp() const
 {
@@ -40,27 +30,48 @@ std::string Metric::getName() const
   return mName;
 }
 
-Metric::Metric(int value, const std::string& name, std::string entity, std::chrono::time_point<std::chrono::system_clock> timestamp) :
-  mValue(value), mName(name), mEntity(entity), mTimestamp(timestamp)
+Metric::Metric(int value, const std::string& name, std::chrono::time_point<std::chrono::system_clock> timestamp) :
+  mValue(value), mName(name), mTimestamp(timestamp)
 {}
 
-Metric::Metric(std::string value, const std::string& name, std::string entity, std::chrono::time_point<std::chrono::system_clock> timestamp) :
-  mValue(value), mName(name), mEntity(entity), mTimestamp(timestamp)
+Metric::Metric(std::string value, const std::string& name, std::chrono::time_point<std::chrono::system_clock> timestamp) :
+  mValue(value), mName(name), mTimestamp(timestamp)
 {}
 
-Metric::Metric(double value, const std::string& name, std::string entity, std::chrono::time_point<std::chrono::system_clock> timestamp) :
-  mValue(value), mName(name), mEntity(entity), mTimestamp(timestamp)
+Metric::Metric(double value, const std::string& name, std::chrono::time_point<std::chrono::system_clock> timestamp) :
+  mValue(value), mName(name), mTimestamp(timestamp)
 {}
 
-Metric::Metric(uint32_t value, const std::string& name, std::string entity, std::chrono::time_point<std::chrono::system_clock> timestamp) :
-  mValue(value), mName(name), mEntity(entity), mTimestamp(timestamp)
+Metric::Metric(unsigned long long value, const std::string& name, std::chrono::time_point<std::chrono::system_clock> timestamp) :
+  mValue(value), mName(name), mTimestamp(timestamp)
 {}
 
-boost::variant< int, std::string, double, uint32_t > Metric::getValue() const
+boost::variant< int, std::string, double, unsigned long long > Metric::getValue() const
 {
   return mValue;
 }
 
-} // namespace Core
+Metric&& Metric::addTags(std::vector<Tag>&& tags)
+{
+  tagSet = std::move(tags);
+  return std::move(*this);
+}
+
+Metric&& Metric::setTimestamp(std::chrono::time_point<std::chrono::system_clock>& timestamp)
+{
+  mTimestamp = timestamp;
+  return std::move(*this);
+}
+
+std::vector<Tag> Metric::getTags() const
+{
+  return tagSet;
+}
+
+auto Metric::getCurrentTimestamp() -> decltype(std::chrono::system_clock::now())
+{
+  return std::chrono::system_clock::now();
+}
+
 } // namespace Monitoring
 } // namespace AliceO2

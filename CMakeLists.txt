@@ -13,7 +13,7 @@ enable_testing() # needed on top-level CMakeLists.txt
 # in the subdirs *when* we compile only a subproject.
 # We define as well a function AddDocTarget in cmake/DoxygenTarget.cmake
 add_custom_target(doc) # DEPENDS docProjA docProjB) Note: with CMake 3.X the DEPENDS would work
-ADD_DEPENDENCIES(doc docInfoLogger docProjA docDataFormat docDataSampling docControl
+ADD_DEPENDENCIES(doc docInfoLogger docProjA docDataFormat docDataSampling 
         docMonitoring docQualityControl)
         
 # Target coverage
@@ -34,29 +34,33 @@ include(UninstallTarget)
 # Target clang-format
 #include(clang-format)
 
-message(STATUS Common)
+macro(PrintModuleName name)
+  message(STATUS \n-------- ${name} --------)
+endmacro()
+
+PrintModuleName("Common")
 add_subdirectory(Common)
-message(STATUS InfoLogger)
+PrintModuleName("InfoLogger")
 add_subdirectory(InfoLogger)
-message(STATUS projectTemplate)
+PrintModuleName("projectTemplate")
 add_subdirectory(projectTemplate)
-message(STATUS DataFormat)
+PrintModuleName("DataFormat")
 add_subdirectory(DataFormat)
-message(STATUS DataSampling)
+PrintModuleName("DataSampling")
 add_subdirectory(DataSampling)
-message(STATUS Control)
+PrintModuleName("Control")
 add_subdirectory(Control)
-message(STATUS ControlFairMQ)
+PrintModuleName("ControlFairMQ")
 add_subdirectory(ControlFairMQ)
-message(STATUS Monitoring)
+PrintModuleName("Monitoring")
 add_subdirectory(Monitoring)
-message(STATUS QualityControl)
+PrintModuleName("QualityControl")
 add_subdirectory(QualityControl)
-message(STATUS QualityControlModules)
+PrintModuleName("QualityControlModules")
 add_subdirectory(QualityControlModules)
-message(STATUS RORC)
+PrintModuleName("RORC")
 add_subdirectory(RORC)
-message(STATUS Readout)
+PrintModuleName("Readout")
 add_subdirectory(Readout)
-message(STATUS GUI)
+PrintModuleName("GUI")
 add_subdirectory(GUI)

@@ -8,38 +8,71 @@ set(LIB_HEADERS
   ../include/Monitoring/Metric.h
   ../include/Monitoring/DerivedMetrics.h
   ../include/Monitoring/ProcessMonitor.h
+  ../include/Monitoring/MonitoringFactory.h
+  ../include/Monitoring/Tag.h
 )
 
 set(LIB_SOURCES
   Collector.cxx
   Metric.cxx
-  InfoLoggerBackend.cxx
-  InfluxBackend.cxx
+  Backends/InfoLoggerBackend.cxx
+  Backends/Flume.cxx
   DerivedMetrics.cxx
   ProcessMonitor.cxx
-  InfluxBackendUDP.cxx
+  ProcessDetails.cxx
+  MonitoringFactory.cxx
+  Transports/UDP.cxx
+  Transports/HTTP.cxx
+  Exceptions/MonitoringException.cxx
+  Exceptions/MonitoringInternalException.cxx
 )
 
-if(APMON_FOUND)
-	message(STATUS "  Adding ApMon backend classes...")
-	list(APPEND LIB_SOURCES ApMonBackend.cxx)
-endif()
-FIND_PACKAGE(CURL)
-if(CURL_FOUND)
-        message(STATUS "libcurl found")
-	message(STATUS "  Compiling InfluxDB Backend")
-	add_definitions(-D_WITH_INFLUX)
-        list(APPEND LIB_SOURCES InfluxBackend.cxx)
+# Detect operating system
+if (UNIX AND NOT APPLE)
+    message(STATUS "Detected Linux OS: Process monitor enabled")
+    add_definitions(-D_OS_LINUX)
 endif()
 
+if (WIN32)
+  message(STATUS "Detected Windows OS: Process monitor disabled")
+  add_definitions(-D_OS_WINDOWS)
+endif()
+
+if (APPLE)
+  message(STATUS "Detected Mac OS: Process monitor disabled")
+  add_definitions(-D_OS_MAC)
+endif()
+
+# Backends
+message(STATUS "Backends")
+message(STATUS "  Compiling InfoLoggerBackend backend")
+message(STATUS "  Compiling Flume UDP/JSON backend")
+
+find_package(APMON)
+if(APMON_FOUND)
+  message(STATUS "  Compiling ApMon backend")
+  include_directories(${APMON_INCLUDE_DIRS}) 
+  list(APPEND LIBS ${APMON_LIBRARIES})
+  list(APPEND LIB_SOURCES Backends/ApMonBackend.cxx)
+  add_definitions(-D_WITH_APPMON)
+else()
+  message(WARNING "  ApMon not found, skipping ApMon backend")
+endif()
+
+find_package(CURL)
+if(CURL_FOUND)
+  message(STATUS "  Compiling InfluxDB HTTP and UDP backend")
+  add_definitions(-D_WITH_INFLUX)
+  list(APPEND LIB_SOURCES Backends/InfluxDB.cxx)
+else()
+  message(WARNING "  libcurl not found, skipping InfluxDB backend")
+endif()
 
 set(APP_HEADERS
 )
 
 set(APP_SOURCES
 )
-
-# LIBRARIES
 
 # libDataCollector
 set(LIBRARY_NAME_DATACOLLECTOR DataCollector)

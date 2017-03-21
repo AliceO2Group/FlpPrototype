@@ -50,3 +50,7 @@ install(TARGETS ${LIBRARY_NAME}
   INCLUDES DESTINATION include             # headers
 )
 
+# Library for Tcl
+if (TCL_FOUND)
+  add_library(tclConfiguration SHARED Configuration_tcl_wrap.cxx Configuration.cxx )
+endif()

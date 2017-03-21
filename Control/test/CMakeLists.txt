@@ -7,7 +7,7 @@
 #set(ALL_TESTS)
 #foreach(FILE ${TEST_FILES})
 #    message(${FILE})
-#    string(REGEX REPLACE "[./]" "_" NAME ${FILE}) # create exe name
+#    set_test_name(${FILE} NAME)
 #        message(${NAME})
 #    add_executable(${NAME} ${FILE})
 #    target_link_libraries(${NAME} zdaq StateMachine ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}) # link against our libs and boost test

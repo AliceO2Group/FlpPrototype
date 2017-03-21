@@ -3,9 +3,11 @@
 /// \author Barthelemy von Haller
 ///
 
+//#include <DataSampling/FairSampler.h>
 #include "QualityControl/QcInfoLogger.h"
 #include "QualityControl/TaskControl.h"
-#include "DataSampling/MockSampler.h"
+#include "DataSampling/SamplerFactory.h"
+#include "DataSampling/SamplerInterface.h"
 #include "QualityControl/TaskFactory.h"
 
 using namespace std;
@@ -24,9 +26,9 @@ TaskControl::TaskControl(std::string taskName, std::string configurationSource)
   populateConfig(taskName);
 
   // monitoring
-  mCollector = std::shared_ptr<Monitoring::Core::Collector>(new Monitoring::Core::Collector(configurationSource));
-  //mMonitor = std::unique_ptr<Monitoring::Core::ProcessMonitor>(
-  //new Monitoring::Core::ProcessMonitor(mCollector, mConfigFile));
+//  mCollector = std::shared_ptr<Monitoring::Collector>(new Monitoring::Collector(configurationSource));
+  //mMonitor = std::unique_ptr<Monitoring::ProcessMonitor>(
+  //new Monitoring::ProcessMonitor(mCollector, mConfigFile));
 
   // setup publisher
   mObjectsManager = new ObjectsManager(mTaskConfig);
@@ -36,7 +38,9 @@ TaskControl::TaskControl(std::string taskName, std::string configurationSource)
   mTask = f.create(mTaskConfig, mObjectsManager);  // TODO could we use unique_ptr ?
 
   // TODO create DataSampling with correct parameters
-  mSampler = new AliceO2::DataSampling::MockSampler();
+  string dataSamplingImplementation = mConfigFile.getValue<string>("DataSampling.implementation");
+  QcInfoLogger::GetInstance() << "DataSampling implementation is '" << dataSamplingImplementation << "'" << AliceO2::InfoLogger::InfoLogger::endm;
+  mSampler = AliceO2::DataSampling::SamplerFactory::create(dataSamplingImplementation);
 }
 
 TaskControl::~TaskControl()
@@ -65,7 +69,7 @@ void TaskControl::populateConfig(std::string taskName)
 
 void TaskControl::initialize()
 {
-  QcInfoLogger::GetInstance() << "initialize" << AliceO2::InfoLogger::InfoLogger::endm;
+  QcInfoLogger::GetInstance() << "initialize TaskControl" << AliceO2::InfoLogger::InfoLogger::endm;
 
   mTask->initialize();
 }
@@ -92,10 +96,12 @@ void TaskControl::execute()
   auto end = start + seconds(mTaskConfig.cycleDurationSeconds);
   int numberBlocks = 0;
   while (system_clock::now() < end) {
-    DataBlock *block = mSampler->getData(0);
+    std::vector<std::shared_ptr<DataBlockContainer>> *block = mSampler->getData(100);
+    if(block) {
     mTask->monitorDataBlock(*block);
     mSampler->releaseData(); // invalids the block !!!
     numberBlocks++;
+  }
   }
   mTask->endOfCycle();
   double durationCycle = timer.getTime();
@@ -105,7 +111,7 @@ void TaskControl::execute()
   unsigned long numberObjectsPublished = mObjectsManager->publish();
 
   // monitoring metrics
-  double durationPublication = timer.getTime();
+  /*double durationPublication = timer.getTime();
   mCollector->send(numberBlocks, "QC_task_Numberofblocks_in_cycle");
   mCollector->send(durationCycle, "QC_task_Module_cycle_duration");
   mCollector->send(durationPublication, "QC_task_Publication_duration");
@@ -121,7 +127,7 @@ void TaskControl::execute()
   mCollector->send(timerTotalDurationActivity.getTime(), "QC_task_Total_duration_activity_whole_run");
   mCollector->send(whole_run_rate, "QC_task_Rate_objects_published_per_second_whole_run");
 //  mCollector->send(std::stod(pidStatus[3]), "QC_task_Mean_pcpu_whole_run");
-  mCollector->send(ba::mean(pmems), "QC_task_Mean_pmem_whole_run");
+  mCollector->send(ba::mean(pmems), "QC_task_Mean_pmem_whole_run");*/
 }
 
 void TaskControl::stop()

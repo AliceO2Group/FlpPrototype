@@ -15,9 +15,8 @@ namespace AliceO2
 /// ALICE O2 Monitoring system
 namespace Monitoring
 {
-/// Core features of ALICE O2 Monitoring system
-namespace Core
-{
+
+using namespace AliceO2::InfoLogger;
 
 /// Singleton class that is used in all Monitoring classes
 ///
@@ -26,29 +25,23 @@ namespace Core
 class MonInfoLogger : public AliceO2::InfoLogger::InfoLogger
 {
   public:
-    static MonInfoLogger &GetInstance()
+    static MonInfoLogger &Get()
     {
-      static MonInfoLogger foo;
-      return foo;
+      static MonInfoLogger infoLoggerInstance;
+      return infoLoggerInstance;
     }
 
   private:
-    MonInfoLogger()
-    {
-      *this << "InfoLogger instance for Monitoring initialized" << AliceO2::InfoLogger::InfoLogger::endm;
-    }
-
-    virtual ~MonInfoLogger()
-    {
-    }
-
-    /// Delete copy constructors
+    MonInfoLogger() = default;
+    
+    /// Delete copy and move constructors
     MonInfoLogger &operator=(const MonInfoLogger &) = delete;
     MonInfoLogger(const MonInfoLogger &) = delete;
+    MonInfoLogger(MonInfoLogger &&) = delete;
+    MonInfoLogger &operator=(InfoLogger&&) = delete;
 
 };
 
-} // Core
 } // Monitoring
 } // Alice02
 
