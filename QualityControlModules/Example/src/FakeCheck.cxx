@@ -6,7 +6,7 @@
 #include "Example/FakeCheck.h"
 
 // std
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 // ROOT
 #include <TH1.h>
