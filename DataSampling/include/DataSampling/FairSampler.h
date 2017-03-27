@@ -21,16 +21,16 @@ class FairSampler : public SamplerInterface, public FairMQDevice
     FairSampler();
 
     /// Destructor
-    virtual ~FairSampler();
+    ~FairSampler() override;
 
-    std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout = 0);
+    std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout = 0) override;
 
-    void releaseData();
+    void releaseData() override;
 
   protected:
     bool HandleData(FairMQParts& parts, int /*index*/);
-    virtual void Run() override;
-    virtual void PreRun() override {
+    void Run() override;
+    void PreRun() override {
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Needed for some obscure reason
     };
 

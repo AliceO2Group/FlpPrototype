@@ -22,7 +22,7 @@ class FairInjector : public InjectorInterface, public FairMQDevice
   public:
 
     FairInjector();
-    virtual ~FairInjector();
+    ~FairInjector() override;
 
     /// \brief Example interface to inject data into data sampling system.
     ///
@@ -31,10 +31,10 @@ class FairInjector : public InjectorInterface, public FairMQDevice
     ///
     /// \param dataBlocks A reference to a vector of data blocks. All data blocks in the vector have the same event id.
     /// \return 0 on success, an error code otherwise
-    int injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks);
+    int injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks) override;
 
   protected:
-    virtual void Run();
+    void Run() override;
 
     std::vector<std::shared_ptr<DataBlockContainer>> mDataBlocks;
     bool mAvailableData; // to make sure that we don't try to send something that is not there

@@ -30,7 +30,7 @@ class BenchmarkTask: public TaskInterface
     /// \brief Constructor
     BenchmarkTask();
     /// Destructor
-    virtual ~BenchmarkTask();
+    ~BenchmarkTask() override;
 
     // Definition of the methods for the template method pattern
     void initialize() override;

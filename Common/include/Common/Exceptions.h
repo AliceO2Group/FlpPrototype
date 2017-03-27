@@ -25,7 +25,7 @@ struct ExceptionBase : virtual std::exception, virtual boost::exception
 
 struct ObjectNotFoundError : virtual ExceptionBase
 {
-  virtual const char *what() const noexcept override
+  const char *what() const noexcept override
   {
     return "Object not found error";
   }

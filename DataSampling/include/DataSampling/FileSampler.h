@@ -22,10 +22,10 @@ class FileSampler: public SamplerInterface
     /// Standard Constructor
     FileSampler();
     /// Destructor
-    virtual ~FileSampler();
+    ~FileSampler() override;
 
-    virtual std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0);
-    virtual void releaseData();
+    std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0) override;
+    void releaseData() override;
 
   private:
     std::string getFilePath();

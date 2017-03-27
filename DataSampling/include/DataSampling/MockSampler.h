@@ -26,10 +26,10 @@ class MockSampler : public SamplerInterface
     /// Standard Constructor
     MockSampler();
     /// Destructor
-    virtual ~MockSampler();
+    ~MockSampler() override;
 
-    virtual std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0);
-    virtual void releaseData();
+    std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0) override;
+    void releaseData() override;
 
   private:
     DataBlockProducer *producer;

@@ -23,7 +23,7 @@ class NonEmpty : public AliceO2::QualityControl::Checker::CheckInterface
     /// Default constructor
     NonEmpty();
     /// Destructor
-    virtual ~NonEmpty();
+    ~NonEmpty() override;
 
     void configure(std::string name) override;
     Quality check(const MonitorObject *mo) override;

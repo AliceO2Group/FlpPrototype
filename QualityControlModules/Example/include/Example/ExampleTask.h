@@ -25,7 +25,7 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
     /// \brief Constructor
     ExampleTask();
     /// Destructor
-    virtual ~ExampleTask();
+    ~ExampleTask() override;
 
     // Definition of the methods for the template method pattern
     void initialize() override;

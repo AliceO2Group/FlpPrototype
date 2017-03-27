@@ -44,7 +44,7 @@ class DsInfoLogger : public AliceO2::InfoLogger::InfoLogger
       *this << "DataSampling infologger initialized" << infologger::endm;
     }
 
-    virtual ~DsInfoLogger()
+    ~DsInfoLogger() override
     {
     }
 
