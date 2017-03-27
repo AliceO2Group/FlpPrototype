@@ -10,7 +10,7 @@
 namespace AliceO2 {
 namespace DataSampling {
 
-DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurrent(0),
+DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurrent(nullptr),
                                                                           mCurrentPayloadSize(payloadSize),
                                                                           mIsRandom(random),
                                                                           mCurrentId(0)
@@ -48,7 +48,7 @@ void DataBlockProducer::regenerate()
       delete[] mCurrent->data;
     }
     delete mCurrent;
-    mCurrent = 0;
+    mCurrent = nullptr;
   }
 
   // generate payload size if needed
