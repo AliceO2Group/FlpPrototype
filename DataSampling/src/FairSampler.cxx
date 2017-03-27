@@ -93,7 +93,7 @@ bool FairSampler::HandleData(FairMQParts &parts, int /*index*/)
   }
   mBlock = new std::vector<std::shared_ptr<DataBlockContainer>>();
 
-  DataBlock *block = new DataBlock();
+  auto *block = new DataBlock();
   // TODO loop over parts
   block->header = *static_cast<DataBlockHeaderBase *>(parts.At(0)->GetData());
   block->data = static_cast<char *>(parts.At(1)->GetData()); // TODO should I copy ?

@@ -26,7 +26,7 @@ std::vector<std::shared_ptr<DataBlockContainer>> * MockSampler::getData(int time
   unsigned int i = 0;
 //  DataBlockProducer producer(false, 1024);
 //  while (keepRunning) {
-    std::vector<std::shared_ptr<DataBlockContainer>> *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
+    auto *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
     DataBlock *block = producer->get();
     std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
     blocks->push_back(containerPtr);

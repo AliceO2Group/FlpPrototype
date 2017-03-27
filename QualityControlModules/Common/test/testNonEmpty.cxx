@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(checkable)
 
 BOOST_AUTO_TEST_CASE(beautify)
 {
-  TH1F *histo = new TH1F("test", "test", 100, 0, 99);
+  auto *histo = new TH1F("test", "test", 100, 0, 99);
   MonitorObject monitorObject("testObject", histo, "task"); // here we are the owner of the histo
   NonEmpty myCheck;
   myCheck.configure("test");

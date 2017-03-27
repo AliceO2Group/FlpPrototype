@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   }
 
 //  AliceO2::DataSampling::InjectorInterface *device = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
-  AliceO2::DataSampling::FairInjector *device = new AliceO2::DataSampling::FairInjector();
+  auto *device = new AliceO2::DataSampling::FairInjector();
 
   unsigned int i = 0;
   DataBlockProducer producer(true, 1024);

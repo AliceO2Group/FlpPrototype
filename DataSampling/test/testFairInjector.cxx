@@ -18,7 +18,7 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE(simple)
 {
-  AliceO2::DataSampling::FairInjector *dataSamplingInjector = new AliceO2::DataSampling::FairInjector();
+  auto *dataSamplingInjector = new AliceO2::DataSampling::FairInjector();
 
   std::vector<std::shared_ptr<DataBlockContainer>> dataBlocks;
 

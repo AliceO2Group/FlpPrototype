@@ -81,7 +81,7 @@ void MeanIsAbove::beautify(MonitorObject *mo, Quality checkResult)
 
   Double_t xMin = th1->GetXaxis()->GetXmin();
   Double_t xMax = th1->GetXaxis()->GetXmax();
-  TLine* lineMin = new TLine(xMin, mThreshold, xMax, mThreshold);
+  auto* lineMin = new TLine(xMin, mThreshold, xMax, mThreshold);
   lineMin->SetLineWidth(2);
   th1->GetListOfFunctions()->Add(lineMin);
 

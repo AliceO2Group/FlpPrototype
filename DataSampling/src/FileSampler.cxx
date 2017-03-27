@@ -31,7 +31,7 @@ vector<shared_ptr<DataBlockContainer>> * FileSampler::getData(int timeout)
   cout << "DataSampling::getData " << endl;
   string filePath = getFilePath();
   cout << "filePath : " << filePath << endl;
-  DataBlock *result = new DataBlock();
+  auto *result = new DataBlock();
   ifstream file(filePath, ios::in | ios::binary);
   file.read((char*) &result->header, sizeof(DataBlockHeaderBase));
   cout << "blockType : " << std::hex << result->header.blockType << endl;
