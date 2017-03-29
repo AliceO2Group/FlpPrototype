@@ -6,3 +6,4 @@
 /build/
 .idea
 /profiles/
+/cmake-build-debug/
