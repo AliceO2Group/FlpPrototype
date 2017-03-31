@@ -1,14 +1,13 @@
-This C++ project demonstrates the usage of CMake, boost's test, boost's option parsing and
-Doxygen. It is not the simplest example ever because we want to show how to use them
-in a proper non-minimalistic way. It also shows a way to structure the code and the other
-type of files.
+## Project description
 
-## Project description and aim
+This project provides the software and tools necessary to run a data acquisition system for the ALICE O2.
 
-Our project is made of several subprojects.
+It is made of a number of modules. Once a module is ready, we aim at extracting it in its own repo within AliceO2Group or in an existing repo.
 
-We want to be able to compile independently subprojects or all at the same time.
-When compiling a subproject independently we must have installed before the other subprojects from which it depends.
+Instructions to setup a machine to run it :
+https://alice-o2.web.cern.ch/node/121
+
+The code will gradually be made compliant with the Alice O2 coding guidelines and software code organization. It shall also be built by alibuild in due time.
 
 ## Project structure and organisation
 
@@ -48,17 +47,7 @@ just "include <xxx.h>" to avoid conflicts.
 
 ## Current Requirements
 
-* doxygen: http://www.stack.nl/~dimitri/doxygen/
-* graphviz: http://www.graphviz.org/
-* cmake > 2.8
-* ccmake
-* boost 1.58
-
-## CMake
-
-CMake (www.cmake.org) is the make tool we use in this project.
-Its config file is a plain text file called CMakeLists.txt.
-You will find a sample one right next to this README. It is commented heavily for reference.
+See https://alice-o2.web.cern.ch/node/121
 
 #### The cmake way
 
@@ -143,26 +132,6 @@ The former is to ease the development of unit tests and the latter is
 to help getting options for your binaries. See apps/hellorunner/main.cxx
 for an example.
 
-## Git
-
-In the main
-CMakeLists.txt we include one or the other by commenting and uncommenting
-the corresponding lines. It will define a CMake variable
-that will be used when generating libs/hello/Version.h.
-
-GetGitRevisionDescription module has been added to the CMake folder in the
-"CMake" directory in order to retrieve branch and revision information
-from Git repository. Starting with Git 1.9 the module will be part of
-official cMake distribution, until then it has to be part of the
-application.
-
-## Packaging
-
-CPack permits building packages based on CMake. One should add CPackConfig
-as it is done in the last line of the CMakeLists.txt. CPackConfig.cmake
-is in cmake folder and contains the required variables.
-If you do "make package" it will create a tarball, a .deb and an rpm.
-
 ## Code formatting and beautifier
 
 The file .clang-formatter contains a set of rules that one can use to adapt
@@ -183,36 +152,9 @@ To check whether a file complies or not with the format :
     clang-format -style=file -output-replacements-xml <source file> | grep -c "<replacement " >/dev/null
     # returns 1 if complies, 0 otherwise
 
+## IDEs
 
-## Remarks
-
-CMake is cross-platforms. Thus there are commands that might be there
-only to be compatible with one or the other platforms. In this project
-we focus on Linux and removed most of these specificities for sake
-of simplicity.
-
-
-For any question, please contact:
-Barthélémy von Haller (barthelemy_vonhaller@yahoo.fr)
-
-
-
-TODO
-- The dynamic lib of Configuration doesn't work when linking. I think that it is because you can't template only
-  on the return type.
-- Move common stuff to O2.cmake (do the same for the project template)
-- Change the project template for the new one
-- Test Monitoring build
-- Reformat Control, Configuration, etc...
-- Control does not install anything ?
-- In general: naming convention (e.g. no abbreviation), coding convention (1 class per file, ...), cmake best practices
-  (find_packages, decentralization), formatting, namespaces
-- test doc
-- Can we avoid having the same Version.h.in everywhere ? can we generalize it ?
-- Extract everything that is common in O2.cmake.
-- Tests in Control must not depend on a running zookeeper or it must launch it in the setup of the test suite.
-- Only two tests in Control are able to run, others have been desactivated.
-
+### CLion
 
 Clion setup : launch from a terminal where we have the correct env. Add CMake options :
 -DBOOST_ROOT=/opt/hackathon/ -DBOOST_LIBRARYDIR=/opt/hackathon/lib64 -DBoost_NO_SYSTEM_PATH=ON
