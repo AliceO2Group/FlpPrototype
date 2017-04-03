@@ -57,7 +57,7 @@ class SuffixNumber
     Number parse(std::string input) const
     {
       // Find the non-numeric suffix
-      auto pos = input.find_first_not_of(".0123456789");
+      auto pos = input.find_first_not_of("-.0123456789");
 
       // Convert numeric part
       auto numberString = input.substr(0, pos);
