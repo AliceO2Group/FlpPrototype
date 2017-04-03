@@ -1,14 +1,16 @@
-#include "SuffixNumber.h"
+#include "Common/SuffixNumber.h"
 #include <vector>
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
-namespace _SuffixNumberTable {
-
-const std::vector<std::pair<const char*, const size_t>>& get()
+namespace AliceO2 
 {
-  static const std::vector<std::pair<const char*, const size_t>> units {
+namespace Common 
+{
+namespace _SuffixNumberTable 
+{
+
+const std::vector<std::pair<std::string, const size_t>>& get()
+{
+  static const std::vector<std::pair<std::string, const size_t>> units {
     {"k", 1000},
     {"M", 1000000},
     {"G", 1000000000},
@@ -30,6 +32,5 @@ const std::vector<std::pair<const char*, const size_t>>& get()
 }
 
 } // namespace _SuffixNumberTable
-} // namespace Utilities
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2

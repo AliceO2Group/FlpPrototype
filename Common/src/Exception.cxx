@@ -3,16 +3,14 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#include "RORC/Exception.h"
+#include "Common/Exception.h"
 #include <stdexcept>
 #include <boost/exception/all.hpp>
-#include "ExceptionInternal.h"
 
-using namespace AliceO2::Rorc;
-namespace b = boost;
-
-namespace AliceO2 {
-namespace Rorc {
+namespace AliceO2 
+{
+namespace Common
+{
 
 const char* Exception::what() const noexcept
 {
@@ -20,13 +18,13 @@ const char* Exception::what() const noexcept
     if (auto info = boost::get_error_info<ErrorInfo::Message>(*this)) {
       return info->data();
     } else {
-      return "AliceO2::Rorc::Exception";
+      return "AliceO2::Common::Exception";
     }
   }
   catch (const std::exception& e) {
-    return "AliceO2::Rorc::Exception";
+    return "AliceO2::Common::Exception";
   }
 }
 
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2

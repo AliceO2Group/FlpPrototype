@@ -2,17 +2,18 @@
 #include <string>
 #include <vector>
 #include <boost/lexical_cast.hpp>
-#include <ExceptionInternal.h>
+#include "Common/Exceptions.h"
 
-#ifndef SRC_UTILITIES_SUFFIXNUMBER_H_
-#define SRC_UTILITIES_SUFFIXNUMBER_H_
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
-
-namespace _SuffixNumberTable {
-const std::vector<std::pair<const char*, const size_t>>& get();
+namespace AliceO2 
+{
+namespace Common 
+{
+namespace _SuffixNumberTable 
+{
+const std::vector<std::pair<std::string, const size_t>>& get();
 } // namespace _SuffixNumberTable
 
 /// Number with SI suffix. Only been tested with integer types, but floats might work.
@@ -63,7 +64,7 @@ class SuffixNumber
       Number number;
       if (!boost::conversion::try_lexical_convert<Number>(numberString, number)) {
         BOOST_THROW_EXCEPTION(Exception() << ErrorInfo::Message("Could not convert number")
-            << ErrorInfo::String(numberString));
+            << ErrorInfo::Input(numberString));
       }
 
       if (pos == std::string::npos) {
@@ -83,7 +84,7 @@ class SuffixNumber
             // Check for overflow for integers
             if ((a != 0) && ((multiplied / a) != b)) {
               BOOST_THROW_EXCEPTION(Exception() << ErrorInfo::Message("Number too large for representation")
-                << ErrorInfo::String(input));
+                << ErrorInfo::Input(input));
             }
           }
           return multiplied;
@@ -96,7 +97,7 @@ class SuffixNumber
 };
 
 template <typename T>
-std::istream& operator>>(std::istream &stream, AliceO2::Rorc::Utilities::SuffixNumber<T>& suffixNumber)
+std::istream& operator>>(std::istream &stream, SuffixNumber<T>& suffixNumber)
 {
   std::string string;
   stream >> string;
@@ -110,8 +111,7 @@ std::ostream& operator<<(std::ostream& stream, const SuffixNumber<T>& suffixNumb
   return stream << suffixNumber.getNumber();
 }
 
-} // namespace Utilities
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2
 
-#endif // SRC_UTILITIES_SUFFIXNUMBER_H_
+#endif // ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_

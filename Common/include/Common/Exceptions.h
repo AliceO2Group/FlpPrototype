@@ -6,8 +6,10 @@
 #ifndef COMMON_EXCEPTIONS_H
 #define COMMON_EXCEPTIONS_H
 
-#include <boost/exception/all.hpp>
 #include <exception>
+#include <string>
+#include <boost/exception/all.hpp>
+#include "Exception.h"
 
 namespace AliceO2 {
 namespace Common {
@@ -19,7 +21,7 @@ typedef boost::error_info<struct errinfo_details_, std::string> errinfo_details;
 typedef boost::error_info<struct errinfo_db_errno_, int> errinfo_db_errno;
 typedef boost::error_info<struct errinfo_db_message_, std::string> errinfo_db_message;
 
-struct ExceptionBase : virtual std::exception, virtual boost::exception
+struct ExceptionBase : public Exception
 {
 };
 

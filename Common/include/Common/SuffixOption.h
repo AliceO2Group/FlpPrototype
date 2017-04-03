@@ -1,25 +1,25 @@
 #include <string>
 #include <boost/program_options/value_semantic.hpp>
-#include "Utilities/SuffixNumber.h"
+#include "Common/SuffixNumber.h"
 
-#ifndef SRC_COMMANDLINEUTILITIES_SUFFIXOPTION_H_
-#define SRC_COMMANDLINEUTILITIES_SUFFIXOPTION_H_
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
 
-namespace AliceO2 {
-namespace Rorc {
-namespace CommandLineUtilities {
-namespace Options {
+namespace AliceO2 
+{
+namespace Common
+{
 
-namespace _SuffixOptionTable {
-const std::vector<std::pair<const char*, const size_t>>& get();
-} // namespace _SuffixOptionTable
-
+/// Wrapper around SuffixNumber to use it with boost::program_options
+/// Example:
+/// myOptions.add_options()("my-option", Common::SuffixOption<uint64_t>::make(&myOption)->default_value("10k"),
+///     "An option for a number");
 template <typename Number>
 class SuffixOption final : public boost::program_options::value_semantic
 {
   public:
     using ThisType = SuffixOption<Number>;
-    using SuffixNumberType = Utilities::SuffixNumber<Number>;
+    using SuffixNumberType = SuffixNumber<Number>;
 
     SuffixOption(SuffixNumberType* storeTo = nullptr) : mStoreToSuffixNumber(storeTo)
     {
@@ -130,9 +130,7 @@ class SuffixOption final : public boost::program_options::value_semantic
     std::string mName;
 };
 
-} // namespace Options
-} // namespace CommandLineUtilities
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2
 
-#endif // SRC_COMMANDLINEUTILITIES_SUFFIXOPTION_H_ 
+#endif ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
