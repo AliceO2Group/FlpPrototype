@@ -3,7 +3,8 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#pragma once
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_PROGRAM_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_PROGRAM_H_
 
 #include <atomic>
 #include <boost/program_options.hpp>
@@ -76,3 +77,5 @@ class Program
 
 } // namespace Common
 } // namespace AliceO2
+
+#endif // PROGRAM

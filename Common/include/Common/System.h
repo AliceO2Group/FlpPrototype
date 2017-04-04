@@ -3,7 +3,8 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#pragma once
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_SYSTEM_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_SYSTEM_H_
 
 #include <set>
 #include <string>
@@ -47,3 +48,5 @@ void assertFileSystemType(std::string path, const std::set<std::string>& validTy
 } // namespace System
 } // namespace Common
 } // namespace AliceO2
+
+#endif // ALICEO2_FLPPROTOTYPE_COMMON_SYSTEM_H_

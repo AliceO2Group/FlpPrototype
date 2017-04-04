@@ -3,15 +3,15 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#include "Iommu.h"
+#include "Common/Iommu.h"
 #include <boost/filesystem/operations.hpp>
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
-namespace Iommu {
-namespace {
-} // Anonymous namespace
+namespace AliceO2
+{
+namespace Common
+{
+namespace Iommu
+{
 
 bool isEnabled()
 {
@@ -19,7 +19,6 @@ bool isEnabled()
   return boost::filesystem::exists("/sys/kernel/iommu_groups/0");
 }
 
-} // namespace Iommu
 } // namespace Util
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2

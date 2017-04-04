@@ -3,17 +3,21 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#pragma once
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_IOMMU_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_IOMMU_H_
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
-namespace Iommu {
+namespace AliceO2
+{
+namespace Common
+{
+namespace Iommu
+{
 
 /// Checks if the IOMMU is enabled
 bool isEnabled();
 
 } // namespace Iommu
-} // namespace Util
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2
+
+#endif // ALICEO2_FLPPROTOTYPE_COMMON_IOMMU_H_

@@ -1,34 +1,31 @@
-/// \file Thread.h
-/// \brief Definition of various useful utilities that don't really belong anywhere in particular
+/// \file BasicThread.h
+/// \brief Definition of BasicThread class
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#pragma once
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_BASICTHREAD_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_BASICTHREAD_H_
 
 #include <atomic>
-#include <chrono>
 #include <iostream>
-#include <map>
-#include <set>
 #include <stdexcept>
 #include <system_error>
 #include <string>
 #include <thread>
-#include <boost/throw_exception.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/lexical_cast.hpp>
-#include "ExceptionInternal.h"
-#include "InfoLogger/InfoLogger.hxx"
 
+namespace AliceO2
+{
+namespace Common
+{
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
-
-class Thread
+/// Simple thread class that executes a function in a new thread. The function takes an atomic flag which indicates
+/// the function should stop its work.
+class BasicThread
 {
   public:
 
+    /// Start thread
+    /// \param stopFlag Pointer to flag indicating the function should stop
     void start(std::function<void(std::atomic<bool>* stopFlag)> function)
     {
       join();
@@ -49,7 +46,7 @@ class Thread
       }
     }
 
-    ~Thread()
+    ~BasicThread()
     {
       try {
         join();
@@ -70,6 +67,7 @@ class Thread
     std::atomic<bool> mStopFlag;
 };
 
-} // namespace Util
-} // namespace Rorc
+} // namespace Common
 } // namespace AliceO2
+
+#endif // ALICEO2_FLPPROTOTYPE_COMMON_BASICTHREAD_H_
