@@ -9,9 +9,12 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
+namespace AliceO2
+{
+namespace Common
+{
+namespace System
+{
 
 /// Sets the given function as the SIGINT handler
 void setSigIntHandler(void(*function)(int));
@@ -41,6 +44,6 @@ std::pair<bool, std::string> isFileSystemTypeAnyOf(const boost::filesystem::path
 /// Throws if the file system type of the given file/directory is not one of the given valid types
 void assertFileSystemType(std::string path, const std::set<std::string>& validTypes, std::string name);
 
-} // namespace Util
-} // namespace Rorc
+} // namespace System
+} // namespace Common
 } // namespace AliceO2

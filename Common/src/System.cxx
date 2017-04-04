@@ -10,12 +10,15 @@
 #include <sstream>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
-#include "ExceptionInternal.h"
-#include "Utilities/System.h"
+#include "Common/System.h"
+#include "Common/Exception.h"
 
-namespace AliceO2 {
-namespace Rorc {
-namespace Utilities {
+namespace AliceO2
+{
+namespace Common
+{
+namespace System
+{
 
 namespace b = boost;
 namespace bfs = boost::filesystem;
@@ -94,7 +97,7 @@ void assertFileSystemType(std::string path, const std::set<std::string>& validTy
 {
   bool found;
   std::string type;
-  std::tie(found, type) = Utilities::isFileSystemTypeAnyOf(path, validTypes);
+  std::tie(found, type) = isFileSystemTypeAnyOf(path, validTypes);
 
   if (!found) {
     std::ostringstream oss;
@@ -114,6 +117,6 @@ void assertFileSystemType(std::string path, const std::set<std::string>& validTy
   }
 }
 
-} // namespace Util
-} // namespace Rorc
+} // namespace System
+} // namespace Common
 } // namespace AliceO2

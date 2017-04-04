@@ -8,10 +8,12 @@ set(LIB_HEADERS
   ../include/Common/Exceptions.h # Normal header
   ../include/Common/Fifo.h # Normal header
   ../include/Common/MakeUnique.h # Normal header
+  ../include/Common/Program.h # Normal header
   ../include/Common/signalUtilities.h # Normal header
   ../include/Common/SuffixOption.h # Normal header
   ../include/Common/SuffixNumber.h # Normal header
   ../include/Common/SimpleLog.h # Normal header
+  ../include/Common/System.h # Normal header
   ../include/Common/Thread.h # Normal header
   ../include/Common/Timer.h # Normal header
 )
@@ -22,8 +24,10 @@ set(LIB_SOURCES
   Thread.cxx
   Configuration.cxx
   Daemon.cxx
+  Program.cxx
   SimpleLog.cxx
   SuffixNumber.cxx
+  System.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
@@ -42,7 +46,7 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
 )
 
 # Links the target exe (projArunner) against the library (libprojA) and other required libraries
-target_link_libraries(${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
+target_link_libraries(${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
 
 # Says how and where to install software
 install(TARGETS ${LIBRARY_NAME}
