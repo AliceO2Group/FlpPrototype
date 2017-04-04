@@ -39,14 +39,14 @@ bool isSigIntHandlerSet()
   return sa.sa_flags != 0;
 }
 
-void makeParentDirectories(const bfs::path& path)
+void makeParentDirectories(const std::string& path)
 {
   /// TODO Implement using boost::filesystem
-  auto parent = path.parent_path();
+  auto parent = bfs::path(path).parent_path();
   system(b::str(b::format("mkdir -p %s") % parent).c_str());
 }
 
-void touchFile(const bfs::path& path)
+void touchFile(const std::string& path)
 {
   std::ofstream ofs(path.c_str(), std::ios::app);
 }
@@ -68,7 +68,7 @@ std::string executeCommand(const std::string& command)
   return oss.str();
 }
 
-std::string getFileSystemType(const boost::filesystem::path& path)
+std::string getFileSystemType(const std::string& path)
 {
   std::string type {""};
   std::string result = executeCommand(b::str(b::format("df --output=fstype %s") % path.c_str()));
@@ -85,7 +85,7 @@ std::string getFileSystemType(const boost::filesystem::path& path)
   return type;
 }
 
-std::pair<bool, std::string> isFileSystemTypeAnyOf(const boost::filesystem::path& path,
+std::pair<bool, std::string> isFileSystemTypeAnyOf(const std::string& path,
     const std::set<std::string>& types)
 {
   auto type = getFileSystemType(path);
@@ -93,7 +93,7 @@ std::pair<bool, std::string> isFileSystemTypeAnyOf(const boost::filesystem::path
 }
 
 /// Throws if the file system type of the given file/directory is not one of the given valid types
-void assertFileSystemType(std::string path, const std::set<std::string>& validTypes, std::string name)
+void assertFileSystemType(const std::string& path, const std::set<std::string>& validTypes, std::string name)
 {
   bool found;
   std::string type;

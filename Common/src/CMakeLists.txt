@@ -39,7 +39,7 @@ set(LIBRARY_NAME Common)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME})
+target_link_libraries(${LIBRARY_NAME} pthread)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
@@ -50,7 +50,12 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
 )
 
 # Links the target exe (projArunner) against the library (libprojA) and other required libraries
-target_link_libraries(${LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
+target_link_libraries(
+  ${LIBRARY_NAME} 
+  ${Boost_PROGRAM_OPTIONS_LIBRARY} 
+  ${Boost_FILESYSTEM_LIBRARY} 
+  ${Boost_SYSTEM_LIBRARY}
+)
 
 # Says how and where to install software
 install(TARGETS ${LIBRARY_NAME}

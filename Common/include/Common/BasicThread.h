@@ -52,10 +52,10 @@ class BasicThread
         join();
       }
       catch (const std::system_error& e) {
-        std::cout << "Failed to join thread: " << boost::diagnostic_information(e) << '\n';
+        std::cout << "Failed to join thread: " << e.what() << '\n';
       }
       catch (const std::exception& e) {
-        std::cout << "Unexpected exception while joining thread: " << boost::diagnostic_information(e) << '\n';
+        std::cout << "Unexpected exception while joining thread: " << e.what() << '\n';
       }
     }
 

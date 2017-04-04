@@ -36,20 +36,6 @@ namespace
     optionsDescription.add_options()("help", "Produce help message");
     return optionsDescription;
   }
-
-  po::variables_map getVariablesMap(int argc, char** argv, const po::options_description& optionsDescription)
-  {
-    po::variables_map variablesMap;
-    try {
-      po::store(po::parse_command_line(argc, argv, optionsDescription), variablesMap);
-      po::notify(variablesMap);
-    }
-    catch (const po::unknown_option& e) {
-      BOOST_THROW_EXCEPTION(ProgramOptionException()
-          << ErrorInfo::Message("Unknown option '" + e.get_option_name() + "'"));
-    }
-    return variablesMap;
-  }
 }
 
 std::atomic<bool> Program::sFlagSigInt(false);

@@ -1,4 +1,4 @@
-/// \file Iommu.cxx
+/// \file Iommu.h
 /// \brief Definition of functions related to the IOMMU
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)

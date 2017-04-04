@@ -1,11 +1,16 @@
+/// \file SuffixNumber.h
+/// \brief Definition of the SuffixOption class.
+///
+/// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
+
+#ifndef ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_
+#define ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_
+
 #include <istream>
 #include <string>
 #include <vector>
 #include <boost/lexical_cast.hpp>
 #include "Common/Exceptions.h"
-
-#ifndef ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_
-#define ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXNUMBER_H_
 
 namespace AliceO2 
 {
@@ -16,7 +21,7 @@ namespace _SuffixNumberTable
 const std::vector<std::pair<std::string, const size_t>>& get();
 } // namespace _SuffixNumberTable
 
-/// Number with SI suffix. Only been tested with integer types, but floats might work.
+/// Number with SI suffix.
 /// Supported suffixes:
 /// - Power of 10: k, M, G, T, P, E
 /// - Power of 2: Ki, Mi, Gi, Ti, Pi, Ei

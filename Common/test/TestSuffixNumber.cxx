@@ -1,10 +1,8 @@
 #include "Common/SuffixNumber.h"
 
-#define BOOST_TEST_MODULE Fifo test
-#define BOOST_TEST_MAIN
+#define BOOST_TEST_MODULE SuffixNumber
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
-#include <limits>
 
 using AliceO2::Common::SuffixNumber;
 

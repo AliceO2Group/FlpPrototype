@@ -1,3 +1,8 @@
+/// \file SuffixNumber.cxx
+/// \brief Implementation of the SuffixNumber class.
+///
+/// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
+
 #include "Common/SuffixNumber.h"
 #include <vector>
 

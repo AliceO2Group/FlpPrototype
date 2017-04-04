@@ -1,9 +1,14 @@
-#include <string>
-#include <boost/program_options/value_semantic.hpp>
-#include "Common/SuffixNumber.h"
+/// \file SuffixOption.h
+/// \brief Definition of the SuffixOption class.
+///
+/// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
 #ifndef ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
 #define ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
+
+#include <string>
+#include <boost/program_options/value_semantic.hpp>
+#include "Common/SuffixNumber.h"
 
 namespace AliceO2 
 {
@@ -86,7 +91,7 @@ class SuffixOption final : public boost::program_options::value_semantic
       return mRequired;
     }
 
-    virtual void parse(boost::any& valueStore, const std::vector<std::string>& newTokens, bool utf8) const override
+    virtual void parse(boost::any& valueStore, const std::vector<std::string>& newTokens, bool) const override
     {
       valueStore = SuffixNumberType(newTokens.at(0));
     }
@@ -133,4 +138,4 @@ class SuffixOption final : public boost::program_options::value_semantic
 } // namespace Common
 } // namespace AliceO2
 
-#endif ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
+#endif // ALICEO2_FLPPROTOTYPE_COMMON_SUFFIXOPTION_H_
