@@ -15,6 +15,7 @@ This feature is also exported as a Tcl library, libtclConfiguration.so
 Class to help creating a daemon process running in the background.
 
 ### Exceptions.h
+Define the exceptions based on boost::exception that we use in the project.
 
 ### Fifo.h
 
@@ -30,6 +31,12 @@ Class implementing a buffer to read from file descriptor and get out data line b
 Provides std::make_unique to c++11. Superseded by C++14, do not use.
 
 ### signalUtilities.h
+
+This file proposes a set of functions to handle signals in your program.
+It prints the stack trace when there is a SIGSEV.
+It also handles elegantly SIGINT and SIGTERM by catching them and allowing the program
+to clean itself up before exiting. If a second SIGINT/SIGTERM is
+received before the end of the clean up we exit immediately.
 
 ### SimpleLog.h
 
