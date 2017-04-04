@@ -8,6 +8,7 @@ Here is a list and short description of the header files.
 ### Configuration.h
 
 Class to retrieve configuration parameters (key/value pairs) from a text file (e.g. .ini format).
+This feature is also exported as a Tcl library, libtclConfiguration.so
 
 ### Daemon.h
 
