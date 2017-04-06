@@ -269,18 +269,25 @@ macro(O2_GENERATE_LIBRARY)
   target_include_directories(
       ${Int_LIB}
       PUBLIC
-      ${CMAKE_CURRENT_SOURCE_DIR}/include
+          # TODO retrofit to O2
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
       PRIVATE
       ${CMAKE_CURRENT_SOURCE_DIR}/src # internal headers
       ${CMAKE_CURRENT_SOURCE_DIR}   # For the modules that generate a dictionary
   )
 
   ############### install the library ###################
-  install(TARGETS ${Int_LIB} DESTINATION lib)
+  # TODO remove ? keep ?
+  install(TARGETS ${Int_LIB}
+          EXPORT ${PROJECT_NAME}Targets            # for downstream dependencies
+          DESTINATION lib)
 
   # Install all the public headers
-  if(EXISTS include/${MODULE_NAME})
-    install(DIRECTORY include/${MODULE_NAME} DESTINATION include)
+  # TODO retrofit to O2
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/${MODULE_NAME})
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${MODULE_NAME}
+            DESTINATION include)
   endif()
 
 endmacro(O2_GENERATE_LIBRARY)

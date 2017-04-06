@@ -72,22 +72,16 @@ set(SRCS
   src/SimpleLog.cxx
   src/LineBuffer.cxx
 )
-if (TCL_FOUND)
-  list(APPEND SRCS 
-    src/Configuration_tcl_wrap.cxx
-    src/Configuration.cxx
-  )
-endif()
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
 # We don't want to polute our source tree with it, thus putting it in binary tree.
 configure_file("include/${MODULE_NAME}/Version.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/${MODULE_NAME}/Version.h"
-  @ONLY
-)
+        "${CMAKE_CURRENT_BINARY_DIR}/include/${MODULE_NAME}/Version.h"
+        @ONLY
+        )
 
 include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}/include
+        ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
 set(LIBRARY_NAME ${MODULE_NAME})
@@ -97,3 +91,19 @@ set(BUCKET_NAME o2_common_bucket)
 O2_GENERATE_LIBRARY()
 
 add_subdirectory(doc)
+
+# Library for Tcl
+# Usually we don't allow multiple libraries in O2 modules. This is an exception.
+if (TCL_FOUND)
+    set(SRCS
+    src/Configuration_tcl_wrap.cxx
+    src/Configuration.cxx
+  )
+  set(LIBRARY_NAME tclConfiguration)
+  O2_GENERATE_LIBRARY()
+endif()
+
+# TODO RECONSIDER THE THINGS BELOW AFTER EXTRACTION TO ITS OWN REPO
+# Make sure we tell the topdir CMakeLists that we exist (if build from topdir)
+set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
+include(PackageConfigurator)
