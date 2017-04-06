@@ -34,16 +34,7 @@ if(GIT_FOUND)
     set (VCS_REVISION ${GIT_SHA1})
 endif()
 
-# C++11 needed
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG(-std=c++11 COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
-
-# This line finds the boost lib and headers. 
+# This line finds the boost lib and headers.
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
 find_package(Boost 1.41 COMPONENTS unit_test_framework program_options system REQUIRED)
 

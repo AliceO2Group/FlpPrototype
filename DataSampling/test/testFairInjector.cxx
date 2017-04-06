@@ -34,6 +34,5 @@ BOOST_AUTO_TEST_CASE(simple)
   }
 
   delete dataSamplingInjector;
-
 }
 

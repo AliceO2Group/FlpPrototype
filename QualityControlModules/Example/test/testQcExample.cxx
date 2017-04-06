@@ -28,8 +28,8 @@ BOOST_AUTO_TEST_CASE(insantiate_task)
   ExampleTask task;
   TaskConfig config;
   config.publisherClassName = "MockPublisher";
-  ObjectsManager manager(config);
-  task.setObjectsManager(&manager);
+  auto manager = make_shared<ObjectsManager>(config);
+  task.setObjectsManager(manager);
   task.initialize();
 
   BOOST_CHECK(task.getHisto1() != nullptr);

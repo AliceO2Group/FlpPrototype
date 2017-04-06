@@ -6,6 +6,7 @@
 #ifndef PROJECT_SAMPLERFACTORY_H
 #define PROJECT_SAMPLERFACTORY_H
 
+#include <memory>
 #include "DataSampling/SamplerInterface.h"
 
 namespace AliceO2 {
@@ -26,7 +27,7 @@ class SamplerFactory
     * @todo add a version of this method to get a class based on the Configuration system
     * @return an instance of the class (the caller is the owner)
     */
-    static SamplerInterface *create(std::string name);
+    static std::unique_ptr<SamplerInterface> create(std::string name);
 };
 
 }
