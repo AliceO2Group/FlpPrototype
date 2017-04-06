@@ -116,5 +116,8 @@ endif()
 
 # TODO RECONSIDER THE THINGS BELOW AFTER EXTRACTION TO ITS OWN REPO
 # Make sure we tell the topdir CMakeLists that we exist (if build from topdir)
-set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
+get_directory_property(hasParent PARENT_DIRECTORY)
+if(hasParent)
+    set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
+endif()
 include(PackageConfigurator)
