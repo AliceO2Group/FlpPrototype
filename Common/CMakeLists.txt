@@ -92,6 +92,17 @@ O2_GENERATE_LIBRARY()
 
 add_subdirectory(doc)
 
+set(TEST_SRCS
+  test/testFifo.cxx
+  test/testTimer.cxx
+)
+
+O2_GENERATE_TESTS(
+ MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+ BUCKET_NAME ${BUCKET_NAME}
+ TEST_SRCS ${TEST_SRCS}
+)
+
 # Library for Tcl
 # Usually we don't allow multiple libraries in O2 modules. This is an exception.
 if (TCL_FOUND)
