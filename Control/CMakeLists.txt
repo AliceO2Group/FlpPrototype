@@ -63,9 +63,11 @@ ENDIF ()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -fPIC")
 
 link_o2_subproject(Common)
+link_o2_subproject(InfoLogger)
 
 add_subdirectory(StateMachine)
-#add_subdirectory(ControlZdaq
+#add_subdirectory(ControlZdaq)
+add_subdirectory(ControlFairMQ)
 
 # TODO RECONSIDER THE THINGS BELOW AFTER EXTRACTION TO ITS OWN REPO
 # Make sure we tell the topdir CMakeLists that we exist (if build from topdir)
