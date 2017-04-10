@@ -340,11 +340,12 @@ endfunction(O2_GENERATE_EXECUTABLE)
 # arg BUCKET_NAME
 # arg TEST_SRCS
 # arg MODULE_LIBRARY_NAME - Name of the library of the module this executable belongs to.
+# arg TIMEOUT in seconds after which the test is considered failed.
 function(O2_GENERATE_TESTS)
   cmake_parse_arguments(
       PARSED_ARGS
       "" # bool args
-      "BUCKET_NAME;MODULE_LIBRARY_NAME" # mono-valued arguments
+      "BUCKET_NAME;MODULE_LIBRARY_NAME;TIMEOUT" # mono-valued arguments
       "TEST_SRCS" # multi-valued arguments
       ${ARGN} # arguments
   )
@@ -368,6 +369,9 @@ function(O2_GENERATE_TESTS)
     )
     target_link_libraries(${test_name} Boost::unit_test_framework)
     add_test(NAME ${test_name} COMMAND ${test_name})
+    if(PARSED_ARGS_TIMEOUT)
+      set_tests_properties(${test_name} PROPERTIES TIMEOUT ${PARSED_ARGS_TIMEOUT})
+    endif()
   endforeach ()
 endfunction()
 
