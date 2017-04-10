@@ -22,7 +22,7 @@ set(LIBRARY_NAME ControlFairMQ)
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
 target_link_libraries(${LIBRARY_NAME} 
         Common
-	InfoLogger-static
+	InfoLogger
 	${Boost_LOG_LIBRARY}
 	${Boost_THREAD_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}

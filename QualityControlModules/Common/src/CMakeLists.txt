@@ -30,7 +30,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}Dict_rdict.pcm DESTINAT
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} QCCore InfoLogger-static)
+target_link_libraries(${LIBRARY_NAME} QCCore InfoLogger)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 

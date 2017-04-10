@@ -36,7 +36,7 @@ set(LIBRARY_NAME DataSampling)
 
 # Define the library
 add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES})
-target_link_libraries(${LIBRARY_NAME} ${FAIRMQ_LIBRARIES} Common InfoLogger-shared)
+target_link_libraries(${LIBRARY_NAME} ${FAIRMQ_LIBRARIES} Common InfoLogger)
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
