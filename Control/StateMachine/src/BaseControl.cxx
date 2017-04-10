@@ -1,4 +1,4 @@
-#include <Control/StateMachine.h>
+#include "ControlStateMachine/StateMachine.h"
 #include <Common/Fifo.h>
 #include <Common/MakeUnique.h>
 
@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <boost/thread/mutex.hpp>
 
-#include <Control/BaseControl.h>
+#include "ControlStateMachine/BaseControl.h"
 
 typedef Directory* t_ControlSystemHandle ;
 

@@ -79,3 +79,8 @@ function(set_test_name file result_var_name)
     string(REGEX REPLACE ".cxx" "" result ${result})
     set(${result_var_name} ${PROJECT_NAME}_${result} PARENT_SCOPE)
 endfunction()
+
+# Add the test facility for submodules
+if(NOT PROJECT_${subproject_name}) # var unknown because we build only this subproject, ProjA must have been built AND installed
+    enable_testing() # needed on top-level CMakeLists.txt
+endif ()

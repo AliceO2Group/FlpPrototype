@@ -18,7 +18,7 @@ extern "C" {
 
     
 
-// Zdaq control version 2 bytes: MAJOR+MINOR
+// ControlZdaq control version 2 bytes: MAJOR+MINOR
 #define ZDAQ_CTRL_VERSION 0xA101
 // History of versions:
 //        0xA101     v1.1    07/2013

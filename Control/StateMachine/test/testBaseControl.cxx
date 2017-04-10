@@ -1,4 +1,4 @@
-#include <Control/BaseControl.h>
+#include "ControlStateMachine/BaseControl.h"
 #include <unistd.h>
 
 int main(int argc, const char *argv[]) {
@@ -7,6 +7,6 @@ int main(int argc, const char *argv[]) {
   RuntimeControlEngine e;
   e.registerObject(&o);
 
-  sleep(60);
+//  sleep(60);
   return 0;
 }

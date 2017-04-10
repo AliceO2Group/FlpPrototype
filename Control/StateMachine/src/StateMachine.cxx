@@ -1,5 +1,5 @@
 #include <zookeeper/zookeeper.h>
-#include <Control/StateMachine.h>
+#include "ControlStateMachine/StateMachine.h"
 #include <strings.h>
 #include <unistd.h>
 #include <boost/thread/mutex.hpp>
