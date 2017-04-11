@@ -44,7 +44,7 @@ o2_define_bucket(
         InfoLogger
         ${Configuration_LIBRARIES}
         DataSampling
-        DataCollector
+        Monitoring
         DataFormat
         ${ROOT_LIBRARIES}
         ${Boost_LOG_DEBUG}
