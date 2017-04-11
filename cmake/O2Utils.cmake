@@ -14,7 +14,9 @@ macro(O2_SETUP)
       ${ARGN} # arguments
   )
   CHECK_VARIABLE(PARSED_ARGS_NAME "You must provide a name")
-
+  set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib")
+  set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
+  set(INCLUDE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 endmacro()
 
 #------------------------------------------------------------------------------
