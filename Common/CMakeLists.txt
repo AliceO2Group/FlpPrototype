@@ -65,7 +65,7 @@ set(MODULE_NAME "Common")
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-  src/Daemon.cxx
+#  src/Daemon.cxx
   src/Exception.cxx
   src/Iommu.cxx
   src/LineBuffer.cxx
