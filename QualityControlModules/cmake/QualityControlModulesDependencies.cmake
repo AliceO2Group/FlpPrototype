@@ -8,13 +8,16 @@ else(FAIRROOT_FOUND)
     message(WARNING "FairRoot not found, corresponding classes will not be compiled.")
 endif(FAIRROOT_FOUND)
 
-find_package(ROOT)
+find_package(ROOT 6.06.02 COMPONENTS RHTTP RMySQL Gui)
 if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found")
-    include(RootNewMacros)
 else()
     message(WARNING "ROOT not found, we won't compile the QC modules (skip, no error)")
 endif()
+
+# todo just a quick fix to get the dictionary working . to be revisited when extracting
+list(APPEND GLOBAL_ALL_MODULES_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../QualityControl/include)
+list(APPEND GLOBAL_ALL_MODULES_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/../DataFormat/include)
 
 o2_define_bucket(
   NAME
@@ -22,9 +25,25 @@ o2_define_bucket(
 
   DEPENDENCIES
   ${Boost_PROGRAM_OPTIONS_LIBRARY}
-  QCCore
   InfoLogger
+  QualityControl
 
   SYSTEMINCLUDE_DIRECTORIES
   ${Boost_INCLUDE_DIRS}
+)
+
+o2_define_bucket(
+    NAME
+    o2_qcmodules_example
+
+    DEPENDENCIES
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    InfoLogger
+    QualityControl
+        DataFormat
+
+    SYSTEMINCLUDE_DIRECTORIES
+    ${Boost_INCLUDE_DIRS}
+        ${Configuration_INCLUDE_DIRS}
+
 )

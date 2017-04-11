@@ -22,9 +22,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 project(QualityControlModules)
 
 # Load some basic macros which are needed later on
+include(O2)
 include(O2Utils)
 include(QualityControlModulesDependencies)
-include(O2)
 
 # Set the default build type to "RelWithDebInfo"
 if(NOT CMAKE_BUILD_TYPE)
@@ -56,8 +56,8 @@ ENDIF ()
 # Add compiler flags for warnings and (more importantly) fPIC and debug symbols
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -fPIC")
 
-link_o2_subproject(InfoLogger)
 link_o2_subproject(Common)
+link_o2_subproject(InfoLogger)
 link_o2_subproject(DataFormat)
 link_o2_subproject(DataSampling)
 link_o2_subproject(Monitoring)

@@ -4,8 +4,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5.2 FATAL_ERROR)
 
-### Clink_o2_subproject(InfoLogger)
-MP0025   Compiler id for Apple Clang is now AppleClang.
+### CMP0025   Compiler id for Apple Clang is now AppleClang.
 ### CMP0042   MACOSX_RPATH is enabled by default.
 
 FOREACH (p
@@ -79,9 +78,7 @@ get_directory_property(hasParent PARENT_DIRECTORY)
 if(hasParent)
     set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
 endif()
-if(ROOT_FOUND AND BOOST_FOUND) # TODO remove this once we have our own repo
-    include(PackageConfigurator)
-endif()
+include(PackageConfigurator)
 
 add_subdirectory(doc)
 
@@ -137,7 +134,7 @@ include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
-set(LIBRARY_NAME QCCore)
+set(LIBRARY_NAME QualityControl)
 
 if(FAIRROOT_FOUND)
     set(BUCKET_NAME o2_qualitycontrol_with_fairroot_bucket)
@@ -148,8 +145,6 @@ endif()
 set(LINKDEF include/QualityControl/LinkDef.h)
 
 O2_GENERATE_LIBRARY()
-
-# BINARIES
 
 # Task Launcher
 O2_GENERATE_EXECUTABLE(
