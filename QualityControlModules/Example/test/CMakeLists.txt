@@ -8,7 +8,7 @@ set(ALL_TESTS)
 foreach(FILE ${TEST_FILES})
     set_test_name(${FILE} NAME)
     add_executable(${NAME} ${FILE})
-    target_link_libraries(${NAME} QcExample ${ROOT_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} Common DataCollector QCCore) # link against our lib and boost test
+    target_link_libraries(${NAME} QcExample ${ROOT_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} Common Monitoring QCCore) # link against our lib and boost test
     add_test(NAME ${NAME} COMMAND ${NAME})                              # this is how to add tests to CMake
 endforeach(FILE ${TEST_FILES})
 
