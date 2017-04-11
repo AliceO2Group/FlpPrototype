@@ -65,12 +65,16 @@ set(MODULE_NAME "Common")
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-  src/Timer.cxx
-  src/Thread.cxx
-  src/Configuration.cxx
   src/Daemon.cxx
-  src/SimpleLog.cxx
+  src/Exception.cxx
+  src/Iommu.cxx
   src/LineBuffer.cxx
+  src/Program.cxx
+  src/SimpleLog.cxx
+  src/SuffixNumber.cxx
+  src/System.cxx
+  src/Thread.cxx
+  src/Timer.cxx
 )
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
@@ -93,7 +97,12 @@ O2_GENERATE_LIBRARY()
 add_subdirectory(doc)
 
 set(TEST_SRCS
+  test/TestBasicThread.cxx
   test/testFifo.cxx
+  test/TestIommu.cxx
+  test/TestSuffixNumber.cxx
+  test/TestSuffixOption.cxx
+  test/TestSystem.cxx
   test/testTimer.cxx
 )
 
