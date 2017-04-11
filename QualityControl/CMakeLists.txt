@@ -4,7 +4,8 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5.2 FATAL_ERROR)
 
-### CMP0025   Compiler id for Apple Clang is now AppleClang.
+### Clink_o2_subproject(InfoLogger)
+MP0025   Compiler id for Apple Clang is now AppleClang.
 ### CMP0042   MACOSX_RPATH is enabled by default.
 
 FOREACH (p
@@ -26,8 +27,8 @@ include(O2Utils)
 include(QualityControlDependencies)
 include(O2) # to be removed
 
-link_o2_subproject(InfoLogger)
 link_o2_subproject(Common)
+link_o2_subproject(InfoLogger)
 link_o2_subproject(DataFormat)
 link_o2_subproject(DataSampling)
 link_o2_subproject(Monitoring)
