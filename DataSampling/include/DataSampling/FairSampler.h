@@ -10,6 +10,7 @@
 #include <DataFormat/DataBlockContainer.h>
 #include "SamplerInterface.h"
 #include <mutex>
+#include <thread>
 
 namespace AliceO2 {
 namespace DataSampling {
