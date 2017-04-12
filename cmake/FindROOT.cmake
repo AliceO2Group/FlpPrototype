@@ -103,7 +103,7 @@ If(ROOT_CONFIG_EXECUTABLE)
 
 Else(ROOT_CONFIG_EXECUTABLE)
   Message(STATUS "Looking for Root... - Not found")
-  Message(FATAL_ERROR "ROOT not installed in the searchpath and ROOTSYS is not set. Please set ROOTSYS or add the path to your ROOT installation in the Macro FindROOT.cmake in the subdirectory cmake/modules.")
+  Message(WARNING "ROOT not installed in the searchpath and ROOTSYS is not set. Please set ROOTSYS or add the path to your ROOT installation in the Macro FindROOT.cmake in the subdirectory cmake/modules.")
 Endif(ROOT_CONFIG_EXECUTABLE)
 
 
