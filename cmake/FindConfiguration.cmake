@@ -11,14 +11,18 @@
 include(FindPackageHandleStandardArgs)
 
 # find includes
+if(NOT DEFINED CONFIGURATION_INCLUDE_DIR)
 find_path(CONFIGURATION_INCLUDE_DIR Configuration.h
            HINTS ENV LD_LIBRARY_PATH PATH_SUFFIXES "../include/Configuration" "../../include/Configuration" )
 # Remove the final "Configuration" 
 get_filename_component(CONFIGURATION_INCLUDE_DIR ${CONFIGURATION_INCLUDE_DIR} DIRECTORY)
+endif()
 set(Configuration_INCLUDE_DIRS ${CONFIGURATION_INCLUDE_DIR})
 
 # find library
+if(NOT DEFINED CONFIGURATION_LIBRARY)
 find_library(CONFIGURATION_LIBRARY NAMES Configuration HINTS ENV LD_LIBRARY_PATH)
+endif()
 set(Configuration_LIBRARIES ${CONFIGURATION_LIBRARY})
 
 # handle the QUIETLY and REQUIRED arguments and set CONFIGURATION_FOUND to TRUE
