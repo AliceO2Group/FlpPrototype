@@ -65,7 +65,7 @@ set(MODULE_NAME "Common")
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-#  src/Daemon.cxx
+  src/Daemon.cxx
   src/Exception.cxx
   src/Iommu.cxx
   src/LineBuffer.cxx
@@ -75,7 +75,8 @@ set(SRCS
   src/System.cxx
   src/Thread.cxx
   src/Timer.cxx
-)
+  src/Configuration.cxx
+  )
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
 # We don't want to polute our source tree with it, thus putting it in binary tree.
@@ -115,9 +116,9 @@ O2_GENERATE_TESTS(
 # Library for Tcl
 # Usually we don't allow multiple libraries in O2 modules. This is an exception.
 if (TCL_FOUND)
-    set(SRCS
-    src/Configuration_tcl_wrap.cxx
-    src/Configuration.cxx
+  set(SRCS
+      src/Configuration.cxx
+      src/Configuration_tcl_wrap.cxx
   )
   set(LIBRARY_NAME tclConfiguration)
   O2_GENERATE_LIBRARY()
