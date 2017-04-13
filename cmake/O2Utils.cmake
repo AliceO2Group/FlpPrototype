@@ -369,7 +369,7 @@ function(O2_GENERATE_TESTS)
         BUCKET_NAME ${PARSED_ARGS_BUCKET_NAME}
         NO_INSTALL FALSE
     )
-    target_link_libraries(${test_name} Boost::unit_test_framework)
+    target_link_libraries(${test_name} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
     add_test(NAME ${test_name} COMMAND ${test_name})
     if(PARSED_ARGS_TIMEOUT)
       set_tests_properties(${test_name} PROPERTIES TIMEOUT ${PARSED_ARGS_TIMEOUT})
