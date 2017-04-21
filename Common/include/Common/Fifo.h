@@ -146,6 +146,7 @@ int Fifo<T>::pop(T &item) {
   this->indexStart=new_indexStart;
   
   item=data[this->indexStart];
+  data[this->indexStart]=0; // reset value, in case it is a shared_ptr
   //printf("pop \ %d = %p\n",new_indexStart,item);  
   nOut++;
   return 0;
