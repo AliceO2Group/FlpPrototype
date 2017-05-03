@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS unit_test_framework program_options filesystem system REQUIRED)
+find_package(Boost 1.56 COMPONENTS unit_test_framework program_options filesystem system REQUIRED)
 find_package(Git QUIET)
 find_package(TCL)
 
