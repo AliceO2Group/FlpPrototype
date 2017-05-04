@@ -1,11 +1,11 @@
 find_package(Boost 1.58 COMPONENTS unit_test_framework thread system program_options log REQUIRED)
+#find_package(Boost 1.59 COMPONENTS thread system timer program_options random filesystem chrono exception regex serialization log log_setup unit_test_framework date_time REQUIRED)
 find_package(Git QUIET)
 find_package(Zookeeper)
 find_package(FairRoot)
 
 ## TODO this should relaly not be needed
 #FIND_LIBRARY(ZMQ_LIB zmq)
-#find_package(Boost 1.58 COMPONENTS unit_test_framework program_options log thread system)
 # TODO is it needed ?
 if(BOOST_FOUND OR Boost_FOUND)
     set(BOOST_FOUND 1)
@@ -16,7 +16,7 @@ if(FAIRROOT_FOUND)
     # this should go away when fairrot provides a proper Find script or proper config scripts
     # See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
     link_directories(${FAIRROOT_LIBRARY_DIR})
-    set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ fairmq_logger)
+    set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ)
 endif(FAIRROOT_FOUND)
 
 o2_define_bucket(
@@ -59,10 +59,11 @@ o2_define_bucket(
         ${Boost_SYSTEM_LIBRARY}
         ${FAIRROOT_LIBRARIES}
         pthread
+        dl
 
         SYSTEMINCLUDE_DIRECTORIES
         ${Boost_INCLUDE_DIRS}
         ${Zookeeper_INCLUDE_DIRS}
         ${FAIRROOT_INCLUDE_DIR}
-
+        ${FAIRROOT_INCLUDE_DIR}/fairmq
 )

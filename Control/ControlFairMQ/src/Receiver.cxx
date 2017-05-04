@@ -14,30 +14,20 @@ using AliceO2::InfoLogger::InfoLogger;
 
 Receiver::Receiver()
 {
+  // register a handler for data arriving on "data" channel
+  OnData("data", &Receiver::HandleData);
 }
 
 Receiver::~Receiver()
 {
 }
 
-void Receiver::Run()
+// handler is called whenever a message arrives on "data", with a reference to the message and a sub-channel index (here 0)
+bool Receiver::HandleData(FairMQMessagePtr &msg, int /*index*/)
 {
-  while (CheckCurrentState(RUNNING)) {
-	std::unique_ptr<FairMQMessage> msg(NewMessage());
-
-	if (Receive(msg, "data") >= 0) {
-      getLogger() << "Received message: \""
-    	<< std::string(static_cast<char*>(msg->GetData()), msg->GetSize())
-        << "\"" << InfoLogger::endm;
-    }
-
-    getLogger() << "loop" << InfoLogger::endm;
-  }
-}
-
-InfoLogger& Receiver::getLogger()
-{
-  return mLogger;
+  mLogger << "Received message: \""
+              << std::string(static_cast<char *>(msg->GetData()), msg->GetSize())
+              << "\"" << InfoLogger::endm;
 }
 
 } // namespace Core

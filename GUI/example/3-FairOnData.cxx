@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include "FairMQLogger.h"
-#include "FairMQProgOptions.h"
 
 /// register a handler for data arriving on "notification" channel
 FairOnData::FairOnData()
@@ -39,32 +38,45 @@ FairOnData::~FairOnData()
 {
 }
 
-int main(int argc, char** argv)
+#include "runFairMQDevice.h"
+
+namespace bpo = boost::program_options;
+
+void addCustomOptions(bpo::options_description& /*options*/)
 {
-    try
-    {
-        FairMQProgOptions config;
-        config.ParseAll(argc, argv);
-
-        FairOnData notifier;
-        notifier.CatchSignals();
-        notifier.SetConfig(config);
-
-        notifier.ChangeState("INIT_DEVICE");
-        notifier.WaitForEndOfState("INIT_DEVICE");
-
-        notifier.ChangeState("INIT_TASK");
-        notifier.WaitForEndOfState("INIT_TASK");
-
-        notifier.ChangeState("RUN");
-        notifier.InteractiveStateLoop();
-    }
-    catch (std::exception& e)
-    {
-        LOG(ERROR) << "Unhandled Exception reached the top of main: "
-                   << e.what() << ", application will now exit";
-        return 1;
-    }
-
-    return -1;
 }
+
+FairMQDevicePtr getDevice(const FairMQProgOptions& /*config*/)
+{
+  return new FairOnData();
+}
+
+//int main(int argc, char** argv)
+//{
+//    try
+//    {
+//        FairMQProgOptions config;
+//        config.ParseAll(argc, argv);
+//
+//        FairOnData notifier;
+//        notifier.CatchSignals();
+//        notifier.SetConfig(config);
+//
+//        notifier.ChangeState("INIT_DEVICE");
+//        notifier.WaitForEndOfState("INIT_DEVICE");
+//
+//        notifier.ChangeState("INIT_TASK");
+//        notifier.WaitForEndOfState("INIT_TASK");
+//
+//        notifier.ChangeState("RUN");
+//        notifier.InteractiveStateLoop();
+//    }
+//    catch (std::exception& e)
+//    {
+//        LOG(ERROR) << "Unhandled Exception reached the top of main: "
+//                   << e.what() << ", application will now exit";
+//        return 1;
+//    }
+//
+//    return -1;
+//}

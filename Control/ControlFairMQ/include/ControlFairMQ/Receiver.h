@@ -27,13 +27,9 @@ class Receiver : public FairMQDevice
     virtual ~Receiver();
 
   protected:
-    /// Running state
-    virtual void Run() override;
+    bool HandleData(FairMQMessagePtr &, int);
 
   private:
-    /// Get logger object
-    InfoLogger::InfoLogger& getLogger();
-
     InfoLogger::InfoLogger mLogger;       ///< Logger object
 };
 
