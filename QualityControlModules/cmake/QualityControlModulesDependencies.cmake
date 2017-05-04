@@ -28,11 +28,11 @@ o2_define_bucket(
   ${Boost_PROGRAM_OPTIONS_LIBRARY}
   InfoLogger
   QualityControl
-  ${MONITORING_LIBRARIES}
+  ${Monitoring_LIBRARIES}
 
   SYSTEMINCLUDE_DIRECTORIES
   ${Boost_INCLUDE_DIRS}
-  ${MONITORING_INCLUDE_DIRS}
+  ${Monitoring_INCLUDE_DIRS}
 )
 
 o2_define_bucket(
@@ -43,10 +43,10 @@ o2_define_bucket(
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     InfoLogger
     QualityControl
-        DataFormat
+    DataFormat
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIRS}
-        ${Configuration_INCLUDE_DIRS}
+    ${Configuration_INCLUDE_DIRS}
 
 )
