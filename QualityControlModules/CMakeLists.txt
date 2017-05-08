@@ -26,6 +26,15 @@ include(O2)
 include(O2Utils)
 include(QualityControlModulesDependencies)
 
+if(ROOT_FOUND)
+    message(STATUS "ROOT ${ROOT_VERSION} found in '${ROOTSYS}'")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ROOTSYS}/share/root/cmake/modules)
+    include(RootNewMacros)
+else()
+    message(WARNING "ROOT not found, we won't compile the QC modules (skip, no error)")
+    return()
+endif()
+
 # Set the default build type to "RelWithDebInfo"
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "RelWithDebInfo"

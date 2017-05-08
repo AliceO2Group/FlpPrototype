@@ -13,7 +13,7 @@ find_package(ROOT 6.06.02 COMPONENTS RHTTP RMySQL Gui)
 if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found")
 else()
-    message(WARNING "ROOT not found, we won't compile the QC modules (skip, no error)")
+    return()
 endif()
 
 # todo just a quick fix to get the dictionary working . to be revisited when extracting

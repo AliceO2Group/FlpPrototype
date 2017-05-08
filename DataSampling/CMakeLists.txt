@@ -115,6 +115,7 @@ O2_GENERATE_EXECUTABLE(
         BUCKET_NAME ${BUCKET_NAME}
 )
 
+if (FAIRROOT_FOUND)
 O2_GENERATE_EXECUTABLE(
         EXE_NAME mockFairInjector
         SOURCES src/mockFairInjector.cxx
@@ -128,6 +129,7 @@ O2_GENERATE_EXECUTABLE(
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
         BUCKET_NAME ${BUCKET_NAME}
 )
+endif (FAIRROOT_FOUND)
 
 add_subdirectory(doc)
 

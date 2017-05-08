@@ -7,6 +7,9 @@ if(FAIRROOT_FOUND)
     # See : http://www.cmake.org/cmake/help/v3.0/command/link_directories.html
     link_directories(${FAIRROOT_LIBRARY_DIR})
     set(FAIRROOT_LIBRARIES Base FairMQ BaseMQ)
+    ADD_DEFINITIONS(-DWITH_FAIRROOT)
+else(FAIRROT_FOUND)
+    message(STATUS "FairRoot not found, corresponding classes will be skipped")
 endif(FAIRROOT_FOUND)
 
 find_package(Git QUIET)
