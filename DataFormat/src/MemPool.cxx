@@ -1,6 +1,7 @@
 #include <DataFormat/MemPool.h>
-
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
 #include <boost/format.hpp>
 #include <sstream>
 #include <iostream>
@@ -49,7 +50,11 @@ MemPool::MemPool(int v_numberOfPages, int v_pageSize, int align) {
     pageIsUsed[i].clear();
   }
   for (int i=0;i<numberOfPages;i++) {
+#ifdef __APPLE__
+    void *newPage=malloc(pageSize);
+#else
     void *newPage=memalign(align,pageSize);
+#endif
     if (newPage==NULL) {
       errorIx=i;
       break;
