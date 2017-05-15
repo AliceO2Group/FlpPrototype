@@ -1,6 +1,6 @@
 #include <DataFormat/MemPool.h>
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <boost/format.hpp>
 #include <sstream>
 #include <iostream>
@@ -49,8 +49,8 @@ MemPool::MemPool(int v_numberOfPages, int v_pageSize, int align) {
     pageIsUsed[i].clear();
   }
   for (int i=0;i<numberOfPages;i++) {
-    void *newPage=memalign(align,pageSize);
-    if (newPage==NULL) {
+    void *newPage=NULL;
+    if (posix_memalign(&newPage,align,pageSize)) {
       errorIx=i;
       break;
     }
