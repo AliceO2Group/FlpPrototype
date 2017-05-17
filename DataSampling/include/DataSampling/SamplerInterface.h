@@ -66,7 +66,7 @@ class SamplerInterface
     /// Destructor
     virtual ~SamplerInterface();
 
-    virtual std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
+    virtual std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout = 0) = 0; // TODO add specific types ? what do we get back ?
 
     virtual void releaseData() = 0;
     void setLocation(std::string Uri);

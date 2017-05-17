@@ -9,19 +9,22 @@
 // boost
 #include <boost/program_options.hpp>
 // datasampling
-#include "DataSampling/FileSampler.h"
 #include "DataSampling/Version.h"
+#include <DataSampling/SamplerFactory.h>
+#include <Common/signalUtilities.h>
+#include <boost/exception/diagnostic_information.hpp>
 
 using namespace std;
 namespace po = boost::program_options;
+using namespace AliceO2::DataSampling;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   // Arguments parsing
   po::variables_map vm;
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "Produce help message.")("version,v", "Show program name/version banner and exit.")(
-      "rev", "Print the SVN revision number")("location,l", po::value<string>(), "The URI of the data location")("format,f", po::value<string>(), "");
+    "rev", "Print the SVN revision number")("source,s", po::value<string>(), "fair://xxxx file://xxxx mock");
   po::store(parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
   // help
@@ -40,26 +43,71 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
   }
 
-  AliceO2::DataSampling::FileSampler sampling; // TODO we should not hardcode the fact that it is a file
-
-  // location
-  if (vm.count("location")) {
-    sampling.setLocation(vm["location"].as<string>());
+  string samplerName;
+  string samplerAddress;
+  if (vm.count("source")) {
+    string source = vm["source"].as<string>();
+    string prefix = "fair://";
+    if (!source.compare(0, prefix.size(), prefix)) {
+      samplerName = "FairSampler";
+      samplerAddress = source.substr(prefix.size());
+    }
+    prefix = "file://";
+    if (!source.compare(0, prefix.size(), prefix)) {
+      samplerName = "FileSampler";
+      samplerAddress = source.substr(prefix.size());
+    }
+    prefix = "mock";
+    if (!source.compare(0, prefix.size(), prefix)) {
+      samplerName = "MockSampler";
+      samplerAddress = "";
+    }
   } else {
     cerr << "Location must be specified." << endl;
     cout << desc << endl;
     return EXIT_FAILURE;
   }
 
-  // format
-  vector<string> allowedFormat {"Raw", "STF", "TF", "CTF", "AOD", "ESD"}; // TODO how to avoid duplicating information with the enum ?
-  if(vm.count("format")) {
-    if(find(allowedFormat.begin(), allowedFormat.end(), vm["format"].as<string>()) == allowedFormat.end()) {
-      cerr << "Format must be one of those : Raw, STF, TF, CTF, AOD, ESD" << endl;
-      return EXIT_FAILURE;
-    }
-    sampling.setDataFormat(vm["format"].as<string>());
-  }
+  try {
+    unique_ptr<SamplerInterface> sampler = SamplerFactory::create(samplerName);
 
+    handler_interruption_message = "";
+    signal(SIGINT, handler_interruption);
+    unsigned int i = 0;
+    cout << "\n\n\n\n\n" << endl; // shift for the output
+    while (keepRunning) {
+      std::vector<std::shared_ptr<DataBlockContainer>> *blocks = sampler->getData();
+
+      if (blocks == nullptr) {
+        continue;
+      }
+      cout << "\033[6A"; // up 6 lines
+      cout << "Blocks received so far : \033[K" << ++i << endl;
+      cout << "--> last block received : " << endl;
+      if (blocks->size() > 0) {
+        if (blocks->at(0) != nullptr) {
+          cout << "    id : \033[K" << blocks->at(0)->getData()->header.id << endl;
+          cout << "    blockType : \033[K" << std::hex << blocks->at(0)->getData()->header.blockType << endl;
+          cout << "    headerSize : \033[K" << std::dec << blocks->at(0)->getData()->header.headerSize << endl;
+          cout << "    payload size : \033[K" << std::dec << blocks->at(0)->getData()->header.dataSize << endl;
+        } else {
+          cout << "    Container pointer invalid" << endl;
+        }
+      } else {
+        cout << "    Empty vector!" << endl;
+      }
+
+      sampler->releaseData();
+    }
+    cout << "\033[4B"; // down 4 lines
+  } catch (std::string const &e) {
+    cerr << e << endl;
+  } catch (...) {
+    string diagnostic = boost::current_exception_diagnostic_information();
+    std::cerr << "Unexpected exception, diagnostic information follows:\n" << diagnostic << endl;
+    if (diagnostic == "No diagnostic information available.") {
+      throw;
+    }
+  }
   return EXIT_SUCCESS;
 }

@@ -37,6 +37,8 @@ void handler_sigsev(int sig)
 }
 
 bool keepRunning = true; /// Indicates whether we should continue the execution loop or not.
+std::string handler_interruption_message = "Catched signal 2 \nExit the process at the end of this cycle. "
+  "\n  Press again Ctrl-C to force immediate exit";
 
 /// \brief Callback for interruption signals such as SIGINT and SIGTERM allowing the program to clean itself up.
 /// The variable #keepRunning is available to know that we have not been interrupted. In case it becomes false,
@@ -56,8 +58,7 @@ bool keepRunning = true; /// Indicates whether we should continue the execution 
 void handler_interruption(int sig)
 {
   if (keepRunning) {
-    std::cout << "Catched signal " << sig <<
-    "\n  Exit the process at the end of this cycle. \n  Press again Ctrl-C to force immediate exit" << std::endl;
+    std::cout << handler_interruption_message << std::endl;
     keepRunning = false;
   } else {
     std::cout << "Second interruption : immediate exit" << std::endl;
