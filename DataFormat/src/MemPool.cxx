@@ -1,5 +1,4 @@
 #include <DataFormat/MemPool.h>
-
 #include <stdlib.h>
 #include <boost/format.hpp>
 #include <sstream>

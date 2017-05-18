@@ -4,8 +4,6 @@
 ///
 
 #include <DataSampling/FairInjector.h>
-//#include "DataSampling/InjectorDevice.h"
-#include <FairMQTransportFactoryZMQ.h>
 #include "DataSampling/DsInfoLogger.h"
 
 using namespace std;

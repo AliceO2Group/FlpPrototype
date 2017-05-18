@@ -11,7 +11,9 @@
 #include <DataFormat/DataSet.h>
 
 #include <atomic>
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
 #include <boost/format.hpp>
 #include <chrono>
 #include <signal.h>
@@ -35,12 +37,10 @@
 #include <FairMQDevice.h>
 #include <FairMQMessage.h>
 #include <FairMQTransportFactory.h>
-#include <FairMQTransportFactoryZMQ.h>
-#include <FairMQProgOptions.h>
 #endif
 
 #ifdef WITH_DATASAMPLING
-#include <DataSampling/InjectorFactory.h>
+#include "DataSampling/InjectorFactory.h"
 #endif
 
 
@@ -326,7 +326,7 @@ class ReadoutMemoryHandler {
     }
     // todo: check consistent with what requested, alignment, etc
     memorySize=mMemoryMappedFile->getSize();
-    baseAddress=(uint8_t *)mMemoryMappedFile->getAddress();   
+    baseAddress=(uint8_t *)mMemoryMappedFile->getAddress();
 
     int baseAlignment=1024*1024;    
     r=(long)baseAddress % baseAlignment;
@@ -1109,8 +1109,7 @@ class ConsumerFMQ: public Consumer {
     }
       
     sender.fChannels = m;
-    transportFactory=new FairMQTransportFactoryZMQ();
-    sender.SetTransport(transportFactory); // FairMQTransportFactory will be deleted when destroying sender
+    sender.SetTransport("zeromq");
     sender.ChangeState(FairMQStateMachine::Event::INIT_DEVICE);
     sender.WaitForEndOfState(FairMQStateMachine::Event::INIT_DEVICE);
     sender.ChangeState(FairMQStateMachine::Event::INIT_TASK);
@@ -1262,18 +1261,22 @@ int main(int argc, char* argv[])
 
 
   // configuration of data sampling
+#ifdef WITH_DATASAMPLING
   int dataSampling=0; 
   dataSampling=cfg.getValue<int>("sampling.enabled");
-//  AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = nullptr;
+  AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = nullptr;
   if (dataSampling) {
     theLog.log("Data sampling enabled");
     // todo: create(...) should not need an argument and should get its configuration by itself.
-//    dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
+    std::string injector = cfg.getValue<std::string>("sampling.class");
+    if(injector=="")
+      injector = "MockInjector";
+    dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create(injector);
   } else {
     theLog.log("Data sampling disabled");
   }
   // todo: add time counter to measure how much time is spent waiting for data sampling injection (And other consumers)
-
+#endif
 
   // configuration of data consumers
   std::vector<std::shared_ptr<Consumer>> dataConsumers;
@@ -1381,10 +1384,12 @@ int main(int argc, char* argv[])
 
     if (bc!=NULL) {
       // push to data sampling, if configured
-/*      if (dataSampling && dataSamplingInjector) {
+#ifdef WITH_DATASAMPLING
+      if (dataSampling && dataSamplingInjector) {
         dataSamplingInjector->injectSamples(*bc);
       }
-  */
+#endif
+
     
       unsigned int nb=(int)bc->size();
       //printf("received 1 vector made of %u blocks\n",nb);
@@ -1454,11 +1459,12 @@ int main(int argc, char* argv[])
     readoutDevices[i]=nullptr;  // effectively deletes the device
   }
   readoutDevices.clear(); // to do it all in one go
-/*
+
+#ifdef WITH_DATASAMPLING
   if(dataSamplingInjector) {
     delete dataSamplingInjector;
   }
-*/
+#endif
 
 /*
   theLog.log("%llu blocks in %.3lf seconds => %.1lf block/s",nBlocks,t1,nBlocks/t1);

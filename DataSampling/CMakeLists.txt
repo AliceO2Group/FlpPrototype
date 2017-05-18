@@ -27,12 +27,12 @@ include(DataSamplingDependencies)
 include(O2)
 
 # Set the default build type to "RelWithDebInfo"
-if(NOT CMAKE_BUILD_TYPE)
+if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "RelWithDebInfo"
             CACHE
             STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel Coverage."
             FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
+endif (NOT CMAKE_BUILD_TYPE)
 
 # Set the version number of your project here (format is MAJOR.MINOR.PATCHLEVEL - e.g. 1.0.0)
 set(VERSION_MAJOR "0")
@@ -70,15 +70,14 @@ link_o2_subproject(InfoLogger)
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
- src/DataBlockProducer.cxx
- src/FileSampler.cxx
- src/MockSampler.cxx
- src/FairSampler.cxx
- src/SamplerInterface.cxx
- src/SamplerFactory.cxx
- src/MockInjector.cxx
- src/InjectorFactory.cxx
-)
+        src/DataBlockProducer.cxx
+        src/FileSampler.cxx
+        src/MockSampler.cxx
+        src/SamplerInterface.cxx
+        src/SamplerFactory.cxx
+        src/MockInjector.cxx
+        src/InjectorFactory.cxx
+        )
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
 # We don't want to polute our source tree with it, thus putting it in binary tree.
@@ -95,9 +94,9 @@ set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME o2_datasampling_bucket)
 
 if (FAIRROOT_FOUND)
-    include_directories(include/DataSampling/FairInjector.h)
-    list(APPEND SRCS src/FairInjector.cxx)
+    list(APPEND SRCS src/FairInjector.cxx src/FairSampler.cxx)
     set(BUCKET_NAME o2_datasampling_bucket_with_fair)
+    # TODO add definition to exclude headers from code if no fairroot
 endif (FAIRROOT_FOUND)
 
 O2_GENERATE_LIBRARY()
@@ -116,6 +115,7 @@ O2_GENERATE_EXECUTABLE(
         BUCKET_NAME ${BUCKET_NAME}
 )
 
+if (FAIRROOT_FOUND)
 O2_GENERATE_EXECUTABLE(
         EXE_NAME mockFairInjector
         SOURCES src/mockFairInjector.cxx
@@ -129,22 +129,26 @@ O2_GENERATE_EXECUTABLE(
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
         BUCKET_NAME ${BUCKET_NAME}
 )
+endif (FAIRROOT_FOUND)
 
 add_subdirectory(doc)
 
 set(CTEST_TESTING_TIMEOUT 15)
 
 set(TEST_SRCS
-  test/testDataBlockProducer.cxx
-  test/testFairInjector.cxx
-  test/testFairSampler.cxx
-  test/testFileSampler.cxx
-  test/testMockSampler.cxx
-)
+        test/testDataBlockProducer.cxx
+        test/testFileSampler.cxx
+        test/testMockSampler.cxx
+        )
+
+if (FAIRROOT_FOUND)
+    list(APPEND SRCS test/testFairInjector.cxx
+            test/testFairSampler.cxx)
+endif ()
 
 O2_GENERATE_TESTS(
- MODULE_LIBRARY_NAME ${LIBRARY_NAME}
- BUCKET_NAME ${BUCKET_NAME}
+        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
         TIMEOUT 30
         TEST_SRCS ${TEST_SRCS}
 )
@@ -152,7 +156,7 @@ O2_GENERATE_TESTS(
 # TODO RECONSIDER THE THINGS BELOW AFTER EXTRACTION TO ITS OWN REPO
 # Make sure we tell the topdir CMakeLists that we exist (if build from topdir)
 get_directory_property(hasParent PARENT_DIRECTORY)
-if(hasParent)
+if (hasParent)
     set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
-endif()
+endif ()
 include(PackageConfigurator)

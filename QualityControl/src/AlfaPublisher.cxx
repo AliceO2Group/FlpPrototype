@@ -4,11 +4,11 @@
 ///
 
 #include "QualityControl/AlfaPublisher.h"
-#include "FairMQTransportFactoryZMQ.h"
+//#include "FairMQTransportFactoryZMQ.h"
 #include "TMessage.h"
 #include "TH1F.h"
-#include "FairMQProgOptions.h"
-#include "FairMQParser.h"
+//#include "FairMQProgOptions.h"
+//#include "FairMQParser.h"
 #include "TClass.h"
 
 using namespace std;
@@ -31,13 +31,7 @@ AlfaPublisher::AlfaPublisher(TaskConfig& taskConfig)
   histoChannel.UpdateRateLogging(0);
   fChannels["data-out"].push_back(histoChannel);
 
-  // Get the transport layer
-#ifdef NANOMSG
-  FairMQTransportFactory* transportFactory = new FairMQTransportFactoryNN();
-#else
-  FairMQTransportFactory *transportFactory = new FairMQTransportFactoryZMQ();
-#endif
-  SetTransport(transportFactory);
+  SetTransport("zeromq");
 
   ChangeState(INIT_DEVICE);
   WaitForEndOfState(INIT_DEVICE);

@@ -26,18 +26,10 @@ class Sender : public FairMQDevice
     /// Destructor
     virtual ~Sender();
 
-    static void CustomCleanup(void* data, void* hint);
-
   protected:
-    /// Cleanup method
-    //static void CustomCleanup(void *data, void *object);
-    /// Running state
-    virtual void Run() override;
+    virtual bool ConditionalRun() override;
 
   private:
-    /// Get logger object
-    InfoLogger::InfoLogger& getLogger();
-
     std::string mText;
     bool mRun;
     InfoLogger::InfoLogger mLogger;       ///< Logger object

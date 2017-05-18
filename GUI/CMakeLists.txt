@@ -119,7 +119,7 @@ O2_GENERATE_EXECUTABLE(
 if(FAIRROOT_FOUND)
     O2_GENERATE_EXECUTABLE(
             EXE_NAME 3-FairOnData
-            SOURCES example/3-FairOnData.cxx
+            SOURCES example/3-FairOnData.cxx example/3-runFairOnData.cxx
             MODULE_LIBRARY_NAME ${LIBRARY_NAME}
             BUCKET_NAME o2_gui_with_fairroot_bucket
     )

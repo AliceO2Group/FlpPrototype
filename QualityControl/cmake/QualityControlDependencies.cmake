@@ -25,6 +25,10 @@ else(FAIRROOT_FOUND)
     set(FAIRROOT_LIBRARIES "")
 endif(FAIRROOT_FOUND)
 
+if(NOT ROOT_FOUND)
+    return()
+endif()
+
 if(NOT MYSQL_FOUND)
     message(WARNING "MySQL not found, the corresponding classes won't be built.")
 elseif(NOT ROOT_RMySQL_LIBRARY)

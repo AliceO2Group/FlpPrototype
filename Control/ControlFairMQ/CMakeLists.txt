@@ -24,6 +24,7 @@ include_directories(
 
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME o2_fairmq_control_bucket)
+
 O2_GENERATE_LIBRARY()
 
 O2_GENERATE_EXECUTABLE(

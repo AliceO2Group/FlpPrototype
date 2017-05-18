@@ -27,30 +27,34 @@ Sender::~Sender()
 {
 }
 
-void Sender::CustomCleanup(void *data, void *object)
+bool Sender::ConditionalRun()
 {
-    delete (std::string*)object;
-}
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 
-void Sender::Run()
-{
-  while (CheckCurrentState(RUNNING)) {
-    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+  mLogger << "In Run : string is : " << mText << InfoLogger::endm;
 
-	  getLogger() << "In Run : string is : " << mText << InfoLogger::endm;
+  // create a copy of the data with new(), that will be deleted after the transfer is complete
+  std::string* text = new std::string(mText);
 
-    std::string *text = new std::string(mText);
-    std::unique_ptr<FairMQMessage> msg(NewMessage(const_cast<char*>(text->c_str()), text->length(), CustomCleanup, text));
+  // create message object with a pointer to the data buffer,
+  // its size,
+  // custom deletion function (called when transfer is done),
+  // and pointer to the object managing the data buffer
+  FairMQMessagePtr msg(NewMessage(const_cast<char*>(text->c_str()),
+                                  text->length(),
+                                  [](void* /*data*/, void* object) { delete static_cast<std::string*>(object); },
+                                  text));
 
-    getLogger() << "Sending \"" << mText << "\"" << InfoLogger::endm;
+  mLogger << "Sending \"" << mText << "\"" << InfoLogger::endm;
 
-    Send(msg, "data");
+  // in case of error or transfer interruption, return false to go to IDLE state
+  // successfull transfer will return number of bytes transfered (can be 0 if sending an empty message).
+  if (Send(msg, "data") < 0)
+  {
+    return false;
   }
-}
 
-InfoLogger& Sender::getLogger()
-{
-  return mLogger;
+  return true;
 }
 
 } // namespace Core

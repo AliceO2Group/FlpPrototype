@@ -12,7 +12,9 @@ o2_define_bucket(
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   pthread
+  ${TCL_LIBRARY}
 
   SYSTEMINCLUDE_DIRECTORIES
   ${Boost_INCLUDE_DIRS}
 )
+

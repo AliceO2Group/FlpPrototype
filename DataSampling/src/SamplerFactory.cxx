@@ -9,7 +9,9 @@
 #include "DataSampling/SamplerFactory.h"
 #include "DataSampling/MockSampler.h"
 #include "DataSampling/FileSampler.h"
+#ifdef WITH_FAIRROOT
 #include "DataSampling/FairSampler.h"
+#endif
 
 using namespace AliceO2::Common;
 using namespace std;
@@ -23,8 +25,10 @@ std::unique_ptr<SamplerInterface> SamplerFactory::create(std::string name)
     return make_unique<MockSampler>();
   } else   if (name == "FileSampler") {
     return make_unique<FileSampler>();
+#ifdef WITH_FAIRROOT
   } else   if (name == "FairSampler") {
     return make_unique<FairSampler>();
+#endif
   } else {
     BOOST_THROW_EXCEPTION(FatalException() << errinfo_details("No sampler named " + name));
   }
