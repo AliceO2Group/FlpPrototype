@@ -27,7 +27,15 @@ class SimpleLog {
   int setLogFile(const char* logFilePath=NULL);
 
 
-
+  enum FormatOption : int {
+    ShowTimeStamp = 0x1,
+    ShowSeverityTxt = 0x2,
+    ShowSeveritySymbol = 0x4,
+    ShowMessage = 0x8
+  };
+  
+  // Set output format based on (possibly OR-ed) format options from FormatOption enum
+  void setOutputFormat(int opts);
   
   // Log an info message.
   // The message is formatted with timestamp and severity.
