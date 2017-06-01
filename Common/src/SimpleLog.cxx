@@ -23,12 +23,16 @@ class SimpleLog::Impl {
   
   protected: 
   FILE *fp; // descriptor to be used. If NULL, using stdout/stderr.
+  int formatOptions;
   
   friend class SimpleLog;
 };
 
 SimpleLog::Impl::Impl() {
   fp=NULL;
+  formatOptions =   SimpleLog::FormatOption::ShowTimeStamp
+                  | SimpleLog::FormatOption::ShowSeveritySymbol
+                  | SimpleLog::FormatOption::ShowMessage;
 }
 
 SimpleLog::Impl::~Impl() {
@@ -44,36 +48,54 @@ int SimpleLog::Impl::logV(SimpleLog::Impl::Severity s, const char *message, va_l
   char buffer[1024] = "";
   size_t len = sizeof(buffer);
   size_t ix = 0;
- 
-  // timestamp (microsecond)
-  struct timeval tv;
-  double fullTimeNow=-1;
-  if(gettimeofday(&tv,NULL) == -1){
-    fullTimeNow = time(NULL);
-  } else {
-    fullTimeNow = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
-  }
-  time_t now;
-  struct tm tm_str;
-  now = (time_t)fullTimeNow;
-  localtime_r(&now, &tm_str);
-  double fractionOfSecond=fullTimeNow-now;
-  ix+=strftime(&buffer[ix], len-ix, "%Y-%m-%d %T", &tm_str);
-  char str_fractionOfSecond[10];
-  snprintf(str_fractionOfSecond,sizeof(str_fractionOfSecond),"%.6lf",fractionOfSecond);
-  ix+=snprintf(&buffer[ix], len-ix, ".%s",&str_fractionOfSecond[2]);
-  if (ix>len) { ix=len; }
 
-  if (s==Severity::Error) {
-    ix+=snprintf(&buffer[ix], len-ix, " !!! ");
-  } else if (s==Severity::Warning) {
-    ix+=snprintf(&buffer[ix], len-ix, "  !  ");
-  } else {
-    ix+=snprintf(&buffer[ix], len-ix, "     ");
+  if (formatOptions & SimpleLog::FormatOption::ShowTimeStamp) {  
+    // timestamp (microsecond)
+    struct timeval tv;
+    double fullTimeNow=-1;
+    if(gettimeofday(&tv,NULL) == -1){
+      fullTimeNow = time(NULL);
+    } else {
+      fullTimeNow = (double)tv.tv_sec + (double)tv.tv_usec/1000000;
+    }
+    time_t now;
+    struct tm tm_str;
+    now = (time_t)fullTimeNow;
+    localtime_r(&now, &tm_str);
+    double fractionOfSecond=fullTimeNow-now;
+    ix+=strftime(&buffer[ix], len-ix, "%Y-%m-%d %T", &tm_str);
+    char str_fractionOfSecond[10];
+    snprintf(str_fractionOfSecond,sizeof(str_fractionOfSecond),"%.6lf",fractionOfSecond);
+    ix+=snprintf(&buffer[ix], len-ix, ".%s",&str_fractionOfSecond[2]);
+    if (ix>len) { ix=len; }
   }
 
-  ix+=vsnprintf(&buffer[ix], len-ix, message, ap);
-  if (ix>len) { ix=len; } 
+  if (formatOptions & SimpleLog::FormatOption::ShowSeveritySymbol) {
+    if (s==Severity::Error) {
+      ix+=snprintf(&buffer[ix], len-ix, " !!! ");
+    } else if (s==Severity::Warning) {
+      ix+=snprintf(&buffer[ix], len-ix, "  !  ");
+    } else {
+      ix+=snprintf(&buffer[ix], len-ix, "     ");
+    }
+  }
+
+  if (formatOptions & SimpleLog::FormatOption::ShowSeverityTxt) {
+    if (s==Severity::Error) {
+      ix+=snprintf(&buffer[ix], len-ix, "Error - ");
+    } else if (s==Severity::Warning) {
+      ix+=snprintf(&buffer[ix], len-ix, "Warning - ");
+    } else {
+      //ix+=snprintf(&buffer[ix], len-ix, "");
+    }
+  }
+
+  
+  if (formatOptions & SimpleLog::FormatOption::ShowMessage) {
+   ix+=vsnprintf(&buffer[ix], len-ix, message, ap);
+   if (ix>len) { ix=len; } 
+  }
+  
   buffer[ix]=0;
 
   FILE *fpOut=stdout;
@@ -156,5 +178,8 @@ int SimpleLog::warning(const char *message, ...)
   return err;
 }
 
+void SimpleLog::setOutputFormat(int opts) {
+  pImpl->formatOptions=opts;
+}
 
 /// \todo: thread to flush output every 1 second
