@@ -113,6 +113,7 @@ set(TEST_SRCS
   test/TestSuffixOption.cxx
   test/TestSystem.cxx
   test/testTimer.cxx
+  test/testDaemon.cxx
 )
 
 O2_GENERATE_TESTS(
