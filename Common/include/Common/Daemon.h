@@ -13,8 +13,8 @@
 // default values are defined.
 class DaemonConfigParameters {
 public:
-  int isInteractive=1;           // flag set when process to be kept in foreground
-  int idleSleepTime=1000000;     // sleep time in microseconds when doLoop() idle
+  int isInteractive=0;           // flag set when process to be kept in foreground
+  int idleSleepTime=100000;     // sleep time in microseconds when doLoop() idle
   std::string userName;          // user name under which should run the process. Not changed if empty.
   int redirectOutput=0;          // flag set to redirect stdout/stderr to /dev/null
   std::string logFile;           // log file (leave empty to keep stdout/stderr)
