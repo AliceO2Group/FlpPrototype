@@ -44,6 +44,7 @@ Daemon::Daemon(int argc, char * argv[], DaemonConfigParameters *dConfigParams) {
         case 'o':
           {
             // pass-through option in the format key=value
+            // todo: create a config file tree instead?
             std::string sOptarg=optarg;
             size_t qPos=sOptarg.find_first_of('=');
             if (qPos>=sOptarg.length()) {
