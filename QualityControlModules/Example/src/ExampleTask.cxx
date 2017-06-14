@@ -13,16 +13,13 @@ using namespace std;
 namespace AliceO2 {
 namespace QualityControlModules {
 namespace Example {
-//
-//ExampleTask::ExampleTask(std::string name, ObjectsManager *objectsManager)
-//  : TaskInterface(name, objectsManager), mHisto1(nullptr), mHisto2(nullptr)
-//{
-//}
 
 ExampleTask::ExampleTask()
     : TaskInterface(), mHisto1(nullptr), mHisto2(nullptr)
 {
-
+  for(int i = 0 ; i < 25 ; i++) {
+    mHistos[i] = nullptr;
+  }
 }
 
 ExampleTask::~ExampleTask()
@@ -33,6 +30,11 @@ ExampleTask::~ExampleTask()
   }
   if (mHisto2) {
     delete mHisto2;
+  }
+  for(int i = 0 ; i < 25 ; i++) {
+    if(mHistos[i]) {
+      delete mHistos[i];
+    }
   }
 }
 
@@ -70,20 +72,20 @@ void ExampleTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContaine
 {
   uint32_t payloadSizeBytes = 0;
 
-    cout << "--> block received : " << endl;
-    if (block.size() > 0) {
-      if (block.at(0) != nullptr) {
-        cout << "    id : " << block.at(0)->getData()->header.id << endl;
-        cout << "    blockType : " << std::hex << block.at(0)->getData()->header.blockType << endl;
-        cout << "    headerSize : " << std::dec << block.at(0)->getData()->header.headerSize << endl;
-        cout << "    payload size : " << std::dec << block.at(0)->getData()->header.dataSize << endl;
-        payloadSizeBytes = block.at(0)->getData()->header.dataSize / 8;
-      } else {
-        cout << "     Container pointer invalid" << endl;
-      }
+  cout << "--> block received : " << endl;
+  if (block.size() > 0) {
+    if (block.at(0) != nullptr) {
+      cout << "    id : " << block.at(0)->getData()->header.id << endl;
+      cout << "    blockType : " << std::hex << block.at(0)->getData()->header.blockType << endl;
+      cout << "    headerSize : " << std::dec << block.at(0)->getData()->header.headerSize << endl;
+      cout << "    payload size : " << std::dec << block.at(0)->getData()->header.dataSize << endl;
+      payloadSizeBytes = block.at(0)->getData()->header.dataSize / 8;
     } else {
-      cout << "    Empty vector!" << endl;
+      cout << "     Container pointer invalid" << endl;
     }
+  } else {
+    cout << "    Empty vector!" << endl;
+  }
 
 //  QcInfoLogger::GetInstance() << "Payload size " << payloadSizeBytes << AliceO2::InfoLogger::InfoLogger::endm;
   mHisto1->Fill(payloadSizeBytes);
