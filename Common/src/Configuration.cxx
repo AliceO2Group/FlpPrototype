@@ -3,7 +3,7 @@
 ///
 /// \author Sylvain Chapeland, CERN
 
-#include "Common/Configuration.h"
+#include <Common/Configuration.h>
 #include <iostream>
 #include <vector>
 #include <boost/algorithm/string/predicate.hpp>

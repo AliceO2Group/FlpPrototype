@@ -10,21 +10,21 @@
 
 
 
-static int DaemonsShutdownRequest=0;      // set to 1 to request termination, e.g. on SIGTERM/SIGQUIT signals
+static int DaemonsShutdownRequest=0;      // global flag set to 1 to request termination, e.g. on SIGTERM/SIGQUIT signals
+// signal handler to notify exit request
 static void signalHandler(int){
   DaemonsShutdownRequest=1;
 }
 
 
-// todo: boost exceptions?
-
-Daemon::Daemon(int argc, char * argv[]) {
+Daemon::Daemon(int argc, char * argv[], DaemonConfigParameters *dConfigParams) {
   isInitialized=0;
+  
+  if (dConfigParams!=nullptr) {
+    params=*dConfigParams;
+  }
 
   try {
-    // set default configuration
-    setDefaultConfiguration();
-
     // parse command line parameters
     int option;
     while((option = getopt(argc, argv, "z:o:")) != -1){
@@ -42,8 +42,32 @@ Daemon::Daemon(int argc, char * argv[]) {
           break;
         
         case 'o':
-          // pass-through option in the format key=value
-          log.info("option %s",optarg);
+          {
+            // pass-through option in the format key=value
+            // todo: create a config file tree instead?
+            std::string sOptarg=optarg;
+            size_t qPos=sOptarg.find_first_of('=');
+            if (qPos>=sOptarg.length()) {
+              log.error("Failed to parse [key=value] in option %s",optarg);
+              throw __LINE__;
+            }
+            std::string key=sOptarg.substr(0,qPos);
+            std::string value=sOptarg.substr(qPos+1);
+            if (key=="isInteractive") {
+              params.isInteractive=std::stoi(value);
+            } else if (key=="idleSleepTime") {
+              params.idleSleepTime=std::stoi(value);;
+            } else if (key=="userName") {
+              params.userName=value;
+            } else if (key=="redirectOutput") {
+              params.redirectOutput=std::stoi(value);;
+            } else if (key=="logFile") {
+              params.logFile=value;
+            } else {
+              log.error("Unkown option key %s in option %s",key.c_str(),optarg);
+              throw __LINE__;
+            }
+          }
           break;
         
         default:
@@ -53,17 +77,35 @@ Daemon::Daemon(int argc, char * argv[]) {
     }
  
 
-    // load configuration
+    // load daemon configuration parameters from config file, if any
+    // read from [daemon] section
+    std::string cfgEntryPoint="daemon";
+    config.getOptionalValue<int>(cfgEntryPoint + ".isInteractive", params.isInteractive);
+    config.getOptionalValue<int>(cfgEntryPoint + ".idleSleepTime", params.idleSleepTime);
+    config.getOptionalValue<std::string>(cfgEntryPoint + ".userName", params.userName);
+    config.getOptionalValue<int>(cfgEntryPoint + ".redirectOutput", params.redirectOutput);
+    config.getOptionalValue<std::string>(cfgEntryPoint + ".logFile", params.logFile);    
+    
+    
+    // open log file, if configured
+    if (params.logFile.length()>0) {
+      log.setLogFile(params.logFile.c_str());
+    }
 
-    //myLog.setLogFile(... from log config);
-
-    log.info("Daemon starting");
+    // become a daemon, if configured to do so
+    if (!params.isInteractive) {
+      if(daemon(1,~params.redirectOutput) == -1){
+        log.error("Could not become daemon: %s",strerror(errno));
+        throw __LINE__;
+      }      
+    }
+    log.info("Started PID %d",getpid());
 
     // set daemon user name
-    if (userName.length()>0) {
+    if (params.userName.length()>0) {
       int success=0;
       struct passwd *passent;
-      passent=getpwnam(userName.c_str());
+      passent=getpwnam(params.userName.c_str());
       if (passent!=NULL) {
         setuid(passent->pw_uid);
         // check setuid worked as expected
@@ -72,21 +114,13 @@ Daemon::Daemon(int argc, char * argv[]) {
         }
       }
       if (!success) {
-        log.error("Failed to set user = %s",userName.c_str());
+        log.error("Failed to set user = %s",params.userName.c_str());
         throw __LINE__;
       } else {
-        log.info("Changed user to %s",userName.c_str());
+        log.info("Changed user to %s",params.userName.c_str());
       }
     }
 
-    // become a daemon, if configured to do so
-    if (!isInteractive) {
-      if(daemon(0,0) == -1){
-        log.error("Could not become daemon: %s",strerror(errno));
-        throw __LINE__;
-      }
-      log.info("Now running in the background");
-    }
 
     // configure signal handlers for clean exit
     struct sigaction signalSettings;
@@ -105,25 +139,22 @@ Daemon::Daemon(int argc, char * argv[]) {
 
 }
 
+
 Daemon::~Daemon() {
   log.info("Daemon exiting");
 }
 
-void Daemon::setDefaultConfiguration() {
-  isInteractive=1;
-  idleSleepTime=1000000;
-  userName="";
-}
 
 // This is the main daemon loop
 // The doLoop() [custom] method is called continuously until one of the following conditions occur:
 //   - global flag DaemonsShutdownRequest is set (e.g. by signal handler)
 //   - doLoop() returns with status Error or Completed
 // A short pause is done between 2 consecutive calls if status Idle is received.
-
+// returns -1 (daemon failed to initialize), 0 (loop exits with success) or 1 (loop exists with error).
 int Daemon::run() {
   if (!isInitialized) return -1;
   
+  int errCode=0;
   for (;;) {
     LoopStatus status=doLoop();
     if (DaemonsShutdownRequest) {
@@ -131,24 +162,32 @@ int Daemon::run() {
       break;      
     }
     if (status == LoopStatus::Idle) {
-      usleep(idleSleepTime);
+      usleep(params.idleSleepTime);
     } else if (status == LoopStatus::Error) {
       log.error("Error detected");
+      errCode=1;
       break;
     } else if (status == LoopStatus::Completed) {
       log.info("Work completed");
       break;
     }    
   }
-  return 0;
+  return errCode;
 }
 
+
+bool Daemon::isOk() {
+  return isInitialized;
+}
+
+
+// dummy base doLoop() class
 Daemon::LoopStatus Daemon::doLoop() {
   printf(".");
   fflush(stdout);
   return LoopStatus::Idle;
 }
 
-bool Daemon::isOk() {
-  return isInitialized;
-}
+
+// todo
+// boost exceptions?

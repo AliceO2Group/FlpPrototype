@@ -86,7 +86,7 @@ configure_file("include/${MODULE_NAME}/Version.h.in"
         )
 
 include_directories(
-        ${CMAKE_CURRENT_BINARY_DIR}/include
+        ${CMAKE_CURRENT_BINARY_DIR}/include include
 )
 
 set(LIBRARY_NAME ${MODULE_NAME})
@@ -94,6 +94,14 @@ set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME o2_common_bucket)
 
 O2_GENERATE_LIBRARY()
+
+foreach(modul Configuration Daemon LineBuffer SimpleLog Thread Timer)
+add_library(
+  Common${modul}
+  src/${modul}.cxx
+)
+endforeach(modul)
+
 
 add_subdirectory(doc)
 
@@ -105,6 +113,7 @@ set(TEST_SRCS
   test/TestSuffixOption.cxx
   test/TestSystem.cxx
   test/testTimer.cxx
+  test/testDaemon.cxx
 )
 
 O2_GENERATE_TESTS(
