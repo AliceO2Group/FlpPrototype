@@ -14,6 +14,8 @@ using namespace AliceO2::QualityControl::Core;
 
 namespace AliceO2 {
 namespace QualityControlModules {
+
+/// Namespace containing all the common, non detector specific, checks.
 namespace Common {
 
 /// \brief  Check whether the mean of the plot is above a certain limit.
