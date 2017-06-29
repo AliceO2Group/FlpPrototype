@@ -95,12 +95,20 @@ set(BUCKET_NAME o2_common_bucket)
 
 O2_GENERATE_LIBRARY()
 
+
+# Some extra targets to build when cmake -DBUILD_STANDALONE=1 ...
+if(BUILD_STANDALONE)
 foreach(modul Configuration Daemon LineBuffer SimpleLog Thread Timer)
+add_library(
+  objCommon${modul} OBJECT
+  src/${modul}.cxx
+)
 add_library(
   Common${modul}
   src/${modul}.cxx
 )
 endforeach(modul)
+endif(BUILD_STANDALONE)
 
 
 add_subdirectory(doc)
