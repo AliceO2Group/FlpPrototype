@@ -21,6 +21,7 @@ o2_define_bucket(
   DEPENDENCIES
   ${Boost_PROGRAM_OPTIONS_LIBRARY}
   ${Boost_SYSTEM_LIBRARY_DEBUG}
+  ${Boost_LOG_LIBRARY_DEBUG}
   InfoLogger
   Common
   DataFormat
