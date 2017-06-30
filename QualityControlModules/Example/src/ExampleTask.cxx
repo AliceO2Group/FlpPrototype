@@ -72,13 +72,13 @@ void ExampleTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContaine
 {
   uint32_t payloadSizeBytes = 0;
 
-  cout << "--> block received : " << endl;
+//  cout << "--> block received : " << endl;
   if (block.size() > 0) {
     if (block.at(0) != nullptr) {
-      cout << "    id : " << block.at(0)->getData()->header.id << endl;
-      cout << "    blockType : " << std::hex << block.at(0)->getData()->header.blockType << endl;
-      cout << "    headerSize : " << std::dec << block.at(0)->getData()->header.headerSize << endl;
-      cout << "    payload size : " << std::dec << block.at(0)->getData()->header.dataSize << endl;
+//      cout << "    id : " << block.at(0)->getData()->header.id << endl;
+//      cout << "    blockType : " << std::hex << block.at(0)->getData()->header.blockType << endl;
+//      cout << "    headerSize : " << std::dec << block.at(0)->getData()->header.headerSize << endl;
+//      cout << "    payload size : " << std::dec << block.at(0)->getData()->header.dataSize << endl;
       payloadSizeBytes = block.at(0)->getData()->header.dataSize / 8;
     } else {
       cout << "     Container pointer invalid" << endl;
@@ -114,7 +114,7 @@ void ExampleTask::endOfActivity(Activity &activity)
   QcInfoLogger::GetInstance() << "endOfActivity" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void ExampleTask::Reset()
+void ExampleTask::reset()
 {
   QcInfoLogger::GetInstance() << "Reset" << AliceO2::InfoLogger::InfoLogger::endm;
 }

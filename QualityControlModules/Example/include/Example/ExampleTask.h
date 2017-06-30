@@ -34,7 +34,7 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
     void monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
-    void Reset() override;
+    void reset() override;
 
     // Accessors
     TH1F*& getHisto1()
