@@ -83,7 +83,7 @@ void BenchmarkTask::endOfActivity(Activity &activity)
   QcInfoLogger::GetInstance() << "endOfActivity" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void BenchmarkTask::Reset()
+void BenchmarkTask::reset()
 {
   QcInfoLogger::GetInstance() << "Reset" << AliceO2::InfoLogger::InfoLogger::endm;
 }

@@ -39,7 +39,7 @@ class BenchmarkTask: public TaskInterface
     void monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
-    void Reset() override;
+    void reset() override;
 
   private:
 
