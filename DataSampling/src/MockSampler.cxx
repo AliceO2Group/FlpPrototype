@@ -8,7 +8,7 @@
 namespace AliceO2 {
 namespace DataSampling {
 
-MockSampler::MockSampler()
+MockSampler::MockSampler() : currentBlock(nullptr)
 {
   producer = new DataBlockProducer(true);
 }
@@ -18,26 +18,25 @@ MockSampler::~MockSampler()
   delete producer;
 }
 
-std::vector<std::shared_ptr<DataBlockContainer>> * MockSampler::getData(int timeout)
+std::vector<std::shared_ptr<DataBlockContainer>> *MockSampler::getData(int timeout)
 {
-  // we keep a copy because here we have const and we want to return a non-const
-//  return producer->get();
-
+  if (currentBlock) {
+    delete currentBlock;
+    currentBlock = nullptr;
+  }
   unsigned int i = 0;
-//  DataBlockProducer producer(false, 1024);
-//  while (keepRunning) {
-    auto *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
-    DataBlock *block = producer->get();
-    std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
-    blocks->push_back(containerPtr);
-//    producer.regenerate();
-//  }
-//  std::vector<std::shared_ptr<DataBlockContainer>> *v = nullptr;
+  auto *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
+  DataBlock *block = producer->get();
+  std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
+  blocks->push_back(containerPtr);
+  currentBlock = blocks;
   return blocks;
 }
 
 void MockSampler::releaseData()
 {
+  delete currentBlock;
+  currentBlock = nullptr;
   producer->regenerate();
 }
 

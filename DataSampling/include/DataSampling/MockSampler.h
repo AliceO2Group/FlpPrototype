@@ -33,7 +33,7 @@ class MockSampler : public SamplerInterface
 
   private:
     DataBlockProducer *producer;
-    DataBlock *currentBlock;
+    std::vector<std::shared_ptr<DataBlockContainer>>* currentBlock;
 
 };
 
