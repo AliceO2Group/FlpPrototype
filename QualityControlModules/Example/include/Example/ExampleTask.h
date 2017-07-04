@@ -39,7 +39,7 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
     // Accessors
     TH1F*& getHisto1()
     {
-      return mHisto1;
+      return mPayloadSize;
     }
     TH1F*& getHisto2()
     {
@@ -48,7 +48,9 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
 
   private:
 
-    TH1F *mHisto1, *mHisto2;
+    TH1F *mPayloadSize, *mHisto2;
+    TH1F *mNumberSubblocks;
+    TH1F *mSubPayloadSize;
     TH1F *mHistos[25];
 };
 
