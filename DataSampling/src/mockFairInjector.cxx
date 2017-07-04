@@ -48,25 +48,40 @@ int main(int argc, char *argv[])
   }
 
 //  AliceO2::DataSampling::InjectorInterface *device = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
-  auto *device = new AliceO2::DataSampling::FairInjector();
+  AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
 
   unsigned int i = 0;
-  DataBlockProducer producer(true, 1024);
+  DataBlockProducer producer(true, 1024, false /*we take ownership*/);
   signal(SIGINT, handler_interruption);
   while (keepRunning) {
     std::vector<std::shared_ptr<DataBlockContainer>> blocks;
+
+    producer.regenerate();
     DataBlock *block = producer.get();
     std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
     blocks.push_back(containerPtr);
-    device->injectSamples(blocks);
+
     producer.regenerate();
-    if(i%1000) {
+    DataBlock *block2 = producer.get();
+    std::shared_ptr<DataBlockContainer> containerPtr2 = std::make_shared<DataBlockContainer>(block2);
+    blocks.push_back(containerPtr2);
+
+    dataSamplingInjector->injectSamples(blocks);
+
+//    for (std::shared_ptr<DataBlockContainer> block_ptr : blocks) {
+//      if (block_ptr->getData()->data) {
+//        delete[] block_ptr->getData()->data;
+//      }
+//      delete block_ptr->getData(); // REALLY ??
+//    }
+
+    if ((i % 10) == 0) {
       std::cout << "\rNumber of blocks produced so far : " << i;
     }
     i++;
   }
   cout << "\nexiting" << endl;
-  delete device;
+  delete dataSamplingInjector;
 
   return EXIT_SUCCESS;
 }

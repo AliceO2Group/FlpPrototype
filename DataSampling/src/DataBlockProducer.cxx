@@ -7,21 +7,29 @@
 #include "DataSampling/DataBlockProducer.h"
 #include <fstream>
 
+using namespace std;
+
 namespace AliceO2 {
 namespace DataSampling {
 
-DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurrent(nullptr),
-                                                                          mCurrentPayloadSize(payloadSize),
-                                                                          mIsRandom(random),
-                                                                          mCurrentId(0)
+DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize, bool isOwner) : mCurrent(nullptr),
+                                                                                        mCurrentPayloadSize(
+                                                                                          payloadSize),
+                                                                                        mIsRandom(random),
+                                                                                        mCurrentId(0),
+                                                                                        mIsOwner(isOwner)
 {
-  regenerate();
+  if(mIsOwner) {
+    regenerate();
+  }
 }
 
 DataBlockProducer::~DataBlockProducer()
 {
-  delete[] mCurrent->data;
-  delete mCurrent;
+  if(mIsOwner) {
+    delete[] mCurrent->data;
+    delete mCurrent;
+  }
 }
 
 /// Ownership remains with DataBlockProducer.
@@ -42,19 +50,21 @@ void DataBlockProducer::saveToFile(std::string pathToFile, bool append) const
 
 void DataBlockProducer::regenerate()
 {
-  // delete current data
-  if (mCurrent) {
-    if (mCurrent->data) {
-      delete[] mCurrent->data;
+  // delete current data if we are the owner
+  if (mIsOwner) {
+    if (mCurrent) {
+      if (mCurrent->data) {
+        delete[] mCurrent->data;
+      }
+      delete mCurrent;
+      mCurrent = nullptr;
     }
-    delete mCurrent;
-    mCurrent = nullptr;
   }
 
   // generate payload size if needed
   if (mIsRandom) {
-    std::normal_distribution<float> distribution(1024, 256);
-    double temp  = distribution(mGenerator);
+    std::normal_distribution<float> distribution(1024*1024, 256);
+    double temp = distribution(mGenerator);
     temp = (temp < 1) ? 1 : temp; // we don't want to cast a negative number to uint
     mCurrentPayloadSize = (uint32_t) temp;
   }
