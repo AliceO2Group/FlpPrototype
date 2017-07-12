@@ -34,12 +34,12 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
     void monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
-    void Reset() override;
+    void reset() override;
 
     // Accessors
     TH1F*& getHisto1()
     {
-      return mHisto1;
+      return mPayloadSize;
     }
     TH1F*& getHisto2()
     {
@@ -48,7 +48,9 @@ class ExampleTask /*final*/: public TaskInterface // todo add back the "final" w
 
   private:
 
-    TH1F *mHisto1, *mHisto2;
+    TH1F *mPayloadSize, *mHisto2;
+    TH1F *mNumberSubblocks;
+    TH1F *mSubPayloadSize;
     TH1F *mHistos[25];
 };
 

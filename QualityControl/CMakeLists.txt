@@ -31,6 +31,8 @@ link_o2_subproject(InfoLogger)
 link_o2_subproject(DataFormat)
 link_o2_subproject(DataSampling)
 
+add_subdirectory(doc)
+
 # TODO make it required, once in its own repo
 if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found in '${ROOTSYS}'")
@@ -80,8 +82,6 @@ if(hasParent)
 endif()
 include(PackageConfigurator)
 
-add_subdirectory(doc)
-
 
 ####################################
 # Module, library and executable definition
@@ -95,16 +95,11 @@ set(SRCS
         src/TaskInterface.cxx
         src/MonitorObject.cxx
         src/Quality.cxx
-        src/TaskControl.cxx
         src/ObjectsManager.cxx
-        src/PublisherInterface.cxx
-        src/MockPublisher.cxx
         src/TaskFactory.cxx
         src/Checker.cxx
         src/CheckInterface.cxx
         src/DatabaseFactory.cxx
-        src/SpyMainFrame.cxx
-        src/SpyDevice.cxx
         src/ClientDataProvider.cxx
         )
 
@@ -116,10 +111,15 @@ set(HEADERS # needed for the dictionary generation
 )
 
 if (FAIRROOT_FOUND)
-    list(APPEND SRCS src/AlfaPublisher.cxx src/AlfaReceiverForTests.cxx)
+    list(APPEND SRCS
+            src/AlfaReceiverForTests.cxx
+            src/TaskDevice.cxx
+            src/SpyDevice.cxx
+            src/SpyMainFrame.cxx
+            )
 endif (FAIRROOT_FOUND)
 
-if(MYSQL_FOUND AND ROOT_RMySQL_LIBRARY)
+if(MYSQL_FOUND)
     list(APPEND SRCS src/MySqlDatabase.cxx)
 endif()
 
@@ -149,7 +149,7 @@ O2_GENERATE_LIBRARY()
 # Task Launcher
 O2_GENERATE_EXECUTABLE(
         EXE_NAME qcTaskLauncher
-        SOURCES src/qcTaskLauncher.cxx
+        SOURCES src/TaskDevice.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
         BUCKET_NAME ${BUCKET_NAME}
 )
@@ -204,3 +204,4 @@ endif()
 
 # Install extra scripts
 install(PROGRAMS script/qcDatabaseSetup.sh DESTINATION bin)
+install(FILES example-default.ini alfa.json DESTINATION etc)

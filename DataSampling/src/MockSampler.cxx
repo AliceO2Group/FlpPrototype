@@ -3,14 +3,17 @@
 /// \author  Barthelemy von Haller
 ///
 
+#include <DataFormat/DataBlock.h>
 #include "DataSampling/MockSampler.h"
+
+using namespace std;
 
 namespace AliceO2 {
 namespace DataSampling {
 
-MockSampler::MockSampler()
+MockSampler::MockSampler() : mCurrentBlock(nullptr)
 {
-  producer = new DataBlockProducer(true);
+  producer = new DataBlockProducer(true, 1024 * 1024, false);
 }
 
 MockSampler::~MockSampler()
@@ -18,27 +21,40 @@ MockSampler::~MockSampler()
   delete producer;
 }
 
-std::vector<std::shared_ptr<DataBlockContainer>> * MockSampler::getData(int timeout)
+std::vector<std::shared_ptr<DataBlockContainer>> *MockSampler::getData(int timeout)
 {
-  // we keep a copy because here we have const and we want to return a non-const
-//  return producer->get();
+  if (mCurrentBlock) {
+    delete mCurrentBlock;
+    mCurrentBlock = nullptr;
+  }
+  auto *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
 
-  unsigned int i = 0;
-//  DataBlockProducer producer(false, 1024);
-//  while (keepRunning) {
-    auto *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
-    DataBlock *block = producer->get();
-    std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
-    blocks->push_back(containerPtr);
-//    producer.regenerate();
-//  }
-//  std::vector<std::shared_ptr<DataBlockContainer>> *v = nullptr;
+  producer->regenerate();
+  DataBlock *block = producer->get();
+  std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
+  blocks->push_back(containerPtr);
+
+  producer->regenerate();
+  DataBlock *block2 = producer->get();
+  std::shared_ptr<DataBlockContainer> containerPtr2 = std::make_shared<DataBlockContainer>(block2);
+  blocks->push_back(containerPtr2);
+
+  mCurrentBlock = blocks;
   return blocks;
 }
 
 void MockSampler::releaseData()
 {
-  producer->regenerate();
+  if (mCurrentBlock) {
+    for (std::shared_ptr<DataBlockContainer> block : *mCurrentBlock) {
+      if (block->getData()->data) {
+        delete[] block->getData()->data;
+      }
+      delete block->getData(); // REALLY ??
+    }
+    delete mCurrentBlock;
+    mCurrentBlock = nullptr;
+  }
 }
 
 }

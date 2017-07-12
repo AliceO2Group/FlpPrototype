@@ -20,12 +20,13 @@ struct TaskConfig
     std::string taskName;
     std::string moduleName;
     std::string className;
-    std::string address;
+//    std::string address;
     int numberHistos;
     int numberChecks;
     std::string typeOfChecks;
     int cycleDurationSeconds;
     std::string publisherClassName;
+    int maxNumberCycles;
 };
 
 } // namespace Core

@@ -9,7 +9,6 @@
 #include <DataFormat/DataBlockContainer.h>
 #include <vector>
 #include "InjectorInterface.h"
-//#include "InjectorDevice.h"
 #include <FairMQDevice.h>
 #include <vector>
 #include <DataFormat/DataBlockContainer.h>
@@ -35,6 +34,7 @@ class FairInjector : public InjectorInterface, public FairMQDevice
 
   protected:
     void Run() override;
+    void sendSamples();
 
     std::vector<std::shared_ptr<DataBlockContainer>> mDataBlocks;
     bool mAvailableData; // to make sure that we don't try to send something that is not there

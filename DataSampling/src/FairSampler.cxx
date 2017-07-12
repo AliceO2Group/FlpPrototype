@@ -5,7 +5,6 @@
 
 #include <DataFormat/DataBlock.h>
 #include "DataSampling/FairSampler.h"
-#include "DataSampling/DsInfoLogger.h"
 
 using namespace std;
 
@@ -69,36 +68,43 @@ void FairSampler::Run()
 void FairSampler::releaseData()
 {
   if (mBlock) {
-    // TODO delete elements?
-    delete mBlock;
-    mBlock = nullptr;
+    deleteBlock();
   }
 
   mBlockMutex.unlock();
 }
 
+void FairSampler::deleteBlock()
+{
+  if(!mBlock) {
+    return;
+  }
+  for (std::shared_ptr<DataBlockContainer> block_ptr : *mBlock) {
+//    if (block_ptr->getData()->data) { // this is done by zmq
+//      delete[] block_ptr->getData()->data;
+//    }
+    delete block_ptr->getData();
+  }
+  delete mBlock;
+  mBlock = nullptr;
+}
+
 bool FairSampler::HandleData(FairMQParts &parts, int /*index*/)
 {
-//  cout << "HandleData()" << endl;
-//  cout << "   number of parts : " << parts.Size() << endl;
-
-  // store the data
   if (!mBlockMutex.try_lock()) {
     return true;
   }
-
-  // TODO delete elements?
+  // reset data
   if (mBlock) {
-    delete mBlock;
+    deleteBlock();
   }
   mBlock = new std::vector<std::shared_ptr<DataBlockContainer>>();
-
-  auto *block = new DataBlock();
-  // TODO loop over parts
-  block->header = *static_cast<DataBlockHeaderBase *>(parts.At(0)->GetData());
-  block->data = static_cast<char *>(parts.At(1)->GetData()); // TODO should I copy ?
-  std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
-  mBlock->push_back(containerPtr);
+  for (int subblock = 0; subblock < parts.Size(); subblock = subblock + 2) {
+    auto *block = new DataBlock();
+    block->header = *static_cast<DataBlockHeaderBase *>(parts.At(subblock)->GetData());
+    block->data = static_cast<char *>(parts.At(subblock + 1)->GetData()); // TODO should I copy ?
+    mBlock->push_back(make_shared<DataBlockContainer>(block));
+  }
   mBlockMutex.unlock();
   // TODO we continuously receive data and trash it. This is stupid.
   // tODO we should rather get one sample, store it, wait only get another one when getData() is called.

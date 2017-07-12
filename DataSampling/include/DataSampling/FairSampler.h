@@ -36,9 +36,11 @@ class FairSampler : public SamplerInterface, public FairMQDevice
     };
 
   private:
+    void deleteBlock();
+
+  private:
     std::vector<std::shared_ptr<DataBlockContainer>>* mBlock;
     std::timed_mutex mBlockMutex;
-
 };
 
 }

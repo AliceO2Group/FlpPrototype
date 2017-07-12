@@ -34,7 +34,7 @@ class DataBlockProducer
 {
   public:
     /// \brief Create a data block producer and an initial data block.
-    DataBlockProducer(bool random = true, uint32_t payloadSize = 1024 /*bytes*/);
+    DataBlockProducer(bool random = true, uint32_t payloadSize = 1024 /*bytes*/, bool isOwner = true);
     /// \brief Destructor
     virtual ~DataBlockProducer();
 
@@ -51,6 +51,7 @@ class DataBlockProducer
     bool mIsRandom;
     std::default_random_engine mGenerator;
     uint32_t mCurrentId;
+    bool mIsOwner;
 };
 
 }
