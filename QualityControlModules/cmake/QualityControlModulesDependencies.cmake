@@ -50,3 +50,18 @@ o2_define_bucket(
     ${Configuration_INCLUDE_DIRS}
 
 )
+
+o2_define_bucket(
+    NAME
+    o2_qcmodules_template
+
+    DEPENDENCIES
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    InfoLogger
+    QualityControl
+    DataFormat
+
+    SYSTEMINCLUDE_DIRECTORIES
+    ${Boost_INCLUDE_DIRS}
+    ${Configuration_INCLUDE_DIRS}
+)
