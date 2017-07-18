@@ -5,6 +5,8 @@
 cmake_minimum_required(VERSION 2.8.12)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+message(WARNING "100 ZEROMQ_INCLUDE_DIR=${ZEROMQ_INCLUDE_DIR} ZeroMQ_INCLUDE_DIR=${ZeroMQ_INCLUDE_DIR}")
+
 enable_testing() # needed on top-level CMakeLists.txt
 
 # Target doc definition
@@ -31,6 +33,7 @@ include(UninstallTarget)
 
 # Target clang-format
 #include(clang-format)
+message(WARNING "200 ZEROMQ_INCLUDE_DIR=${ZEROMQ_INCLUDE_DIR} ZeroMQ_INCLUDE_DIR=${ZeroMQ_INCLUDE_DIR}")
 
 macro(PrintModuleName name)
   message(STATUS \n-------- ${name} --------)
@@ -58,3 +61,7 @@ PrintModuleName("Readout")
 add_subdirectory(Readout)
 PrintModuleName("GUI")
 add_subdirectory(GUI)
+
+message(WARNING "300 ZEROMQ_INCLUDE_DIR=${ZEROMQ_INCLUDE_DIR} ZeroMQ_INCLUDE_DIR=${ZeroMQ_INCLUDE_DIR}")
+
+#message(FATAL_ERROR "cest la vie")

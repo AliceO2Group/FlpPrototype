@@ -1,3 +1,4 @@
+message(FATAL_ERROR "yabba yabba ZEROMQ_INCLUDE_DIR=${ZEROMQ_INCLUDE_DIR} ZeroMQ_INCLUDE_DIR=${ZeroMQ_INCLUDE_DIR}")
 # **************************************************************************
 # * Copyright(c) 1998-2014, ALICE Experiment at CERN, All rights reserved. *
 # *                                                                        *
