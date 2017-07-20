@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
   }
 
-  AliceO2::DataSampling::InjectorInterface *dataSamplingInjector = AliceO2::DataSampling::InjectorFactory::create("FairInjector");
+  unique_ptr<InjectorInterface> dataSamplingInjector = InjectorFactory::create("FairInjector");
 
   unsigned int i = 0;
   DataBlockProducer producer(true /*random*/, 1024);
@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
     i++;
   }
   cout << "\nexiting" << endl;
-  delete dataSamplingInjector;
 
   return EXIT_SUCCESS;
 }
