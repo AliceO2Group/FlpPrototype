@@ -24,9 +24,9 @@ class MockInjector: public InjectorInterface
 ///
 /// @todo Make it a class, add namespaces, rename.
 ///
-/// \param dataBlocks A reference to a vector of data blocks. All data blocks in the vector have the same event id.
+/// \param dataSet A reference to a vector of data blocks. All data blocks in the vector have the same event id.
 /// \return 0 on success, an error code otherwise
-    int injectSamples(DataSetReference dataBlocks) override;
+    int injectSamples(DataSetReference dataSet) override;
 
 };
 

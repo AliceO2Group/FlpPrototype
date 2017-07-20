@@ -9,20 +9,22 @@
 namespace AliceO2 {
 namespace DataSampling {
 
-// TODO use MockDataBlockContainer like in DataBlockProducer
-int MockInjector::injectSamples(DataSetReference dataBlocks)
+int MockInjector::injectSamples(DataSetReference dataSet)
 {
-  unsigned int nBlocks = (int) dataBlocks->size();
-  int totalSize = 0;
-  for (DataBlockContainerReference blockContainer : *dataBlocks) {
-    DataBlockHeaderBase *header = &blockContainer->getData()->header;
-    void *payload = blockContainer->getData()->data;
-    unsigned int blockSize = header->dataSize;
-    printf("%p : %d\n", payload, blockSize);
-    totalSize += blockSize;
-  }
-
-  printf("DataSampling injection: got %u blocks, total size %u bytes\n", nBlocks, totalSize);
+  // TODO we don't want to slow down the caller, thus we do nothing...
+  // TODO This being said we might want in certain cases to print the stuff below.
+  //
+//  unsigned int nBlocks = (int) dataSet->size();
+//  int totalSize = 0;
+//  for (DataBlockContainerReference blockContainer : *dataSet) {
+//    DataBlockHeaderBase *header = &blockContainer->getData()->header;
+//    void *payload = blockContainer->getData()->data;
+//    unsigned int blockSize = header->dataSize;
+//    printf("%p : %d\n", payload, blockSize);
+//    totalSize += blockSize;
+//  }
+//
+//  printf("DataSampling injection: got %u blocks, total size %u bytes\n", nBlocks, totalSize);
   return 0;
 }
 

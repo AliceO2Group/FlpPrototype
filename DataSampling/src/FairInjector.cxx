@@ -45,12 +45,16 @@ FairInjector::~FairInjector()
   ChangeState(END);
 }
 
-std::map<void*, DataBlockContainerReference> store;
+//std::map<void *, DataBlockContainerReference> store;
 
 void cleanupCallback(void *data, void *object)
 {
-  if (data != nullptr) {
-    store.erase(data);
+//  if (data != nullptr) {
+//    store.erase(data);
+//  }
+  if ((object!=nullptr)&&(data!=nullptr)) {
+    DataBlockContainerReference *ptr=(DataBlockContainerReference *)object;
+    delete ptr;
   }
 }
 
@@ -63,10 +67,11 @@ int FairInjector::injectSamples(DataSetReference dataSetReference)
     char *data = block->getData()->data;
 
     // just to keep reference alive
-    store[data] = block;
+//    store[data] = block;
+    DataBlockContainerReference *ptr = new DataBlockContainerReference(block);
 
     FairMQMessagePtr msgHeader(NewMessage((void *) &header, (header.headerSize), cleanupCallback, (void *) nullptr));
-    FairMQMessagePtr msgBody(NewMessage((void *) data, (header.dataSize), cleanupCallback));
+    FairMQMessagePtr msgBody(NewMessage((void *) data, (header.dataSize), cleanupCallback, (void *) (ptr)));
 
     parts.AddPart(std::move(msgHeader));
     parts.AddPart(std::move(msgBody));
