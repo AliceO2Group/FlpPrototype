@@ -90,7 +90,7 @@ void FairSampler::deleteBlock()
 }
 
 bool FairSampler::HandleData(FairMQParts &parts, int /*index*/)
-//bool FairSampler::HandleData(FairMQMessagePtr &parts, int /*index*/)
+//bool FairSampler::HandleData(FairMQMessagePtr &msg, int /*index*/)
 {
   if (!mBlockMutex.try_lock()) {
     return true;

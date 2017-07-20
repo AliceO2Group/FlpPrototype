@@ -50,7 +50,7 @@ DataBlockContainerReference DataBlockProducer::getDataBlockContainer()
   // Prepare data
   result->getData()->header.blockType = 0xba; // whatever
   result->getData()->header.headerSize = 0x60; // just the header base -> 96 bits
-  result->getData()->header.dataSize = mCurrentPayloadSize * 8;
+  result->getData()->header.dataSize = mCurrentPayloadSize;
   result->getData()->header.id = mCurrentId++;
   char *buffer = new char[mCurrentPayloadSize];
   for (unsigned int i = 0; i < mCurrentPayloadSize; i++) {
@@ -60,17 +60,6 @@ DataBlockContainerReference DataBlockProducer::getDataBlockContainer()
 
   return result;
 }
-
-// TODO add back possibility to write to file
-/// Note : the file is opened and closed each time.
-//void DataBlockProducer::saveToFile(std::string pathToFile, bool append) const
-//{
-//  std::ios_base::openmode extra_mode = append ? std::ios::app : std::ios::trunc;
-//  std::fstream file(pathToFile, std::ios::out | std::ios::binary | extra_mode);
-//  file.write((char *) &mCurrent->header, sizeof(DataBlockHeaderBase));
-//  file.write(mCurrent->data, mCurrentPayloadSize);
-//  file.close();
-//}
 
 }
 }

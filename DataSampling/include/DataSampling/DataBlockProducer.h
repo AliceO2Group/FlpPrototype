@@ -81,7 +81,7 @@ class DataBlockProducer
     DataBlockContainerReference getDataBlockContainer();
 
   private:
-    uint32_t mCurrentPayloadSize;
+    uint32_t mCurrentPayloadSize; // in bytes
     bool mIsRandom;
     std::default_random_engine mGenerator;
     uint32_t mCurrentId;

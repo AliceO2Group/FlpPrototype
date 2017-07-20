@@ -61,5 +61,7 @@ int main(int argc, char* argv[])
     sampling.setDataFormat(vm["format"].as<string>());
   }
 
+  // TODO well... implement it
+
   return EXIT_SUCCESS;
 }

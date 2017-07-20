@@ -8,6 +8,8 @@
 #include <algorithm>
 // boost
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+#include <DataFormat/DataBlock.h>
 // datasampling
 #include "DataSampling/FileSampler.h"
 #include "DataSampling/Version.h"
@@ -16,6 +18,12 @@
 using namespace std;
 namespace po = boost::program_options;
 
+/**
+ * Writes a dataset with a number of blocks to file.
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[])
 {
   // Arguments parsing
@@ -54,18 +62,26 @@ int main(int argc, char *argv[])
   if (vm.count("size")) {
     size = vm["size"].as<int>();
   }
-  unsigned int blocks = 10;
+  int blocks = 10;
   if (vm.count("blocks")) {
-    blocks = vm["blocks"].as<unsigned int>();
+    blocks = vm["blocks"].as<int>();
+  }
+
+  if (boost::filesystem::exists(outputFile)) {
+    std::cout << "File already exists" << std::endl;
+    return EXIT_FAILURE;
   }
 
   AliceO2::DataSampling::DataBlockProducer producer;
-  // TODO reenable this
-//  producer.saveToFile(outputFile, false);
-//  for (int i = 0; i < blocks-1; i++) {
-////    producer.regenerate();
-//    producer.saveToFile(outputFile, true);
-//  }
+  std::fstream file(outputFile, std::ios::out | std::ios::binary | std::ios::trunc);
+  auto set = producer.getDataSet((unsigned int) blocks);
+  for (int i = 0; i < blocks; i++) {
+    auto block = set->at(i);
+    file.write((char *) &block->getData()->header, sizeof(DataBlockHeaderBase));
+    file.write(block->getData()->data, block->getData()->header.dataSize);
+    file.close();
+  }
+  cout << "Done" << endl;
 
   return EXIT_SUCCESS;
 }
