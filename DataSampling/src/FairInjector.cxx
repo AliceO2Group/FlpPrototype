@@ -4,6 +4,7 @@
 ///
 
 #include <DataSampling/FairInjector.h>
+#include <DataFormat/DataSet.h>
 
 using namespace std;
 
@@ -44,38 +45,34 @@ FairInjector::~FairInjector()
   ChangeState(END);
 }
 
+std::map<void*, DataBlockContainerReference> store;
 
-int FairInjector::injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks)
+void cleanupCallback(void *data, void *object)
 {
-  mDataBlocks = dataBlocks;
-  mAvailableData = true;
-  sendSamples();
-  return 0;
+  if (data != nullptr) {
+    store.erase(data);
+  }
 }
 
-void FairInjector::sendSamples()
+int FairInjector::injectSamples(DataSetReference dataSetReference)
 {
-  if (!mAvailableData) {
-    return;
-  }
-  mAvailableData = false;
-
   FairMQParts parts;
-  for (std::shared_ptr<DataBlockContainer> block : mDataBlocks) {
+  for (DataBlockContainerReference block : *dataSetReference) {
+
     DataBlockHeaderBase &header = block->getData()->header;
     char *data = block->getData()->data;
 
-    FairMQMessagePtr msgHeader =
-      NewMessage((void *) &header, (header.headerSize),
-                 [](void * /*data*/, void *object) { /*todo*/ }/*, (void *) nullptr*/);
-    FairMQMessagePtr msgBody(
-      NewMessage((void *) data, (header.dataSize),
-                 [](void * /*data*/, void *object) { /*todo*/ }/*, (void *) (bCopy)*/));
+    // just to keep reference alive
+    store[data] = block;
 
-//    DsInfoLogger::getInstance() << "Sending block with id \"" << header.id << "\"" << infologger::endm;
+    FairMQMessagePtr msgHeader(NewMessage((void *) &header, (header.headerSize), cleanupCallback, (void *) nullptr));
+    FairMQMessagePtr msgBody(NewMessage((void *) data, (header.dataSize), cleanupCallback));
 
     parts.AddPart(std::move(msgHeader));
     parts.AddPart(std::move(msgBody));
+    // TODO do not use parts
+//    Send(msgHeader, "data-out", 0);
+//    Send(msgBody, "data-out", 0);
   }
   Send(parts, "data-out", 0);
 }

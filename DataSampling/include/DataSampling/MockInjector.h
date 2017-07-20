@@ -8,6 +8,7 @@
 
 #include <DataFormat/DataBlockContainer.h>
 #include <vector>
+#include <DataFormat/DataSet.h>
 #include "InjectorInterface.h"
 
 namespace AliceO2 {
@@ -25,7 +26,7 @@ class MockInjector: public InjectorInterface
 ///
 /// \param dataBlocks A reference to a vector of data blocks. All data blocks in the vector have the same event id.
 /// \return 0 on success, an error code otherwise
-    int injectSamples(std::vector<std::shared_ptr<DataBlockContainer>> &dataBlocks) override;
+    int injectSamples(DataSetReference dataBlocks) override;
 
 };
 

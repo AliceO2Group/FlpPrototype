@@ -60,11 +60,12 @@ int main(int argc, char *argv[])
   }
 
   AliceO2::DataSampling::DataBlockProducer producer;
-  producer.saveToFile(outputFile, false);
-  for (int i = 0; i < blocks-1; i++) {
-    producer.regenerate();
-    producer.saveToFile(outputFile, true);
-  }
+  // TODO reenable this
+//  producer.saveToFile(outputFile, false);
+//  for (int i = 0; i < blocks-1; i++) {
+////    producer.regenerate();
+//    producer.saveToFile(outputFile, true);
+//  }
 
   return EXIT_SUCCESS;
 }
