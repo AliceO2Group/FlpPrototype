@@ -4,6 +4,13 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5.2 FATAL_ERROR)
 
+find_package(ZeroMQ REQUIRED)
+if(NOT ZeroMQ_INCLUDE_DIR)
+    set(ZeroMQ_INCLUDE_DIR ${ZEROMQ_INCLUDE_DIR})
+    set(ZeroMQ_LIBRARIES ${ZEROMQ_LIBRARIES})
+endif()
+
+
 ### CMP0025   Compiler id for Apple Clang is now AppleClang.
 ### CMP0042   MACOSX_RPATH is enabled by default.
 
@@ -84,7 +91,12 @@ set(SRCS
 )
 
 include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/../RORC/include ${Boost_INCLUDE_DIRS} ${Monitoring_INCLUDE_DIRS}  ${FAIRROOT_INCLUDE_DIR} ${FAIRROOT_INCLUDE_DIR}/fairmq
+        ${CMAKE_CURRENT_SOURCE_DIR}/../RORC/include
+        ${Boost_INCLUDE_DIRS}
+        ${Monitoring_INCLUDE_DIRS}
+        ${FAIRROOT_INCLUDE_DIR}
+        ${FAIRROOT_INCLUDE_DIR}/fairmq
+        ${ZeroMQ_INCLUDE_DIR}
 )
 
 add_library(
@@ -141,3 +153,11 @@ if(hasParent)
     set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
 endif()
 include(PackageConfigurator)
+
+
+# Install some extra files
+install(
+  FILES readout.cfg
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/etc
+  PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+

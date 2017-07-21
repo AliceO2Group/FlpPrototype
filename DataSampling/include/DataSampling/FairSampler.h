@@ -11,6 +11,7 @@
 #include "SamplerInterface.h"
 #include <mutex>
 #include <thread>
+//#include <DataFormat/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {
@@ -40,6 +41,7 @@ class FairSampler : public SamplerInterface, public FairMQDevice
 
   private:
     std::vector<std::shared_ptr<DataBlockContainer>>* mBlock;
+//    DataSetReference mCurrentDataSet;
     std::timed_mutex mBlockMutex;
 };
 

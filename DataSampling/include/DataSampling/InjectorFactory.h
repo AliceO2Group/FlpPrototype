@@ -25,7 +25,7 @@ class InjectorFactory
     * @todo add a version of this method to get a class based on the Configuration system
     * @return an instance of the class (the caller is the owner)
     */
-    static InjectorInterface *create(std::string name);
+    static std::unique_ptr<InjectorInterface> create(std::string name);
 };
 
 }

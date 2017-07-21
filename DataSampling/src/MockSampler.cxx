@@ -13,7 +13,7 @@ namespace DataSampling {
 
 MockSampler::MockSampler() : mCurrentBlock(nullptr)
 {
-  producer = new DataBlockProducer(true, 1024 * 1024, false);
+  producer = new DataBlockProducer(true, 1024 * 1024);
 }
 
 MockSampler::~MockSampler()
@@ -29,17 +29,17 @@ std::vector<std::shared_ptr<DataBlockContainer>> *MockSampler::getData(int timeo
   }
   auto *blocks = new std::vector<std::shared_ptr<DataBlockContainer>>();
 
-  producer->regenerate();
-  DataBlock *block = producer->get();
-  std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
-  blocks->push_back(containerPtr);
-
-  producer->regenerate();
-  DataBlock *block2 = producer->get();
-  std::shared_ptr<DataBlockContainer> containerPtr2 = std::make_shared<DataBlockContainer>(block2);
-  blocks->push_back(containerPtr2);
-
-  mCurrentBlock = blocks;
+//  producer->regenerate();
+//  DataBlock *block = producer->get();
+//  std::shared_ptr<DataBlockContainer> containerPtr = std::make_shared<DataBlockContainer>(block);
+//  blocks->push_back(containerPtr);
+//
+////  producer->regenerate();
+//  DataBlock *block2 = producer->get();
+//  std::shared_ptr<DataBlockContainer> containerPtr2 = std::make_shared<DataBlockContainer>(block2);
+//  blocks->push_back(containerPtr2);
+//
+//  mCurrentBlock = blocks;
   return blocks;
 }
 
