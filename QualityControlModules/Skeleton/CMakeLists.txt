@@ -1,10 +1,10 @@
-set(MODULE_NAME "QcTemplate")
+set(MODULE_NAME "QcSkeleton")
 
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-        src/TemplateTask.cxx
-        src/TemplateCheck.cxx
+        src/SkeletonTask.cxx
+        src/SkeletonCheck.cxx
         )
 
 include_directories(
@@ -12,18 +12,18 @@ include_directories(
 )
 
 set(HEADERS
-        include/Template/TemplateTask.h
-        include/Template/TemplateCheck.h
+        include/Skeleton/SkeletonTask.h
+        include/Skeleton/SkeletonCheck.h
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
-set(BUCKET_NAME o2_qcmodules_template)
-set(LINKDEF include/Template/LinkDef.h)
+set(BUCKET_NAME o2_qcmodules_skeleton)
+set(LINKDEF include/Skeleton/LinkDef.h)
 
 O2_GENERATE_LIBRARY()
 
 set(TEST_SRCS
-        test/testQcTemplate.cxx
+        test/testQcSkeleton.cxx
         )
 
 O2_GENERATE_TESTS(

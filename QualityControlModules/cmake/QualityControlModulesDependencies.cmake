@@ -53,7 +53,7 @@ o2_define_bucket(
 
 o2_define_bucket(
     NAME
-    o2_qcmodules_template
+    o2_qcmodules_skeleton
 
     DEPENDENCIES
     ${Boost_PROGRAM_OPTIONS_LIBRARY}

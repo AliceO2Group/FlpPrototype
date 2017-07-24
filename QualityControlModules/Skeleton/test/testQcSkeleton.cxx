@@ -1,9 +1,9 @@
 ///
-/// \file   testQcTemplate.cxx
+/// \file   testQcSkeleton.cxx
 /// \author Barthelemy von Haller
 ///
 
-#include "../include/Template/TemplateTask.h"
+#include "Skeleton/SkeletonTask.h"
 #include "QualityControl/TaskFactory.h"
 #include "QualityControl/ObjectsManager.h"
 #include <boost/exception/diagnostic_information.hpp>
@@ -22,11 +22,11 @@ using namespace std;
 
 namespace AliceO2 {
 namespace QualityControlModules {
-namespace Template {
+namespace Skeleton {
 
 BOOST_AUTO_TEST_CASE(instantiate_task)
 {
-  TemplateTask task;
+  SkeletonTask task;
   TaskConfig config;
   config.publisherClassName = "MockPublisher";
   auto manager = make_shared<ObjectsManager>(config);
@@ -47,6 +47,6 @@ BOOST_AUTO_TEST_CASE(instantiate_task)
   task.endOfActivity(activity);
 }
 
-} // namespace Template
+} // namespace Skeleton
 } // namespace QualityControlModules
 } // namespace AliceO2

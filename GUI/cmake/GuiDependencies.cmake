@@ -30,8 +30,6 @@ o2_define_bucket(
         ${ZeroMQ_INCLUDE_DIR}
 )
 
-message("ZeroMQ_INCLUDE_DIR : ${ZeroMQ_INCLUDE_DIR}")
-
 o2_define_bucket(
         NAME
         o2_gui_with_fairroot_bucket
