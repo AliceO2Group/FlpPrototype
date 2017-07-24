@@ -30,9 +30,8 @@ void SkeletonTask::initialize()
 
   mHistogram = new TH1F("example", "Example", 100, 0, 99);
   getObjectsManager()->startPublishing(mHistogram);
-  getObjectsManager()->addCheck(mHistogram, "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty",
-                                "QcCommon");
-  getObjectsManager()->addCheck(mHistogram, "checkFromSkeleton", "AliceO2::QualityControlModules::Skeleton::SkeletonCheck",
+  getObjectsManager()->addCheck(mHistogram, "checkFromSkeleton",
+                                "AliceO2::QualityControlModules::Skeleton::SkeletonCheck",
                                 "QcSkeleton");
 }
 

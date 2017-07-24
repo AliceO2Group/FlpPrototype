@@ -25,12 +25,13 @@ class SkeletonCheck : public AliceO2::QualityControl::Checker::CheckInterface
     /// Destructor
     ~SkeletonCheck() override;
 
+    // Override interface
     void configure(std::string name) override;
     Quality check(const MonitorObject *mo) override;
     void beautify(MonitorObject *mo, Quality checkResult = Quality::Null) override;
     std::string getAcceptedType() override;
 
-    ClassDefOverride(SkeletonCheck,1);
+  ClassDefOverride(SkeletonCheck, 1);
 };
 
 } // namespace Example

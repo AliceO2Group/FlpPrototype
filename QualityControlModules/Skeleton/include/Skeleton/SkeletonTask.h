@@ -27,7 +27,7 @@ class SkeletonTask /*final*/: public TaskInterface // todo add back the "final" 
     /// Destructor
     ~SkeletonTask() override;
 
-    // Definition of the methods for the skeleton method pattern
+    // Definition of the methods for the template method pattern
     void initialize() override;
     void startOfActivity(Activity &activity) override;
     void startOfCycle() override;
@@ -36,12 +36,9 @@ class SkeletonTask /*final*/: public TaskInterface // todo add back the "final" 
     void endOfActivity(Activity &activity) override;
     void reset() override;
 
-    // accessors (for the tests)
-    TH1F *getHistogram(){return mHistogram;}
-
   private:
 
-    TH1F* mHistogram;
+    TH1F *mHistogram;
 };
 
 }

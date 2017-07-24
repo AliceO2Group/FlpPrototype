@@ -28,12 +28,11 @@ BOOST_AUTO_TEST_CASE(instantiate_task)
 {
   SkeletonTask task;
   TaskConfig config;
-  config.publisherClassName = "MockPublisher";
   auto manager = make_shared<ObjectsManager>(config);
   task.setObjectsManager(manager);
   task.initialize();
 
-  BOOST_CHECK(task.getHistogram() != nullptr);
+  BOOST_CHECK(manager->getMonitorObject("example")->getObject() != nullptr);
 
   Activity activity;
   task.startOfActivity(activity);
@@ -41,7 +40,8 @@ BOOST_AUTO_TEST_CASE(instantiate_task)
   std::vector<std::shared_ptr<DataBlockContainer>> block;
   task.monitorDataBlock(block);
 
-  BOOST_CHECK(task.getHistogram()->GetEntries() > 0);
+  TH1F *histo = (TH1F *) manager->getMonitorObject("example")->getObject();
+  BOOST_CHECK(histo->GetEntries() > 0);
 
   task.endOfCycle();
   task.endOfActivity(activity);

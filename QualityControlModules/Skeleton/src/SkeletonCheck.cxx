@@ -5,9 +5,6 @@
 
 #include "Skeleton/SkeletonCheck.h"
 
-// std
-#include <cassert>
-#include <iostream>
 // ROOT
 #include <TH1.h>
 
@@ -30,7 +27,7 @@ SkeletonCheck::~SkeletonCheck()
 void SkeletonCheck::configure(std::string name)
 {
   // First call the parent !
-  CheckInterface::configure(name);
+  AliceO2::QualityControl::Checker::CheckInterface::configure(name);
 }
 
 Quality SkeletonCheck::check(const MonitorObject *mo)
@@ -50,7 +47,7 @@ void SkeletonCheck::beautify(MonitorObject *mo, Quality checkResult)
 // NOOP
 }
 
-}  // namespace Skeleton
-}  // namespace QualityControl
+} // namespace Skeleton
+} // namespace QualityControl
 } // namespace AliceO2
 
