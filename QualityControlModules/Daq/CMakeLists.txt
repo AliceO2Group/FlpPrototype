@@ -1,10 +1,10 @@
-set(MODULE_NAME "QcSkeleton")
+set(MODULE_NAME "QcDaq")
 
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-        src/SkeletonTask.cxx
-        src/SkeletonCheck.cxx
+        src/DaqTask.cxx
+        src/DaqCheck.cxx
         )
 
 include_directories(
@@ -12,18 +12,18 @@ include_directories(
 )
 
 set(HEADERS
-        include/Skeleton/SkeletonTask.h
-        include/Skeleton/SkeletonCheck.h
+        include/Daq/DaqTask.h
+        include/Daq/DaqCheck.h
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME o2_qcmodules_base)
-set(LINKDEF include/Skeleton/LinkDef.h)
+set(LINKDEF include/Daq/LinkDef.h)
 
 O2_GENERATE_LIBRARY()
 
 set(TEST_SRCS
-        test/testQcSkeleton.cxx
+        test/testQcDaq.cxx
         )
 
 O2_GENERATE_TESTS(
