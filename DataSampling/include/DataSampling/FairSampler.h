@@ -25,7 +25,7 @@ class FairSampler : public SamplerInterface, public FairMQDevice
     /// Destructor
     ~FairSampler() override;
 
-    std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout = 0) override;
+    DataSetReference getData(int timeout = 0) override;
 
     void releaseData() override;
 
@@ -37,11 +37,7 @@ class FairSampler : public SamplerInterface, public FairMQDevice
     };
 
   private:
-    void deleteBlock();
-
-  private:
-    std::vector<std::shared_ptr<DataBlockContainer>>* mBlock;
-//    DataSetReference mCurrentDataSet;
+    DataSetReference mDataSet;
     std::timed_mutex mBlockMutex;
 };
 

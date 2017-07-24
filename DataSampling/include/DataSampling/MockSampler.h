@@ -34,12 +34,12 @@ class MockSampler : public SamplerInterface
      * @param timeout
      * @return A ptr to a vector of 2 shared_ptr of DataBlockContainer.
      */
-    std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0) override;
+    DataSetReference getData(int timeout = 0) override;
     void releaseData() override;
 
   private:
-    DataBlockProducer *producer;
-    std::vector<std::shared_ptr<DataBlockContainer>>* mCurrentBlock;
+    std::unique_ptr<DataBlockProducer> mProducer;
+    DataSetReference mCurrentBlock;
 
 };
 

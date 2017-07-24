@@ -35,6 +35,26 @@ class DataBlockContainerFromMemPool : public DataBlockContainer {
 };
 
 
+/**
+ * DataBlockContainer that takes ownership of the payload and deletes it when needed.
+ */
+class SelfReleasingBlockContainer : public DataBlockContainer
+{
 
+  public:
+    SelfReleasingBlockContainer()
+    {
+      data = new DataBlock();
+      data->data = nullptr;
+    }
+
+    ~SelfReleasingBlockContainer()
+    {
+      if (data->data != nullptr) {
+        delete[] data->data;
+      }
+      delete data;
+    }
+};
 
 #endif

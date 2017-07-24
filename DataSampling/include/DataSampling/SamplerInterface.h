@@ -17,9 +17,9 @@
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
 
-#include <DataFormat/DataBlockContainer.h>
 #include <memory>
 #include <vector>
+#include <DataFormat/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {
@@ -66,7 +66,7 @@ class SamplerInterface
     /// Destructor
     virtual ~SamplerInterface();
 
-    virtual std::vector<std::shared_ptr<DataBlockContainer>> * getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
+    virtual DataSetReference getData(int timeout) = 0; // TODO add specific types ? what do we get back ?
 
     virtual void releaseData() = 0;
     void setLocation(std::string Uri);

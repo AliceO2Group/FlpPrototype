@@ -24,7 +24,7 @@ class FileSampler: public SamplerInterface
     /// Destructor
     ~FileSampler() override;
 
-    std::vector<std::shared_ptr<DataBlockContainer>>* getData(int timeout = 0) override;
+    DataSetReference getData(int timeout = 0) override;
     void releaseData() override;
 
   private:

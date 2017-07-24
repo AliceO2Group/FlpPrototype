@@ -12,7 +12,7 @@ namespace AliceO2 {
 namespace DataSampling {
 
 /// Standard Constructor
-FairSampler::FairSampler() : mBlock(nullptr)
+FairSampler::FairSampler() : mDataSet(nullptr)
 {
   FairMQChannel histoChannel;
   histoChannel.UpdateType("sub");
@@ -48,15 +48,15 @@ FairSampler::~FairSampler()
   ChangeState(END);
 }
 
-vector<shared_ptr<DataBlockContainer>> *FairSampler::getData(int timeout)
+DataSetReference FairSampler::getData(int timeout)
 {
   bool gotLock = mBlockMutex.try_lock_for(chrono::milliseconds(timeout));
   if (gotLock) {
-    if (mBlock == nullptr) {
+    if (mDataSet == nullptr) {
       mBlockMutex.unlock();
       return nullptr;
     }
-    return mBlock;
+    return mDataSet;
   }
   return nullptr;
 }
@@ -67,26 +67,11 @@ void FairSampler::Run()
 
 void FairSampler::releaseData()
 {
-  if (mBlock) {
-    deleteBlock();
+  if (mDataSet) {
+    mDataSet.reset();
   }
 
   mBlockMutex.unlock();
-}
-
-void FairSampler::deleteBlock()
-{
-  if(!mBlock) {
-    return;
-  }
-  for (std::shared_ptr<DataBlockContainer> block_ptr : *mBlock) {
-//    if (block_ptr->getData()->data) { // this is done by zmq
-//      delete[] block_ptr->getData()->data;
-//    }
-    delete block_ptr->getData();
-  }
-  delete mBlock;
-  mBlock = nullptr;
 }
 
 bool FairSampler::HandleData(FairMQParts &parts, int /*index*/)
@@ -95,16 +80,16 @@ bool FairSampler::HandleData(FairMQParts &parts, int /*index*/)
   if (!mBlockMutex.try_lock()) {
     return true;
   }
-  // reset data
-  if (mBlock) {
-    deleteBlock();
-  }
-  mBlock = new std::vector<std::shared_ptr<DataBlockContainer>>();
+
+  mDataSet = make_shared<DataSet>();
   for (int subblock = 0; subblock < parts.Size(); subblock = subblock + 2) {
-    auto *block = new DataBlock();
-    block->header = *static_cast<DataBlockHeaderBase *>(parts.At(subblock)->GetData());
-    block->data = static_cast<char *>(parts.At(subblock + 1)->GetData()); // TODO should I copy ?
-    mBlock->push_back(make_shared<DataBlockContainer>(block));
+    auto block = make_shared<SelfReleasingBlockContainer>();
+
+    block->getData()->header = *static_cast<DataBlockHeaderBase *>(parts.At(subblock)->GetData());
+    block->getData()->data = new char[parts.At(subblock + 1)->GetSize()];
+    memcpy(block->getData()->data, static_cast<char *>(parts.At(subblock + 1)->GetData()), parts.At(subblock + 1)->GetSize());
+//    block->getData()->data = static_cast<char *>(parts.At(subblock + 1)->GetData());
+    mDataSet->push_back(block);
   }
   mBlockMutex.unlock();
   // TODO we continuously receive data and trash it. This is stupid.
