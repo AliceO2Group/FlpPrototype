@@ -8,7 +8,7 @@
 
 #include <DataFormat/DataBlockContainer.h>
 #include <vector>
-#include "InjectorInterface.h"
+#include "DataSampling/InjectorInterface.h"
 #include <FairMQDevice.h>
 #include <vector>
 #include <DataFormat/DataBlockContainer.h>

@@ -30,7 +30,6 @@ class FairSampler : public SamplerInterface, public FairMQDevice
     void releaseData() override;
 
   protected:
-    bool HandleData(FairMQParts& parts, int /*index*/);
     void Run() override;
     void PreRun() override {
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Needed for some obscure reason
@@ -39,6 +38,7 @@ class FairSampler : public SamplerInterface, public FairMQDevice
   private:
     DataSetReference mDataSet;
     std::timed_mutex mBlockMutex;
+    bool mReceivingDataSet, mReceivingDataBlock;
 };
 
 }
