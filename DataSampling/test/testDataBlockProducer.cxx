@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(test_blockproducer)
   cout << "headerSize : " << std::dec << block->getData()->header.headerSize << endl;
   BOOST_CHECK_EQUAL(block->getData()->header.headerSize, 0x60);
   cout << "payload size : " << std::dec << block->getData()->header.dataSize << endl;
-  BOOST_CHECK_EQUAL(block->getData()->header.dataSize/8, payloadSize);
+  BOOST_CHECK_EQUAL(block->getData()->header.dataSize, payloadSize);
 
   DataBlockProducer producerRandom(true);
   DataBlockContainerReference block2 = producer.getDataBlockContainer();
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(test_setproducer)
   cout << "headerSize : " << std::dec << block->getData()->header.headerSize << endl;
   BOOST_CHECK_EQUAL(block->getData()->header.headerSize, 0x60);
   cout << "payload size : " << std::dec << block->getData()->header.dataSize << endl;
-  BOOST_CHECK_EQUAL(block->getData()->header.dataSize/8, payloadSize);
+  BOOST_CHECK_EQUAL(block->getData()->header.dataSize, payloadSize);
 
   set = producer.getDataSet(10);
   BOOST_CHECK_EQUAL(set->size(), 10);

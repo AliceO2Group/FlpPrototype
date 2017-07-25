@@ -5,8 +5,6 @@
 
 #include "Skeleton/SkeletonTask.h"
 #include "QualityControl/TaskFactory.h"
-#include "QualityControl/ObjectsManager.h"
-#include <boost/exception/diagnostic_information.hpp>
 #include <TSystem.h>
 
 #define BOOST_TEST_MODULE Publisher test
@@ -14,7 +12,6 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
-#include <cassert>
 
 #include <TH1.h>
 
@@ -33,18 +30,6 @@ BOOST_AUTO_TEST_CASE(instantiate_task)
   task.initialize();
 
   BOOST_CHECK(manager->getMonitorObject("example")->getObject() != nullptr);
-
-  Activity activity;
-  task.startOfActivity(activity);
-  task.startOfCycle();
-  std::vector<std::shared_ptr<DataBlockContainer>> block;
-  task.monitorDataBlock(block);
-
-  TH1F *histo = (TH1F *) manager->getMonitorObject("example")->getObject();
-  BOOST_CHECK(histo->GetEntries() > 0);
-
-  task.endOfCycle();
-  task.endOfActivity(activity);
 }
 
 } // namespace Skeleton

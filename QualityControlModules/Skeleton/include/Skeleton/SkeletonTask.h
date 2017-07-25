@@ -31,7 +31,7 @@ class SkeletonTask /*final*/: public TaskInterface // todo add back the "final" 
     void initialize() override;
     void startOfActivity(Activity &activity) override;
     void startOfCycle() override;
-    void monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block) override;
+    void monitorDataBlock(DataSetReference block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
     void reset() override;

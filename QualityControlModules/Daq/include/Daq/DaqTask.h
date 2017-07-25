@@ -31,14 +31,16 @@ class DaqTask /*final*/: public TaskInterface // todo add back the "final" when 
     void initialize() override;
     void startOfActivity(Activity &activity) override;
     void startOfCycle() override;
-    void monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block) override;
+    void monitorDataBlock(DataSetReference block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
     void reset() override;
 
   private:
 
-    TH1F *mHistogram;
+    TH1F *mPayloadSize, *mIds;
+    TH1F *mNumberSubblocks;
+    TH1F *mSubPayloadSize;
 };
 
 }

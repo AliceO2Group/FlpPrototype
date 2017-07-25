@@ -45,7 +45,7 @@ void SkeletonTask::startOfCycle()
   QcInfoLogger::GetInstance() << "startOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void SkeletonTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block)
+void SkeletonTask::monitorDataBlock(DataSetReference block)
 {
   mHistogram->FillRandom("gaus", 1);
 }

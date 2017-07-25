@@ -5,17 +5,16 @@
 
 #include "../include/Example/ExampleTask.h"
 #include "QualityControl/TaskFactory.h"
-#include "QualityControl/ObjectsManager.h"
-#include <boost/exception/diagnostic_information.hpp>
 #include <TSystem.h>
 
 #define BOOST_TEST_MODULE Publisher test
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
+
 #include <boost/test/unit_test.hpp>
-#include <cassert>
 
 #include <TH1.h>
+#include <DataSampling/DataBlockProducer.h>
 
 using namespace std;
 
@@ -27,7 +26,6 @@ BOOST_AUTO_TEST_CASE(insantiate_task)
 {
   ExampleTask task;
   TaskConfig config;
-  config.publisherClassName = "MockPublisher";
   auto manager = make_shared<ObjectsManager>(config);
   task.setObjectsManager(manager);
   task.initialize();
@@ -38,8 +36,9 @@ BOOST_AUTO_TEST_CASE(insantiate_task)
   Activity activity;
   task.startOfActivity(activity);
   task.startOfCycle();
-std::vector<std::shared_ptr<DataBlockContainer>> block;
-  task.monitorDataBlock(block);
+  auto producer = AliceO2::DataSampling::DataBlockProducer(false, 1024);
+  DataSetReference dataSet = producer.getDataSet();
+  task.monitorDataBlock(dataSet);
 
   BOOST_CHECK(task.getHisto1()->GetEntries() > 0);
 

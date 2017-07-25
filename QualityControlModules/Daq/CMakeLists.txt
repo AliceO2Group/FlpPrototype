@@ -4,7 +4,6 @@ O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
         src/DaqTask.cxx
-        src/DaqCheck.cxx
         )
 
 include_directories(
@@ -13,7 +12,6 @@ include_directories(
 
 set(HEADERS
         include/Daq/DaqTask.h
-        include/Daq/DaqCheck.h
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})

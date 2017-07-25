@@ -4,9 +4,10 @@
 ///
 
 #include "Daq/DaqTask.h"
-#include "QualityControl/QcInfoLogger.h"
+
 #include <TH1.h>
 #include <TCanvas.h>
+#include "QualityControl/QcInfoLogger.h"
 
 using namespace std;
 
@@ -15,29 +16,44 @@ namespace QualityControlModules {
 namespace Daq {
 
 DaqTask::DaqTask()
-  : TaskInterface(), mHistogram(nullptr)
+  : TaskInterface(), mPayloadSize(nullptr), mIds(nullptr), mNumberSubblocks(nullptr), mSubPayloadSize(nullptr)
 {
-  mHistogram = nullptr;
 }
 
 DaqTask::~DaqTask()
 {
+  delete mPayloadSize;
+  delete mIds;
+  delete mNumberSubblocks;
+  delete mSubPayloadSize;
 }
 
 void DaqTask::initialize()
 {
   QcInfoLogger::GetInstance() << "initialize DaqTask" << AliceO2::InfoLogger::InfoLogger::endm;
 
-  mHistogram = new TH1F("example", "Example", 100, 0, 99);
-  getObjectsManager()->startPublishing(mHistogram);
-  getObjectsManager()->addCheck(mHistogram, "checkFromDaq",
-                                "AliceO2::QualityControlModules::Daq::DaqCheck",
-                                "QcDaq");
+  mPayloadSize = new TH1F("payloadSize", "Payload size of blocks;bytes", 2048, 0, 2047);
+  mPayloadSize->SetCanExtend(TH1::kXaxis);
+  getObjectsManager()->startPublishing(mPayloadSize);
+  getObjectsManager()->addCheck(mPayloadSize, "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty",
+                                "QcCommon");
+  mNumberSubblocks = new TH1F("numberSubBlocks", "Number of subblocks", 100, 1, 100);
+  getObjectsManager()->startPublishing(mNumberSubblocks);
+  mSubPayloadSize = new TH1F("PayloadSizeSubBlocks", "Payload size of subblocks;bytes", 2048, 0, 2047);
+  mSubPayloadSize->SetCanExtend(TH1::kXaxis);
+  getObjectsManager()->startPublishing(mSubPayloadSize);
+  mIds = new TH1F("IDs", "IDs", 1000, 0, 999);
+  mIds->SetCanExtend(TH1::kXaxis);
+  getObjectsManager()->startPublishing(mIds);
 }
 
 void DaqTask::startOfActivity(Activity &activity)
 {
   QcInfoLogger::GetInstance() << "startOfActivity" << AliceO2::InfoLogger::InfoLogger::endm;
+  mPayloadSize->Reset();
+  mNumberSubblocks->Reset();
+  mSubPayloadSize->Reset();
+  mIds->Reset();
 }
 
 void DaqTask::startOfCycle()
@@ -45,9 +61,28 @@ void DaqTask::startOfCycle()
   QcInfoLogger::GetInstance() << "startOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void DaqTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block)
+void DaqTask::monitorDataBlock(DataSetReference dataSet)
 {
-  mHistogram->FillRandom("gaus", 1);
+  if (dataSet->size() <= 0) {
+    cout << "Empty vector!" << endl;
+    return;
+  }
+
+  uint32_t totalPayloadSize = 0;
+  for (auto b : *dataSet) {
+    uint32_t size = b->getData()->header.dataSize / 8;
+    mSubPayloadSize->Fill(size);
+    totalPayloadSize += size;
+  }
+
+  mPayloadSize->Fill(totalPayloadSize);
+  mNumberSubblocks->Fill(dataSet->size());
+
+  if (dataSet->at(0) == nullptr) {
+    cout << "Container pointer invalid" << endl;
+    return;
+  }
+  mIds->Fill(dataSet->at(0)->getData()->header.id);
 }
 
 void DaqTask::endOfCycle()
