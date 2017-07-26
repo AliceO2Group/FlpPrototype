@@ -45,6 +45,8 @@ BOOST_AUTO_TEST_CASE(instantiate_task)
   task.endOfActivity(activity);
 }
 
+
+
 } // namespace Daq
 } // namespace QualityControlModules
 } // namespace AliceO2

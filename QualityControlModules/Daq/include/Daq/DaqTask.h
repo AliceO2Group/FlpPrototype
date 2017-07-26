@@ -9,6 +9,7 @@
 #include "QualityControl/TaskInterface.h"
 
 class TH1F;
+class TGraph;
 
 using namespace AliceO2::QualityControl::Core;
 
@@ -38,9 +39,12 @@ class DaqTask /*final*/: public TaskInterface // todo add back the "final" when 
 
   private:
 
-    TH1F *mPayloadSize, *mIds;
+    TH1F *mPayloadSize;
+    TGraph *mIds;
+    int fNPoints;
     TH1F *mNumberSubblocks;
     TH1F *mSubPayloadSize;
+    UInt_t mTimeLastRecord;
 };
 
 }

@@ -7,6 +7,9 @@
 
 #include <TH1.h>
 #include <TCanvas.h>
+#include <TDatime.h>
+#include <TStyle.h>
+#include <TGraph.h>
 #include "QualityControl/QcInfoLogger.h"
 
 using namespace std;
@@ -16,7 +19,12 @@ namespace QualityControlModules {
 namespace Daq {
 
 DaqTask::DaqTask()
-  : TaskInterface(), mPayloadSize(nullptr), mIds(nullptr), mNumberSubblocks(nullptr), mSubPayloadSize(nullptr)
+  : TaskInterface(),
+    mPayloadSize(nullptr),
+    mIds(nullptr),
+    fNPoints(0),
+    mNumberSubblocks(nullptr),
+    mSubPayloadSize(nullptr)
 {
 }
 
@@ -42,9 +50,20 @@ void DaqTask::initialize()
   mSubPayloadSize = new TH1F("PayloadSizeSubBlocks", "Payload size of subblocks;bytes", 2048, 0, 2047);
   mSubPayloadSize->SetCanExtend(TH1::kXaxis);
   getObjectsManager()->startPublishing(mSubPayloadSize);
-  mIds = new TH1F("IDs", "IDs", 1000, 0, 999);
-  mIds->SetCanExtend(TH1::kXaxis);
+
+  mIds = new TGraph();
+  mIds->SetName("IDs");
+  mIds->GetXaxis()->SetTimeDisplay(1);
+  mIds->GetXaxis()->SetNdivisions(-503);
+  mIds->GetXaxis()->SetTimeFormat("%Y-%m-%d %H:%M:%S");
+  mIds->GetXaxis()->SetTimeOffset(0, "gmt");
+  mIds->SetMarkerStyle(20);
+  mIds->GetXaxis()->SetLabelSize(0.02);
+  mIds->GetYaxis()->SetLabelSize(0.02);
   getObjectsManager()->startPublishing(mIds);
+  getObjectsManager()->addCheck(mIds, "checkIncreasingIDs", "AliceO2::QualityControlModules::Daq::EverIncreasingGraph",
+                                "QcDaq");
+  getObjectsManager()->addCheck(mIds, "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty", "QcCommon");
 }
 
 void DaqTask::startOfActivity(Activity &activity)
@@ -53,7 +72,8 @@ void DaqTask::startOfActivity(Activity &activity)
   mPayloadSize->Reset();
   mNumberSubblocks->Reset();
   mSubPayloadSize->Reset();
-  mIds->Reset();
+  mIds->Set(0);
+  fNPoints = 0;
 }
 
 void DaqTask::startOfCycle()
@@ -82,7 +102,12 @@ void DaqTask::monitorDataBlock(DataSetReference dataSet)
     cout << "Container pointer invalid" << endl;
     return;
   }
-  mIds->Fill(dataSet->at(0)->getData()->header.id);
+  TDatime now;
+  if ((now.Get() - mTimeLastRecord) >= 1) {
+    mIds->SetPoint(fNPoints, now.Convert(), dataSet->at(0)->getData()->header.id);
+    fNPoints++;
+    mTimeLastRecord = now.Get();
+  }
 }
 
 void DaqTask::endOfCycle()

@@ -4,4 +4,6 @@
 #pragma link off all functions;
 
 #pragma link C++ class AliceO2::QualityControlModules::Daq::DaqTask+;
+#pragma link C++ class AliceO2::QualityControlModules::Daq::EverIncreasingGraph+;
+
 #endif

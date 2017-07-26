@@ -4,6 +4,7 @@ O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
         src/DaqTask.cxx
+        src/EverIncreasingGraph.cxx
         )
 
 include_directories(
@@ -12,6 +13,7 @@ include_directories(
 
 set(HEADERS
         include/Daq/DaqTask.h
+        include/Daq/EverIncreasingGraph.h
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
