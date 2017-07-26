@@ -38,7 +38,6 @@ class FairSampler : public SamplerInterface, public FairMQDevice
   private:
     DataSetReference mDataSet;
     std::timed_mutex mBlockMutex;
-    bool mReceivingDataSet, mReceivingDataBlock;
 };
 
 }

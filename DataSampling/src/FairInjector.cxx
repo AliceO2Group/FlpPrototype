@@ -61,7 +61,6 @@ void cleanupHeader(void *data, void *object)
 
 int FairInjector::injectSamples(DataSetReference dataSetReference)
 {
-  FairMQParts parts;
   for (DataBlockContainerReference block : *dataSetReference) {
 
     DataBlockHeaderBase &header = block->getData()->header;
@@ -73,7 +72,6 @@ int FairInjector::injectSamples(DataSetReference dataSetReference)
     FairMQMessagePtr msgHeader(NewMessage((void *) &header, (header.headerSize), cleanupCallback, (void *) nullptr));
     FairMQMessagePtr msgBody(NewMessage((void *) data, (header.dataSize), cleanupCallback, (void *) (ptr)));
 
-    // TODO do not use parts
     int ret1 = Send(msgHeader, "data-out", 0);
     int ret2 = Send(msgBody, "data-out", 0);
     if(ret1 < 0 || ret2 < 0) {

@@ -12,7 +12,7 @@ namespace AliceO2 {
 namespace DataSampling {
 
 /// Standard Constructor
-FairSampler::FairSampler() : mDataSet(nullptr), mReceivingDataSet(false), mReceivingDataBlock(false)
+FairSampler::FairSampler() : mDataSet(nullptr)
 {
   FairMQChannel histoChannel;
   histoChannel.UpdateType("sub");
@@ -60,6 +60,9 @@ DataSetReference FairSampler::getData(int timeout)
 
 void FairSampler::Run()
 {
+  bool receivingDataSet = false, receivingDataBlock = false, error = false;
+//  stringstream logMessage;
+
   while (CheckCurrentState(RUNNING)) {
 
     if (!mBlockMutex.try_lock()) {
@@ -79,30 +82,36 @@ void FairSampler::Run()
         // We expect : header (type BB) -> data -> ... <repeat> ... -> header (type FF ie. End Of Message)
 
         // start receiving a new data set
-        if (!mReceivingDataSet) {
+        if (!receivingDataSet) {
           mDataSet = make_shared<DataSet>();
           auto block = make_shared<SelfReleasingBlockContainer>();
           block->getData()->header = *static_cast<DataBlockHeaderBase *>(msg->GetData());
-          mReceivingDataSet = true;
-          mReceivingDataBlock = true;
+//          logMessage << "--- header.id (first) : " << block->getData()->header.id << "\n";
+          receivingDataSet = true;
+          receivingDataBlock = true;
           mDataSet->push_back(block);
 
         // in the middle of receiving a data set
         } else {
 
           // waiting for next block -> we expect a header
-          if (!mReceivingDataBlock) {
+          if (!receivingDataBlock) {
             // receive a new header
             DataBlockHeaderBase header = *static_cast<DataBlockHeaderBase *>(msg->GetData());
+//            logMessage << "--- header.id (next) : " << header.id << "\n";
             // determine whether it is an End Of Message
             if (header.blockType == H_EOM) {
-              mReceivingDataSet = false;
-              mReceivingDataBlock = false;
+//              logMessage << "       EOM" << "\n";
+              receivingDataSet = false;
+              receivingDataBlock = false;
             } else if (header.blockType == H_BASE) {
               auto block = make_shared<SelfReleasingBlockContainer>();
               block->getData()->header = *static_cast<DataBlockHeaderBase *>(msg->GetData());
-              mReceivingDataBlock = true;
+              receivingDataBlock = true;
               mDataSet->push_back(block);
+            } else {
+//              cerr << "ERROR : block type unknown" << endl;
+              error = true;
             }
 
           // in the middle of receiving a block (we expect a data msg)
@@ -111,12 +120,22 @@ void FairSampler::Run()
             block->getData()->data = new char[msg->GetSize()];
             memcpy(block->getData()->data, static_cast<char *>(msg->GetData()),
                    msg->GetSize());
-            mReceivingDataBlock = false;
+            receivingDataBlock = false;
           }
         }
       }
     }
-    while (mReceivingDataSet);
+    while (receivingDataSet);
+
+    if(error) {
+      // Usually, if we received a wrong block type it is because some parts of the data was lost and we get garbage.
+      // Just discard it.
+      error = false;
+      mDataSet.reset();
+      //    cout << logMessage.str() << endl;
+    }
+//    logMessage.str("");
+//    logMessage.clear();
 
     mBlockMutex.unlock();
   }
