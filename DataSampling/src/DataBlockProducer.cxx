@@ -12,7 +12,7 @@ using namespace std;
 namespace AliceO2 {
 namespace DataSampling {
 
-DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mCurrentPayloadSize(payloadSize),
+DataBlockProducer::DataBlockProducer(bool random, uint32_t payloadSize) : mPayloadSize(payloadSize),
                                                                           mIsRandom(random),
                                                                           mCurrentId(0)
 {
@@ -37,23 +37,24 @@ DataSetReference DataBlockProducer::getDataSet(unsigned int numberBlocks)
 
 DataBlockContainerReference DataBlockProducer::getDataBlockContainer()
 {
-  DataBlockContainerReference result = make_shared<MockDataBlockContainer>();
+  DataBlockContainerReference result = make_shared<SelfReleasingBlockContainer>();
 
   // generate payload size if needed
+  uint32_t payloadSize = mPayloadSize;
   if (mIsRandom) {
-    std::normal_distribution<float> distribution(1024, 256);
+    std::normal_distribution<float> distribution(mPayloadSize, mPayloadSize/4);
     double temp = distribution(mGenerator);
     temp = (temp < 1) ? 1 : temp; // we don't want to cast a negative number to uint
-    mCurrentPayloadSize = (uint32_t) temp;
+    payloadSize = (uint32_t) temp;
   }
 
   // Prepare data
   result->getData()->header.blockType = 0xba; // whatever
   result->getData()->header.headerSize = 0x60; // just the header base -> 96 bits
-  result->getData()->header.dataSize = mCurrentPayloadSize;
+  result->getData()->header.dataSize = payloadSize;
   result->getData()->header.id = mCurrentId++;
-  char *buffer = new char[mCurrentPayloadSize];
-  for (unsigned int i = 0; i < mCurrentPayloadSize; i++) {
+  char *buffer = new char[payloadSize];
+  for (unsigned int i = 0; i < payloadSize; i++) {
     buffer[i] = (char) ((i % 26) + 'a');
   }
   result->getData()->data = buffer;

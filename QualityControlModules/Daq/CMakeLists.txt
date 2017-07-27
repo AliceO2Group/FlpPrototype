@@ -1,10 +1,10 @@
-set(MODULE_NAME "QcTemplate")
+set(MODULE_NAME "QcDaq")
 
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-        src/TemplateTask.cxx
-        src/TemplateCheck.cxx
+        src/DaqTask.cxx
+        src/EverIncreasingGraph.cxx
         )
 
 include_directories(
@@ -12,18 +12,18 @@ include_directories(
 )
 
 set(HEADERS
-        include/Template/TemplateTask.h
-        include/Template/TemplateCheck.h
+        include/Daq/DaqTask.h
+        include/Daq/EverIncreasingGraph.h
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
-set(BUCKET_NAME o2_qcmodules_template)
-set(LINKDEF include/Template/LinkDef.h)
+set(BUCKET_NAME o2_qcmodules_base)
+set(LINKDEF include/Daq/LinkDef.h)
 
 O2_GENERATE_LIBRARY()
 
 set(TEST_SRCS
-        test/testQcTemplate.cxx
+        test/testQcDaq.cxx
         )
 
 O2_GENERATE_TESTS(

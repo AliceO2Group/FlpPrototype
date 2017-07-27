@@ -17,7 +17,7 @@
 #include <Configuration/Configuration.h>
 #include <Configuration/ConfigurationInterface.h>
 #include <Monitoring/Collector.h>
-#include "DataSampling/SamplerInterface.h"
+#include <DataSampling/SamplerInterface.h>
 // QC
 #include "QualityControl/TaskConfig.h"
 #include "QualityControl/ObjectsManager.h"

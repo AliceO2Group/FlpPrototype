@@ -26,8 +26,9 @@ std::string FileSampler::getFilePath()
   return getLocation().substr(5);
 }
 
-vector<shared_ptr<DataBlockContainer>> * FileSampler::getData(int timeout)
+DataSetReference FileSampler::getData(int timeout)
 {
+  // TODO redo
   cout << "DataSampling::getData " << endl;
   string filePath = getFilePath();
   cout << "filePath : " << filePath << endl;
@@ -47,8 +48,9 @@ vector<shared_ptr<DataBlockContainer>> * FileSampler::getData(int timeout)
   result->data = new char[dataSizeBytes];
   memcpy (result->data, buffer, dataSizeBytes);
   cout << "data : " << result->data << endl;
-  std::vector<std::shared_ptr<DataBlockContainer>> *v = nullptr;
-  return v; // TODO make it return a DataBlockContainer
+
+  DataSetReference dataSetReference = nullptr;
+  return dataSetReference;
 }
 void FileSampler::releaseData()
 {

@@ -1,9 +1,9 @@
 ///
-/// \file   TemplateTask.cxx
+/// \file   SkeletonTask.cxx
 /// \author Barthelemy von Haller
 ///
 
-#include "Template/TemplateTask.h"
+#include "Skeleton/SkeletonTask.h"
 #include "QualityControl/QcInfoLogger.h"
 #include <TH1.h>
 #include <TCanvas.h>
@@ -12,56 +12,55 @@ using namespace std;
 
 namespace AliceO2 {
 namespace QualityControlModules {
-namespace Template {
+namespace Skeleton {
 
-TemplateTask::TemplateTask()
+SkeletonTask::SkeletonTask()
   : TaskInterface(), mHistogram(nullptr)
 {
   mHistogram = nullptr;
 }
 
-TemplateTask::~TemplateTask()
+SkeletonTask::~SkeletonTask()
 {
 }
 
-void TemplateTask::initialize()
+void SkeletonTask::initialize()
 {
-  QcInfoLogger::GetInstance() << "initialize TemplateTask" << AliceO2::InfoLogger::InfoLogger::endm;
+  QcInfoLogger::GetInstance() << "initialize SkeletonTask" << AliceO2::InfoLogger::InfoLogger::endm;
 
   mHistogram = new TH1F("example", "Example", 100, 0, 99);
   getObjectsManager()->startPublishing(mHistogram);
-  getObjectsManager()->addCheck(mHistogram, "checkNonEmpty", "AliceO2::QualityControlModules::Common::NonEmpty",
-                                "QcCommon");
-  getObjectsManager()->addCheck(mHistogram, "checkFromTemplate", "AliceO2::QualityControlModules::Template::TemplateCheck",
-                                "QcTemplate");
+  getObjectsManager()->addCheck(mHistogram, "checkFromSkeleton",
+                                "AliceO2::QualityControlModules::Skeleton::SkeletonCheck",
+                                "QcSkeleton");
 }
 
-void TemplateTask::startOfActivity(Activity &activity)
+void SkeletonTask::startOfActivity(Activity &activity)
 {
   QcInfoLogger::GetInstance() << "startOfActivity" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void TemplateTask::startOfCycle()
+void SkeletonTask::startOfCycle()
 {
   QcInfoLogger::GetInstance() << "startOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void TemplateTask::monitorDataBlock(std::vector<std::shared_ptr<DataBlockContainer>> &block)
+void SkeletonTask::monitorDataBlock(DataSetReference block)
 {
   mHistogram->FillRandom("gaus", 1);
 }
 
-void TemplateTask::endOfCycle()
+void SkeletonTask::endOfCycle()
 {
   QcInfoLogger::GetInstance() << "endOfCycle" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void TemplateTask::endOfActivity(Activity &activity)
+void SkeletonTask::endOfActivity(Activity &activity)
 {
   QcInfoLogger::GetInstance() << "endOfActivity" << AliceO2::InfoLogger::InfoLogger::endm;
 }
 
-void TemplateTask::reset()
+void SkeletonTask::reset()
 {
   QcInfoLogger::GetInstance() << "Reset" << AliceO2::InfoLogger::InfoLogger::endm;
 }

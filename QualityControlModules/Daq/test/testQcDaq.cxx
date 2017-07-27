@@ -1,12 +1,10 @@
 ///
-/// \file   testQcTemplate.cxx
+/// \file   testQcDaq.cxx
 /// \author Barthelemy von Haller
 ///
 
-#include "../include/Template/TemplateTask.h"
+#include "Daq/DaqTask.h"
 #include "QualityControl/TaskFactory.h"
-#include "QualityControl/ObjectsManager.h"
-#include <boost/exception/diagnostic_information.hpp>
 #include <TSystem.h>
 
 #define BOOST_TEST_MODULE Publisher test
@@ -14,39 +12,41 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
-#include <cassert>
-
+#include <DataSampling/DataBlockProducer.h>
 #include <TH1.h>
 
 using namespace std;
 
 namespace AliceO2 {
 namespace QualityControlModules {
-namespace Template {
+namespace Daq {
 
 BOOST_AUTO_TEST_CASE(instantiate_task)
 {
-  TemplateTask task;
+  DaqTask task;
   TaskConfig config;
-  config.publisherClassName = "MockPublisher";
   auto manager = make_shared<ObjectsManager>(config);
   task.setObjectsManager(manager);
   task.initialize();
 
-  BOOST_CHECK(task.getHistogram() != nullptr);
+  BOOST_CHECK(manager->getMonitorObject("payloadSize")->getObject() != nullptr);
 
   Activity activity;
   task.startOfActivity(activity);
   task.startOfCycle();
-  std::vector<std::shared_ptr<DataBlockContainer>> block;
-  task.monitorDataBlock(block);
+  auto producer = AliceO2::DataSampling::DataBlockProducer(false, 1024);
+  DataSetReference dataSet = producer.getDataSet();
+  task.monitorDataBlock(dataSet);
 
-  BOOST_CHECK(task.getHistogram()->GetEntries() > 0);
+  TH1F *histo = (TH1F *) manager->getMonitorObject("payloadSize")->getObject();
+  BOOST_CHECK(histo->GetEntries() == 1);
 
   task.endOfCycle();
   task.endOfActivity(activity);
 }
 
-} // namespace Template
+
+
+} // namespace Daq
 } // namespace QualityControlModules
 } // namespace AliceO2

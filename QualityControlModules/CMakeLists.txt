@@ -73,7 +73,8 @@ link_o2_subproject(QualityControl)
 
 add_subdirectory(Common)
 add_subdirectory(Example)
-add_subdirectory(Template)
+add_subdirectory(Skeleton)
+add_subdirectory(Daq)
 #add_subdirectory(ITS)
 
 # TODO RECONSIDER THE THINGS BELOW AFTER EXTRACTION TO ITS OWN REPO

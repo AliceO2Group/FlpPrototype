@@ -15,28 +15,6 @@
 namespace AliceO2 {
 namespace DataSampling {
 
-/**
- * DataBlockContainer that takes ownership of the payload.
- */
-class MockDataBlockContainer : public DataBlockContainer
-{
-
-  public:
-    MockDataBlockContainer()
-    {
-      data = new DataBlock();
-      data->data = 0;
-    }
-
-    ~MockDataBlockContainer()
-    {
-      if (data->data != nullptr) {
-        delete[] data->data;
-      }
-      delete data;
-    }
-};
-
 /// \brief This class produces DataBlocks containing random data.
 ///
 /// It can return the block in memory or save it to file. In the latter case, it can
@@ -58,8 +36,8 @@ class DataBlockProducer
   public:
     /** \brief Create a data block producer and an initial data block.
      *
-     * @param random use a random payloadSize or not
-     * @param payloadSize Size of payload. Ignored if random=true.
+     * @param random use a random payloadSize or not (gaussian, 1024 bytes, 256 bytes variance)
+     * @param payloadSize Size of payload. If random=true it is the mean of the gaussian.
      * @param leaveOwnership Whether the caller wants to leave ownership or take it.
      */
     DataBlockProducer(bool random = true, uint32_t payloadSize = 1024 /*bytes*/);
@@ -81,7 +59,7 @@ class DataBlockProducer
     DataBlockContainerReference getDataBlockContainer();
 
   private:
-    uint32_t mCurrentPayloadSize; // in bytes
+    uint32_t mPayloadSize; // in bytes
     bool mIsRandom;
     std::default_random_engine mGenerator;
     uint32_t mCurrentId;

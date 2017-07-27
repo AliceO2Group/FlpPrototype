@@ -95,11 +95,14 @@ EXTRA_PRIVILEGE[infoBrowser]="select"
 EXTRA_PRIVILEGE[admin]="all privileges"
 
 MYSQL_COMMANDS=""
+HERE=`hostname -f`
 
 for CONFIG in "${EXTRA_CONFIG[@]}"; do
   MYSQL_COMMAND=`echo "grant ${EXTRA_PRIVILEGE[$CONFIG]} on $INFOLOGGER_MYSQL_DB.* to \"${EXTRA_USER[$CONFIG]}\"@\"%\" identified by \"${EXTRA_PWD[$CONFIG]}\";"`
   MYSQL_COMMANDS=${MYSQL_COMMANDS}$'\n'${MYSQL_COMMAND}
   MYSQL_COMMAND=`echo "grant ${EXTRA_PRIVILEGE[$CONFIG]} on $INFOLOGGER_MYSQL_DB.* to \"${EXTRA_USER[$CONFIG]}\"@\"localhost\" identified by \"${EXTRA_PWD[$CONFIG]}\";"`
+  MYSQL_COMMANDS=${MYSQL_COMMANDS}$'\n'${MYSQL_COMMAND}
+  MYSQL_COMMAND=`echo "grant ${EXTRA_PRIVILEGE[$CONFIG]} on $INFOLOGGER_MYSQL_DB.* to \"${EXTRA_USER[$CONFIG]}\"@\"${HERE}\" identified by \"${EXTRA_PWD[$CONFIG]}\";"`
   MYSQL_COMMANDS=${MYSQL_COMMANDS}$'\n'${MYSQL_COMMAND}
 done
 mysql -h $MYSQL_HOST -u root $PWD -e "$MYSQL_COMMANDS"
@@ -108,7 +111,6 @@ echo ""
 echo "MySQL server accounts/db created"
 echo ""
 echo "You may use the following in the infoLogger config files:"
-HERE=`hostname -f`
 for CONFIG in "${EXTRA_CONFIG[@]}"; do
   echo "[$CONFIG]"
   echo "dbUser=${EXTRA_USER[$CONFIG]}"

@@ -1,5 +1,5 @@
 ///
-/// \file   ExampleTask.h
+/// \file   SkeletonTask.h
 /// \author Barthelemy von Haller
 ///
 
@@ -14,41 +14,31 @@ using namespace AliceO2::QualityControl::Core;
 
 namespace AliceO2 {
 namespace QualityControlModules {
-namespace Example {
+namespace Skeleton {
 
 /// \brief Example Quality Control Task
 /// It is final because there is no reason to derive from it. Just remove it if needed.
 /// \author Barthelemy von Haller
-class ExampleTask /*final*/: public TaskInterface // todo add back the "final" when doxygen is fixed
+class SkeletonTask /*final*/: public TaskInterface // todo add back the "final" when doxygen is fixed
 {
   public:
     /// \brief Constructor
-    ExampleTask();
+    SkeletonTask();
     /// Destructor
-    ~ExampleTask() override;
+    ~SkeletonTask() override;
 
     // Definition of the methods for the template method pattern
     void initialize() override;
     void startOfActivity(Activity &activity) override;
     void startOfCycle() override;
-    void monitorDataBlock(DataSetReference dataSet) override;
+    void monitorDataBlock(DataSetReference block) override;
     void endOfCycle() override;
     void endOfActivity(Activity &activity) override;
     void reset() override;
 
-    // Accessors
-    TH1F*& getHisto1()
-    {
-      return mHistos[0];
-    }
-    TH1F*& getHisto2()
-    {
-      return mHistos[1];
-    }
-
   private:
 
-    TH1F *mHistos[25];
+    TH1F *mHistogram;
 };
 
 }

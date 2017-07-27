@@ -33,7 +33,6 @@ BOOST_AUTO_TEST_CASE(Task_Factory)
   config.taskName = "task";
   config.moduleName = "QcCommon";
   config.className = "AliceO2::QualityControlModules::Example::ExampleTask";
-  config.publisherClassName = "MockPublisher";
   auto manager = make_shared<ObjectsManager>(config);
   try {
     gSystem->AddDynamicPath("lib:../../lib:../../../lib:.:"); // add local paths for the test
@@ -52,7 +51,6 @@ BOOST_AUTO_TEST_CASE(Task_Factory_failures)
 {
   TaskFactory factory;
   TaskConfig config;
-  config.publisherClassName = "MockPublisher";
   auto manager = make_shared<ObjectsManager>(config);
 
   config.taskName = "task";
@@ -71,6 +69,6 @@ BOOST_AUTO_TEST_CASE(Task_Factory_failures)
 
 }
 
-} // namespace Checker 
-} // namespace QualityControl 
-} // namespace AliceO2 
+} // namespace Checker
+} // namespace QualityControl
+} // namespace AliceO2

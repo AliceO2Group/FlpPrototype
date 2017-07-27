@@ -20,6 +20,7 @@
 /// Definition of data block types and their associated header.
 typedef enum {
   H_BASE = 0xBB,               ///< base header type
+  H_EOM  = 0xFF,               ///< End Of Message header
 } DataBlockType;
 
 

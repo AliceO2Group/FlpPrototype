@@ -50,11 +50,8 @@ int main(int argc, char *argv[])
 
   signal(SIGINT, handler_interruption);
   while (keepRunning) {
-//    cout << "asking for a block" << endl;
-    std::vector<std::shared_ptr<DataBlockContainer>> *blocks = sampler.getData();
-//    cout << "blocks received : " << blocks << endl;
+    DataSetReference blocks = sampler.getData();
     if (blocks == nullptr) {
-//      cout << "no block, continue" << endl;
       continue;
     }
     cout << "\033[6A"; // up 6 lines

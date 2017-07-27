@@ -1,10 +1,12 @@
 ///
-/// \file   TemplateCheck.h
+/// \file   EverIncreasingGraph.h
 /// \author Barthelemy von Haller
 ///
 
-#ifndef QUALITYCONTROL_LIBS_CHECKER_TemplateCheck_H_
-#define QUALITYCONTROL_LIBS_CHECKER_TemplateCheck_H_
+#ifndef QUALITYCONTROL_LIBS_CHECKER_EverIncreasingGraph_H_
+#define QUALITYCONTROL_LIBS_CHECKER_EverIncreasingGraph_H_
+
+#include <DataFormat/DataBlock.h>
 
 #include "QualityControl/MonitorObject.h"
 #include "QualityControl/Quality.h"
@@ -12,29 +14,32 @@
 
 namespace AliceO2 {
 namespace QualityControlModules {
-namespace Template {
+namespace Daq {
 
 /// \brief  Check whether a plot is empty or not.
 ///
 /// \author Barthelemy von Haller
-class TemplateCheck : public AliceO2::QualityControl::Checker::CheckInterface
+class EverIncreasingGraph : public AliceO2::QualityControl::Checker::CheckInterface
 {
   public:
     /// Default constructor
-    TemplateCheck();
+    EverIncreasingGraph();
     /// Destructor
-    ~TemplateCheck() override;
+    ~EverIncreasingGraph() override;
 
     void configure(std::string name) override;
     Quality check(const MonitorObject *mo) override;
     void beautify(MonitorObject *mo, Quality checkResult = Quality::Null) override;
     std::string getAcceptedType() override;
 
-    ClassDefOverride(TemplateCheck,1);
+  private:
+    DataBlockId mLastId;
+
+    ClassDefOverride(EverIncreasingGraph,1);
 };
 
 } // namespace Example
 } // namespace QualityControl
 } // namespace AliceO2
 
-#endif // QUALITYCONTROL_LIBS_CHECKER_TemplateCheck_H_
+#endif // QUALITYCONTROL_LIBS_CHECKER_EverIncreasingGraph_H_
