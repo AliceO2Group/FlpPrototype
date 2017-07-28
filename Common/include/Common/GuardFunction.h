@@ -35,4 +35,4 @@ class GuardFunction
 } // namespace Common
 } // namespace AliceO2
 
-#endif ALICEO2_FLPPROTOTYPE_COMMON_GUARDFUNCTION_H_
+#endif // ALICEO2_FLPPROTOTYPE_COMMON_GUARDFUNCTION_H_
