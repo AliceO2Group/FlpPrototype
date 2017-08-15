@@ -26,7 +26,6 @@ include(O2Utils)
 include(GuiDependencies)
 include(O2) # to be removed
 
-link_o2_subproject(Common)
 link_o2_subproject(InfoLogger)
 
 # Set the default build type to "RelWithDebInfo"

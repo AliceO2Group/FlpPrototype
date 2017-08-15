@@ -1,8 +1,8 @@
 find_package(Boost 1.58 COMPONENTS unit_test_framework thread system program_options log REQUIRED)
-#find_package(Boost 1.59 COMPONENTS thread system timer program_options random filesystem chrono exception regex serialization log log_setup unit_test_framework date_time REQUIRED)
 find_package(Git QUIET)
 find_package(Zookeeper)
 find_package(FairRoot)
+find_package(Common REQUIRED)
 
 ## TODO this should relaly not be needed
 #FIND_LIBRARY(ZMQ_LIB zmq)
@@ -28,11 +28,12 @@ o2_define_bucket(
         ${Boost_THREAD_LIBRARY}
         pthread
         ${Zookeeper_LIBRARIES}
-        Common
+        ${Common_LIBRARIES}
 
         SYSTEMINCLUDE_DIRECTORIES
         ${Boost_INCLUDE_DIRS}
         ${Zookeeper_INCLUDE_DIRS}
+        ${Common_INCLUDE_DIRS}
 )
 
 o2_define_bucket(
@@ -52,7 +53,7 @@ o2_define_bucket(
         o2_fairmq_control_bucket
 
         DEPENDENCIES
-        Common
+        ${Common_LIBRARIES}
         InfoLogger
         ${Boost_LOG_LIBRARY}
         ${Boost_THREAD_LIBRARY}
@@ -66,4 +67,5 @@ o2_define_bucket(
         ${Zookeeper_INCLUDE_DIRS}
         ${FAIRROOT_INCLUDE_DIR}
         ${FAIRROOT_INCLUDE_DIR}/fairmq
+        ${Common_INCLUDE_DIRS}
 )

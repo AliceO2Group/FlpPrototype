@@ -2,6 +2,7 @@ find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Configuration REQUIRED)
 find_package(Monitoring REQUIRED)
 find_package(FairRoot)
+
 if (FAIRROOT_FOUND)
     link_directories(${FAIRROOT_LIBRARY_DIR})
     include_directories(${FAIRROOT_INCLUDE_DIR})
