@@ -3,9 +3,8 @@ find_package(Git QUIET)
 find_package(Zookeeper)
 find_package(FairRoot)
 find_package(Common REQUIRED)
+find_package(InfoLogger REQUIRED)
 
-## TODO this should relaly not be needed
-#FIND_LIBRARY(ZMQ_LIB zmq)
 # TODO is it needed ?
 if(BOOST_FOUND OR Boost_FOUND)
     set(BOOST_FOUND 1)
@@ -29,11 +28,13 @@ o2_define_bucket(
         pthread
         ${Zookeeper_LIBRARIES}
         ${Common_LIBRARIES}
+        ${InfoLogger_LIBRARIES}
 
         SYSTEMINCLUDE_DIRECTORIES
         ${Boost_INCLUDE_DIRS}
         ${Zookeeper_INCLUDE_DIRS}
         ${Common_INCLUDE_DIRS}
+        ${InfoLogger_INCLUDE_DIRS}
 )
 
 o2_define_bucket(
@@ -54,11 +55,12 @@ o2_define_bucket(
 
         DEPENDENCIES
         ${Common_LIBRARIES}
-        InfoLogger
         ${Boost_LOG_LIBRARY}
         ${Boost_THREAD_LIBRARY}
         ${Boost_SYSTEM_LIBRARY}
+        ${Boost_PROGRAM_OPTIONS_LIBRARY}
         ${FAIRROOT_LIBRARIES}
+        ${InfoLogger_LIBRARIES}
         pthread
         dl
 
@@ -68,4 +70,5 @@ o2_define_bucket(
         ${FAIRROOT_INCLUDE_DIR}
         ${FAIRROOT_INCLUDE_DIR}/fairmq
         ${Common_INCLUDE_DIRS}
+        ${InfoLogger_INCLUDE_DIRS}
 )

@@ -1,6 +1,7 @@
 find_package(Boost 1.59 COMPONENTS thread system timer program_options random filesystem chrono exception regex serialization log log_setup unit_test_framework date_time REQUIRED)
 find_package(FairRoot)
 find_package(Common REQUIRED)
+find_package(InfoLogger REQUIRED)
 
 if(FAIRROOT_FOUND)
     # this should go away when fairrot provides a proper Find script or proper config scripts
@@ -23,13 +24,14 @@ o2_define_bucket(
   ${Boost_SYSTEM_LIBRARY_DEBUG}
   ${Boost_LOG_LIBRARY_DEBUG}
   ${Boost_FILESYSTEM_LIBRARY}
-  InfoLogger
   ${Common_LIBRARIES}
   DataFormat
+  ${InfoLogger_LIBRARIES}
 
   SYSTEMINCLUDE_DIRECTORIES
   ${Boost_INCLUDE_DIRS}
   ${Common_INCLUDE_DIRS}
+  ${InfoLogger_INCLUDE_DIRS}
 )
 
 o2_define_bucket(

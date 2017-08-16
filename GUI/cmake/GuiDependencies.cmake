@@ -1,6 +1,8 @@
 find_package(Boost COMPONENTS unit_test_framework program_options log thread system REQUIRED)
 find_package(Git QUIET)
 find_package(ZeroMQ REQUIRED)
+find_package(InfoLogger REQUIRED)
+
 # because FindZeroMQ.cmake differs from system to system.
 if(NOT ZeroMQ_INCLUDE_DIR)
     set(ZeroMQ_INCLUDE_DIR ${ZEROMQ_INCLUDE_DIR})
@@ -23,11 +25,12 @@ o2_define_bucket(
 
         DEPENDENCIES
         ${ZeroMQ_LIBRARIES}
-        InfoLogger
+        ${InfoLogger_LIBRARIES}
 
         SYSTEMINCLUDE_DIRECTORIES
         ${Boost_INCLUDE_DIRS}
         ${ZeroMQ_INCLUDE_DIR}
+        ${InfoLogger_INCLUDE_DIRS}
 )
 
 o2_define_bucket(
@@ -40,6 +43,7 @@ o2_define_bucket(
         ${Boost_THREAD_LIBRARY}
         ${Boost_LOG_LIBRARY}
         ${Boost_SYSTEM_LIBRARY}
+        ${Boost_PROGRAM_OPTIONS_LIBRARY}
         pthread
         dl
 
