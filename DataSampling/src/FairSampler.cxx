@@ -80,6 +80,7 @@ void FairSampler::Run()
 
         // what follows is a little state machine to know where we are in the stream of data coming in.
         // We expect : header (type BB) -> data -> ... <repeat> ... -> header (type FF ie. End Of Message)
+        // TODO see TimeFrameParser in O2 for a nicer way of doing this
 
         // start receiving a new data set
         if (!receivingDataSet) {
