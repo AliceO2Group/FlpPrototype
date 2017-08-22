@@ -27,7 +27,7 @@ class MeanIsAbove : public AliceO2::QualityControl::Checker::CheckInterface
     /// Default constructor
     MeanIsAbove();
     /// Destructor
-    ~MeanIsAbove() override;
+    ~MeanIsAbove() override = default;
 
     void configure(std::string name) override;
     Quality check(const MonitorObject *mo) override;

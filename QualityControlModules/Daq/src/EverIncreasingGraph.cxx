@@ -29,8 +29,6 @@ EverIncreasingGraph::~EverIncreasingGraph()
 
 void EverIncreasingGraph::configure(std::string name)
 {
-  // First call the parent !
-  CheckInterface::configure(name);
 }
 
 Quality EverIncreasingGraph::check(const MonitorObject *mo)

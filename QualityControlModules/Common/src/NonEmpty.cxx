@@ -5,9 +5,6 @@
 
 #include "Common/NonEmpty.h"
 
-// std
-#include <cassert>
-#include <iostream>
 // ROOT
 #include <TH1.h>
 
@@ -29,8 +26,6 @@ NonEmpty::~NonEmpty()
 
 void NonEmpty::configure(std::string name)
 {
-  // First call the parent !
-  CheckInterface::configure(name);
 }
 
 Quality NonEmpty::check(const MonitorObject *mo)
@@ -64,5 +59,5 @@ void NonEmpty::beautify(MonitorObject *mo, Quality checkResult)
 
 }  // namespace Checker
 }  // namespace QualityControl
-} // namespace AliceO2 
+} // namespace AliceO2
 

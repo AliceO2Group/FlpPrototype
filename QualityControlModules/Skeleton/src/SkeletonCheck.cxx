@@ -26,8 +26,6 @@ SkeletonCheck::~SkeletonCheck()
 
 void SkeletonCheck::configure(std::string name)
 {
-  // First call the parent !
-  AliceO2::QualityControl::Checker::CheckInterface::configure(name);
 }
 
 Quality SkeletonCheck::check(const MonitorObject *mo)

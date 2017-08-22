@@ -5,9 +5,6 @@
 
 #include "Example/FakeCheck.h"
 
-// std
-#include <cassert>
-#include <iostream>
 // ROOT
 #include <TH1.h>
 
@@ -29,8 +26,6 @@ FakeCheck::~FakeCheck()
 
 void FakeCheck::configure(std::string name)
 {
-  // First call the parent !
-  CheckInterface::configure(name);
 }
 
 Quality FakeCheck::check(const MonitorObject *mo)
@@ -52,5 +47,5 @@ void FakeCheck::beautify(MonitorObject *mo, Quality checkResult)
 
 }  // namespace Example
 }  // namespace QualityControl
-} // namespace AliceO2 
+} // namespace AliceO2
 

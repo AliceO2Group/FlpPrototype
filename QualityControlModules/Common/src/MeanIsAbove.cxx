@@ -5,8 +5,6 @@
 
 #include "Common/MeanIsAbove.h"
 
-// std
-#include <iostream>
 // ROOT
 #include <TClass.h>
 #include <TH1.h>
@@ -28,15 +26,8 @@ MeanIsAbove::MeanIsAbove()
 {
 }
 
-MeanIsAbove::~MeanIsAbove()
-{
-}
-
 void MeanIsAbove::configure(std::string name)
 {
-  // First call the parent !
-  CheckInterface::configure(name);
-
   // TODO use the configuration system to set the params
   AliceO2::Configuration::ConfigFile configFile;
   try {
