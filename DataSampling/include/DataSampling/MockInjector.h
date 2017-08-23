@@ -6,9 +6,9 @@
 #ifndef DATA_SAMPLING_MOCK_INJECTOR_H
 #define DATA_SAMPLING_MOCK_INJECTOR_H
 
-#include <DataFormat/DataBlockContainer.h>
+#include <Common/DataBlockContainer.h>
 #include <vector>
-#include <DataFormat/DataSet.h>
+#include <Common/DataSet.h>
 #include "InjectorInterface.h"
 
 namespace AliceO2 {

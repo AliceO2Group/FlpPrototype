@@ -30,10 +30,10 @@ void NonEmpty::configure(std::string name)
 
 Quality NonEmpty::check(const MonitorObject *mo)
 {
-  Quality result = Quality::Null;
+  auto result = Quality::Null;
 
   // The framework guarantees that the encapsulated object is of the accepted type.
-  TH1 *histo = dynamic_cast<TH1*>(mo->getObject());
+  auto *histo = dynamic_cast<TH1*>(mo->getObject());
 
   // assert(histo != nullptr);
   if (histo != nullptr) {

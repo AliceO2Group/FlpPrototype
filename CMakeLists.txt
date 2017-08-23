@@ -36,8 +36,6 @@ macro(PrintModuleName name)
   message(STATUS \n-------- ${name} --------)
 endmacro()
 
-PrintModuleName("DataFormat")
-add_subdirectory(DataFormat)
 PrintModuleName("DataSampling")
 add_subdirectory(DataSampling)
 PrintModuleName("Control")

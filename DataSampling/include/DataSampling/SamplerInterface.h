@@ -19,7 +19,7 @@
 
 #include <memory>
 #include <vector>
-#include <DataFormat/DataSet.h>
+#include <Common/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {

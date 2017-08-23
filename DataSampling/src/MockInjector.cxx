@@ -4,7 +4,7 @@
 ///
 
 #include <DataSampling/MockInjector.h>
-#include <DataFormat/DataSet.h>
+#include <Common/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {

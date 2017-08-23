@@ -9,7 +9,7 @@
 // boost
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 // datasampling
 #include "DataSampling/FileSampler.h"
 #include "DataSampling/Version.h"

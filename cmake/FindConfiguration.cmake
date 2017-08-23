@@ -16,7 +16,7 @@ include(FindPackageHandleStandardArgs)
 # find includes
 find_path(CONFIGURATION_INCLUDE_DIR Configuration.h
            HINTS ${Configuration_ROOT}/include ENV LD_LIBRARY_PATH PATH_SUFFIXES "../include/Configuration" "../../include/Configuration" )
-# Remove the final "Configuration" 
+# Remove the final "Configuration"
 get_filename_component(CONFIGURATION_INCLUDE_DIR ${CONFIGURATION_INCLUDE_DIR} DIRECTORY)
 set(Configuration_INCLUDE_DIRS ${CONFIGURATION_INCLUDE_DIR})
 

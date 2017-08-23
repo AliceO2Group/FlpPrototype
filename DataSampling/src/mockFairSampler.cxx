@@ -8,7 +8,7 @@
 #include <algorithm>
 // boost
 #include <boost/program_options.hpp>
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 // o2
 #include "Common/signalUtilities.h"
 // datasampling

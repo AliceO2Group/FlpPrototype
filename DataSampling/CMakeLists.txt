@@ -63,8 +63,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -fPIC")
 
 set(MODULE_NAME "DataSampling")
 
-link_o2_subproject(DataFormat)
-
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS

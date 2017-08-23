@@ -25,7 +25,6 @@ o2_define_bucket(
   ${Boost_LOG_LIBRARY_DEBUG}
   ${Boost_FILESYSTEM_LIBRARY}
   ${Common_LIBRARIES}
-  DataFormat
   ${InfoLogger_LIBRARIES}
 
   SYSTEMINCLUDE_DIRECTORIES

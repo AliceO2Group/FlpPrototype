@@ -3,7 +3,7 @@
 /// \author  Barthelemy von Haller
 ///
 
-#include "DataFormat/DataBlock.h"
+#include "Common/DataBlock.h"
 #include "DataSampling/DataBlockProducer.h"
 #include <fstream>
 

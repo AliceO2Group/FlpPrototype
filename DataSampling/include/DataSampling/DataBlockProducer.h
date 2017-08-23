@@ -6,11 +6,11 @@
 #ifndef DATA_SAMPLING_DATABLOCKPRODUCER_H
 #define DATA_SAMPLING_DATABLOCKPRODUCER_H
 
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 
 #include <iostream>
 #include <random>
-#include <DataFormat/DataSet.h>
+#include <Common/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {

@@ -7,7 +7,7 @@
 #include "QualityControl/QcInfoLogger.h"
 #include <TH1.h>
 #include <TCanvas.h>
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 
 using namespace std;
 

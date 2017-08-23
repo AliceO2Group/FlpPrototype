@@ -3,6 +3,7 @@ find_package(Configuration REQUIRED)
 find_package(Monitoring REQUIRED)
 find_package(FairRoot)
 find_package(InfoLogger REQUIRED)
+find_package(Common REQUIRED)
 
 if (FAIRROOT_FOUND)
     link_directories(${FAIRROOT_LIBRARY_DIR})
@@ -30,13 +31,14 @@ o2_define_bucket(
         ${Boost_PROGRAM_OPTIONS_LIBRARY}
         QualityControl
         ${Monitoring_LIBRARIES}
-        DataFormat
         ${InfoLogger_LIBRARIES}
+        ${Common_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES
         ${Boost_INCLUDE_DIRS}
         ${Monitoring_INCLUDE_DIRS}
         ${InfoLogger_INCLUDE_DIRS}
+        ${Common_INCLUDE_DIRS}
 )
 
 o2_define_bucket(

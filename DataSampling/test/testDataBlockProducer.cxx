@@ -12,7 +12,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <fstream>
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 #include <boost/algorithm/string.hpp>
 
 using namespace AliceO2::DataSampling;

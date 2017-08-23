@@ -23,7 +23,7 @@ include(FindPackageHandleStandardArgs)
 find_path(MONITORING_INCLUDE_DIR Collector.h
            HINTS ${Monitoring_ROOT}/include ENV LD_LIBRARY_PATH PATH_SUFFIXES "../include/Monitoring" "../../include/Monitoring" )
 
-# Remove the final "Monitoring" 
+# Remove the final "Monitoring"
 get_filename_component(MONITORING_INCLUDE_DIR ${MONITORING_INCLUDE_DIR} DIRECTORY)
 set(Monitoring_INCLUDE_DIRS ${MONITORING_INCLUDE_DIR})
 

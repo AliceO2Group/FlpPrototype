@@ -29,7 +29,7 @@ set(InfoLogger_LIBRARIES ${INFOLOGGER_LIBRARY})
 find_package_handle_standard_args(InfoLogger  "InfoLogger could not be found. Install package InfoLogger or set InfoLogger_ROOT to its root installation directory."
         INFOLOGGER_LIBRARY INFOLOGGER_INCLUDE_DIR)
 
-if(${InfoLogger_ROOT})
+if(${InfoLogger_FOUND})
     message(STATUS "InfoLogger found : ${InfoLogger_LIBRARIES}")
 endif()
 

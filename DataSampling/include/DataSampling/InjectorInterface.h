@@ -6,10 +6,10 @@
 #ifndef DATA_SAMPLING_INJECTOR_INTERFACE_H
 #define DATA_SAMPLING_INJECTOR_INTERFACE_H
 
-#include <DataFormat/DataBlockContainer.h>
+#include <Common/DataBlockContainer.h>
 #include <vector>
 #include <memory>
-#include <DataFormat/DataSet.h>
+#include <Common/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {

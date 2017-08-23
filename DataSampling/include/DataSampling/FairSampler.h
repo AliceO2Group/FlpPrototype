@@ -7,11 +7,11 @@
 #define PROJECT_FAIRSAMPLER_H
 
 #include <FairMQDevice.h>
-#include <DataFormat/DataBlockContainer.h>
+#include <Common/DataBlockContainer.h>
 #include "SamplerInterface.h"
 #include <mutex>
 #include <thread>
-//#include <DataFormat/DataSet.h>
+//#include <Common/DataSet.h>
 
 namespace AliceO2 {
 namespace DataSampling {

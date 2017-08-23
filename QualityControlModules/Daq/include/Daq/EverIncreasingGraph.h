@@ -6,7 +6,7 @@
 #ifndef QUALITYCONTROL_LIBS_CHECKER_EverIncreasingGraph_H_
 #define QUALITYCONTROL_LIBS_CHECKER_EverIncreasingGraph_H_
 
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 
 #include "QualityControl/MonitorObject.h"
 #include "QualityControl/Quality.h"

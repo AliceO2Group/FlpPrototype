@@ -4,7 +4,7 @@
 ///
 
 #include "DataSampling/FairSampler.h"
-#include <DataFormat/DataBlock.h>
+#include <Common/DataBlock.h>
 
 using namespace std;
 
