@@ -16,7 +16,6 @@ FOREACH (p
     ENDIF ()
 endforeach ()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) # project specific cmake dir
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 
 project(QualityControlModules)
@@ -24,7 +23,7 @@ project(QualityControlModules)
 # Load some basic macros which are needed later on
 include(O2)
 include(O2Utils)
-include(QualityControlModulesDependencies)
+include(QualityControlDependencies)
 
 if(ROOT_FOUND)
     message(STATUS "ROOT ${ROOT_VERSION} found in '${ROOTSYS}'")
@@ -72,11 +71,3 @@ add_subdirectory(Example)
 add_subdirectory(Skeleton)
 add_subdirectory(Daq)
 #add_subdirectory(ITS)
-
-# TODO RECONSIDER THE THINGS BELOW AFTER EXTRACTION TO ITS OWN REPO
-# Make sure we tell the topdir CMakeLists that we exist (if build from topdir)
-get_directory_property(hasParent PARENT_DIRECTORY)
-if(hasParent)
-    set(PROJECT_${PROJECT_NAME} true PARENT_SCOPE)
-endif()
-include(PackageConfigurator)
