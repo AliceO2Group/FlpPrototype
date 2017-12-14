@@ -1,6 +1,5 @@
 #include "ControlStateMachine/StateMachine.h"
 #include <Common/Fifo.h>
-#include <Common/MakeUnique.h>
 
 #include <vector>
 #include <thread>
