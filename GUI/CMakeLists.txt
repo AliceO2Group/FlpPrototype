@@ -105,19 +105,19 @@ O2_GENERATE_EXECUTABLE(
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
         BUCKET_NAME ${BUCKET_NAME}
 )
-
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME 2-RequestNotification
-        SOURCES example/2-RequestNotification.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
-
-if(FAIRROOT_FOUND)
-    O2_GENERATE_EXECUTABLE(
-            EXE_NAME 3-FairOnData
-            SOURCES example/3-FairOnData.cxx example/3-runFairOnData.cxx
-            MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-            BUCKET_NAME o2_gui_with_fairroot_bucket
-    )
-endif(FAIRROOT_FOUND)
+#
+#O2_GENERATE_EXECUTABLE(
+#        EXE_NAME 2-RequestNotification
+#        SOURCES example/2-RequestNotification.cxx
+#        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+#        BUCKET_NAME ${BUCKET_NAME}
+#)
+#
+#if(FAIRROOT_FOUND)
+#    O2_GENERATE_EXECUTABLE(
+#            EXE_NAME 3-FairOnData
+#            SOURCES example/3-FairOnData.cxx example/3-runFairOnData.cxx
+#            MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+#            BUCKET_NAME o2_gui_with_fairroot_bucket
+#    )
+#endif(FAIRROOT_FOUND)
